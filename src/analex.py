@@ -87,17 +87,17 @@ class LexicalUnit(object):
 	@staticmethod
 	def extract_from_line(line):
 		fields = line.split('\t')
-		if field[0] == Identifier.__class__.__name__:
+		if fields[0] == Identifier.__class__.__name__:
 			return Identifier(fields[1], fields[2], fields[3], fields[4])
-		elif field[0] == Keyword.__class__.__name__:
+		elif fields[0] == Keyword.__class__.__name__:
 			return Keyword(fields[1], fields[2], fields[3], fields[4])
-		elif field[0] == Character.__class__.__name__:
+		elif fields[0] == Character.__class__.__name__:
 			return Character(fields[1], fields[2], fields[3], fields[4])
-		elif field[0] == Symbol.__class__.__name__:
+		elif fields[0] == Symbol.__class__.__name__:
 			return Symbol(fields[1], fields[2], fields[3], fields[4])
-		elif field[0] == Fel.__class__.__name__:
+		elif fields[0] == Fel.__class__.__name__:
 			return Fel(fields[1], fields[2], fields[3], fields[4])
-		elif field[0] == Integer.__class__.__name__:
+		elif fields[0] == Integer.__class__.__name__:
 			return Integer(fields[1], fields[2], fields[3], fields[4])
 	
         ## Returns the object as a formatted string
@@ -267,11 +267,11 @@ class LexicalAnalyser(object):
 				beginColIndex = colIndex
 				colIndex = colIndex + 1
 				c = line[colIndex]
-                                if c == '=':
+				if c == '=':
 					# record as symbol
 					unitValue = Symbol(lineIndex, colIndex-1, 2, ">=")
 					colIndex = colIndex + 1
-                                else:
+				else:
 					# record as symbol
 					unitValue = Symbol(lineIndex, colIndex-1, 1, ">")
 			elif c == '=':
@@ -296,7 +296,7 @@ class LexicalAnalyser(object):
 			try:
 				output_file = open(filename, 'w')
 			except:
-				print "Error: can\'t open output file!"
+				print("Error: can\'t open output file!")
 				return
 		else:
 			output_file = sys.stdout
@@ -315,7 +315,7 @@ class LexicalAnalyser(object):
 			try:
 				input_file = open(filename, 'w')
 			except:
-				print "Error: can\'t open output file!"
+				print("Error: can\'t open output file!")
 				return
 		else:
 			input_file = sys.stdint
@@ -342,8 +342,8 @@ class LexicalAnalyser(object):
 			raise AnaLexException("Found end of entry while keyword "+keyword+" expected!")
 		if self.lexical_units[self.lexical_unit_index].is_keyword(keyword):
 			self.lexical_unit_index += 1
-                else:
-                        raise AnaLexException("Expecting keyword "+keyword+" <line "+str(self.lexical_units[self.lexical_unit_index].get_line_index())+", column "+str(self.lexical_units[self.lexical_unit_index].get_col_index())+"> !")
+		else:
+			raise AnaLexException("Expecting keyword "+keyword+" <line "+str(self.lexical_units[self.lexical_unit_index].get_line_index())+", column "+str(self.lexical_units[self.lexical_unit_index].get_col_index())+"> !")
 
         ## Accepts an identifier if it corresponds to the current lexical unit.
         # @return identifier string value
@@ -354,9 +354,9 @@ class LexicalAnalyser(object):
 		if self.lexical_units[self.lexical_unit_index].is_identifier():
 			value =  self.lexical_units[self.lexical_unit_index].get_value()
 			self.lexical_unit_index += 1
-                        return value
-                else:
-                        raise AnaLexException("Expecting identifier <line "+str(self.lexical_units[self.lexical_unit_index].get_line_index())+", column "+str(self.lexical_units[self.lexical_unit_index].get_col_index())+"> !")
+			return value
+		else:
+			raise AnaLexException("Expecting identifier <line "+str(self.lexical_units[self.lexical_unit_index].get_line_index())+", column "+str(self.lexical_units[self.lexical_unit_index].get_col_index())+"> !")
 	
         ## Accepts an integer if it corresponds to the current lexical unit.
         # @return integer value
@@ -367,9 +367,9 @@ class LexicalAnalyser(object):
 		if self.lexical_units[self.lexical_unit_index].is_integer():
 			value = self.lexical_units[self.lexical_unit_index].get_value()
 			self.lexical_unit_index += 1
-                        return value
-                else:
-                        raise AnaLexException("Expecting integer <line "+str(self.lexical_units[self.lexical_unit_index].get_line_index())+", column "+str(self.lexical_units[self.lexical_unit_index].get_col_index())+"> !")
+			return value
+		else:
+			raise AnaLexException("Expecting integer <line "+str(self.lexical_units[self.lexical_unit_index].get_line_index())+", column "+str(self.lexical_units[self.lexical_unit_index].get_col_index())+"> !")
 	
 
         ## Accepts a Fel instance if it corresponds to the current lexical unit.
@@ -379,8 +379,8 @@ class LexicalAnalyser(object):
 			raise AnaLexException("Found end of entry while expecting .!")
 		if self.lexical_units[self.lexical_unit_index].is_fel():
 			self.lexical_unit_index += 1
-                else:
-                        raise AnaLexException("Expecting end of program <line "+str(self.lexical_units[self.lexical_unit_index].get_line_index())+", column "+str(self.lexical_units[self.lexical_unit_index].get_col_index())+"> !")
+		else:
+			raise AnaLexException("Expecting end of program <line "+str(self.lexical_units[self.lexical_unit_index].get_line_index())+", column "+str(self.lexical_units[self.lexical_unit_index].get_col_index())+"> !")
 
         ## Accepts a given character if it corresponds to the current lexical unit.
         # @param c string containing the character
@@ -390,8 +390,8 @@ class LexicalAnalyser(object):
 			raise AnaLexException("Found end of entry while expecting character " + c + "!")
 		if self.lexical_units[self.lexical_unit_index].is_character(c):
 			self.lexical_unit_index += 1
-                else:
-                        raise AnaLexException("Expecting character " + c + " <line "+str(self.lexical_units[self.lexical_unit_index].get_line_index())+", column "+str(self.lexical_units[self.lexical_unit_index].get_col_index())+"> !")	
+		else:
+			raise AnaLexException("Expecting character " + c + " <line "+str(self.lexical_units[self.lexical_unit_index].get_line_index())+", column "+str(self.lexical_units[self.lexical_unit_index].get_col_index())+"> !")	
 
         ## Accepts a given symbol if it corresponds to the current lexical unit.
         # @param s string containing the symbol
@@ -401,8 +401,8 @@ class LexicalAnalyser(object):
 			raise AnaLexException("Found end of entry while expecting symbol " + s + "!")
 		if self.lexical_units[self.lexical_unit_index].is_symbol(s):
 			self.lexical_unit_index += 1
-                else:
-                        raise AnaLexException("Expecting symbol " + s + " <line "+str(self.lexical_units[self.lexical_unit_index].get_line_index())+", column "+str(self.lexical_units[self.lexical_unit_index].get_col_index())+"> !")	
+		else:
+			raise AnaLexException("Expecting symbol " + s + " <line "+str(self.lexical_units[self.lexical_unit_index].get_line_index())+", column "+str(self.lexical_units[self.lexical_unit_index].get_col_index())+"> !")	
 	
         ## Tests if a given keyword corresponds to the current lexical unit.
         # @return True if the keyword is found
@@ -485,7 +485,7 @@ def main():
 	try:
 		f = open(filename, 'r')
 	except:
-		print "Error: can\'t open input file!"
+		print("Error: can\'t open input file!")
 		return
 		
 	outputFilename = args.outputfile
@@ -505,6 +505,5 @@ def main():
 
 if __name__ == "__main__":
     main() 
-
 
 

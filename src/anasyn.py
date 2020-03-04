@@ -88,7 +88,7 @@ def fonction(lexical_analyser):
 	ident = lexical_analyser.acceptIdentifier()
 	logger.debug("Name of function : "+ident)
 	
-        partieFormelle(lexical_analyser)
+	partieFormelle(lexical_analyser)
 
 	lexical_analyser.acceptKeyword("return")
 	nnpType(lexical_analyser)
@@ -196,7 +196,7 @@ def instr(lexical_analyser):
 		if lexical_analyser.isSymbol(":="):				
 			# affectation
 			lexical_analyser.acceptSymbol(":=")
-                        expression(lexical_analyser)
+			expression(lexical_analyser)
 			logger.debug("parsed affectation")
 		elif lexical_analyser.isCharacter("("):
 			lexical_analyser.acceptCharacter("(")
@@ -230,7 +230,7 @@ def expression(lexical_analyser):
 def exp1(lexical_analyser):
 	logger.debug("parsing exp1")
 	
-        exp2(lexical_analyser)
+	exp2(lexical_analyser)
 	if lexical_analyser.isKeyword("and"):
 		lexical_analyser.acceptKeyword("and")
 		exp2(lexical_analyser)
@@ -370,10 +370,10 @@ def valeur(lexical_analyser):
 	if lexical_analyser.isInteger():
 		entier = lexical_analyser.acceptInteger()
 		logger.debug("integer value: " + str(entier))
-                return "integer"
+		return "integer"
 	elif lexical_analyser.isKeyword("true") or lexical_analyser.isKeyword("false"):
 		vtype = valBool(lexical_analyser)
-                return vtype
+		return vtype
 	else:
 		logger.error("Unknown Value! Expecting an integer or a boolean value!")
 		raise AnaSynException("Unknown Value ! Expecting an integer or a boolean value!")
@@ -386,8 +386,8 @@ def valBool(lexical_analyser):
 	else:
 		logger.debug("boolean false value")
 		lexical_analyser.acceptKeyword("false")	
-                
-        return "boolean"
+        
+	return "boolean"
 
 def es(lexical_analyser):
 	logger.debug("parsing E/S instruction: " + lexical_analyser.get_value())
@@ -452,9 +452,9 @@ def main():
 	parser.add_argument('-v', '--version', action='version', version='%(prog)s 1.0')
 	parser.add_argument('-d', '--debug', action='store_const', const=logging.DEBUG, \
                 default=logging.INFO, help='show debugging info on output')
-        parser.add_argument('-p', '--pseudo-code', action='store_const', const=True, default=False, \
+	parser.add_argument('-p', '--pseudo-code', action='store_const', const=True, default=False, \
                 help='enables output of pseudo-code instead of assembly code')
-        parser.add_argument('--show-ident-table', action='store_true', \
+	parser.add_argument('--show-ident-table', action='store_true', \
                 help='shows the final identifiers table')
 	args = parser.parse_args()
 
@@ -463,13 +463,13 @@ def main():
 	try:
 		f = open(filename, 'r')
 	except:
-		print "Error: can\'t open input file!"
+		print("Error: can\'t open input file!")
 		return
 		
 	outputFilename = args.outputfile
 	
   	# create logger      
-        LOGGING_LEVEL = args.debug
+	LOGGING_LEVEL = args.debug
 	logger.setLevel(LOGGING_LEVEL)
 	ch = logging.StreamHandler()
 	ch.setLevel(LOGGING_LEVEL)
@@ -477,10 +477,10 @@ def main():
 	ch.setFormatter(formatter)
 	logger.addHandler(ch)
 
-        if args.pseudo_code:
-                True#
-        else:
-                True#
+	if args.pseudo_code:
+		True#
+	else:
+		False#
 
 	lexical_analyser = analex.LexicalAnalyser()
 	
@@ -496,29 +496,29 @@ def main():
 	lexical_analyser.init_analyser()
 	program(lexical_analyser)
 		
-        if args.show_ident_table:
-                print "------ IDENTIFIER TABLE ------"
-                #print str(identifierTable)
-                print "------ END OF IDENTIFIER TABLE ------"
+	if args.show_ident_table:
+			print("------ IDENTIFIER TABLE ------")
+			#print(str(identifierTable))
+			print("------ END OF IDENTIFIER TABLE ------")
 
 
-        if outputFilename != "":
-                try:
-                        output_file = open(outputFilename, 'w')
-                except:
-                        print "Error: can\'t open output file!"
-                        return
-        else:
-                output_file = sys.stdout
-	
-        # Outputs the generated code to a file
-        #instrIndex = 0
-        #while instrIndex < codeGenerator.get_instruction_counter():
-        #        output_file.write("%s\n" % str(codeGenerator.get_instruction_at_index(instrIndex)))
-        #        instrIndex += 1
-			
-        if outputFilename != "":
-                output_file.close() 
+	if outputFilename != "":
+			try:
+					output_file = open(outputFilename, 'w')
+			except:
+					print("Error: can\'t open output file!")
+					return
+	else:
+			output_file = sys.stdout
+
+	# Outputs the generated code to a file
+	#instrIndex = 0
+	#while instrIndex < codeGenerator.get_instruction_counter():
+	#        output_file.write("%s\n" % str(codeGenerator.get_instruction_at_index(instrIndex)))
+	#        instrIndex += 1
+		
+	if outputFilename != "":
+			output_file.close() 
 
 ########################################################################				 
 
