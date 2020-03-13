@@ -1,0 +1,6 @@
+debutProg();
+empiler(4);
+empiler(5);
+add();
+put();
+finProg();
