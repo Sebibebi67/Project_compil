@@ -1,56 +1,27 @@
 #!/usr/bin/python
 
+import sys
+
 # @package compilateur
 # 	Compilateur de langage
 #
 
-
-"""TODO
-
-debutProg();
-finProg();
-reserver(entier);
-empiler(int);
-affectation();
-valeurPile();
-get(); #scan
-put(); #print
-moins(); #pour l'oppose
-sous();
-add();
-mult();
-div();
-egal();
-diff(); # !=
-inf();
-infeg();
-sup();
-supeg();
-et();
-ou();
-non();
-tra(int); #goto
-tze(int); #goto si faux
-erreur(exp); #print exp + return
-
-"""
-
-
-
 pile = []
-cpt = 0
+cptLigne = 1
+cptSaut = 0
 
 
 def debutProg():
-    print("Debut de Programme")
+    print("Debut de Programme\n")
 
 
 def finProg():
-    print("Fin de Programme")
+    print("\nFin de Programme")
 
 
 def reserver(n):
     for i in range(0, n):
+        print("ok")
         empiler(0)
 
 
@@ -84,7 +55,10 @@ def get():
         a = input("Entrez un nombre a empiler : ")
         try:
             data = int(a)
+            valeurPile()
             empiler(data)
+            affectation()
+            ok = True
         except ValueError:
             print("Rentrez une valeur entiere")
 
@@ -188,12 +162,31 @@ def non():
     boolean = depiler()
     empiler(int(not boolean))
 
-# def tra(int):
 
-# def tze(int): #goto si faux
-# def erreur(exp): #print exp + return
+def tra(n):
+    # print("tra")
+    # print(n)
+    cptSaut = n
 
 
-with open("progTest.txt") as f:
+def tze(n):
+    # print("tze")
+    boolean = depiler()
+    if not bool(boolean):
+        print("False")
+        cptSaut = n
+
+
+def erreur(exp):
+    print(exp)
+    sys.exit()
+
+
+with open("testFiles/prog3.txt") as f:
     for line in f:
-        eval(line.split(";")[0])
+        # print(cptLigne)
+        # print(cptSaut)
+        if cptSaut <= cptLigne:
+            eval(line.split(";")[0])
+        cptLigne += 1
+        # print(pile)
