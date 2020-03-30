@@ -26,6 +26,7 @@ def reserver(n):
 
 def empiler(n):
     pile.append(n)
+    print(pile)
 
 
 def depiler():
@@ -36,8 +37,9 @@ def affectation():
     # a := n
     n = depiler()
     a = depiler()
-    a = n
-    empiler(a)
+    global pile
+    pile[a] = n
+    print(pile)
 
 
 def valeurPile():
@@ -90,7 +92,7 @@ def mult():
     # a + b
     b = depiler()
     a = depiler()
-    empiler(a+b)
+    empiler(a*b)
 
 
 def div():
@@ -182,7 +184,7 @@ def erreur(exp):
     sys.exit()
 
 
-with open("testFiles/prog2.txt") as f:
+with open("testFiles/progtest1.txt") as f:
     for line in f:
         # print(cptLigne)
         # print(cptSaut)
