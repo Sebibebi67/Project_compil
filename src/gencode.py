@@ -1,35 +1,40 @@
+## This function translates *valid* pseudo code (see examples) into NilNovi Object code. It does not consider grammatical errors, those must be treated before this code is run.
 
 
 def generate(table):
-	s = ";\n"
+	s = ";\n"	# separator
 	chain = "debutProg()" + s
-	stock = []
-	id = {}
-	var = {}
+	stock = []	# temporarily stores names to allocate
+	id = {}		# associates identifiers to their line number
+	var = {}	# associates variables to their type
 	type = {"integer" : 0,
-			"character" : 1}
-	i = 0
-	line = 1
+			"boolean" : 1}
+	i = 0 	# current line
 	while i < len(table) :
 		instr = ""
-		w = table[i]
+		w = table[i]	# current word
 		if w == "procedure" :
 			i++
-			id[table[i]] = line
+			id[table[i]] = i 	# stores procedure identifier
 			i++
 		elif w == "is" :
 			i++
-			while not table[i] == "begin" :
-				stock.append(table[i])
+			while not table[i] == "begin" :	# declarations
+				stock.append(table[i])	# stores first variable
 				i++
-				while table[i] == "," :
+				while table[i] == "," :	# there are several variables of the same type
 					i++
-					stock.append(table[i])
+					stock.append(table[i])	# stores next variables
 					i++
-				i++
+				i++	# skips ":"
 				for k in stock :
-					var[stock[k]] = type[table[i]]
-				i += 2
+					var[stock[k]] = type[table[i]]	# registers type
+				i += 2 	# skips ";"
+		elif w == "while" :
+		elif w == "if" :
+		elif w == "put" :
+		elif w == "get" :
+		elif w == "return" :
 	print(chain)
 	
 def error(text):
