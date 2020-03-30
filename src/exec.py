@@ -26,7 +26,6 @@ def reserver(n):
 
 def empiler(n):
     pile.append(n)
-    print(pile)
 
 
 def depiler():
@@ -39,7 +38,6 @@ def affectation():
     a = depiler()
     global pile
     pile[a] = n
-    print(pile)
 
 
 def valeurPile():
