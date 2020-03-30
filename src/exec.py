@@ -3,7 +3,7 @@
 import sys
 
 # @package compilateur
-# 	Compilateur de langage
+# 	Executeur de langage compile
 #
 
 pile = []
@@ -21,7 +21,6 @@ def finProg():
 
 def reserver(n):
     for i in range(0, n):
-        print("ok")
         empiler(0)
 
 
@@ -147,14 +146,14 @@ def et():
     # bool1 et bool2
     bool1 = depiler()
     bool2 = depiler()
-    empiler(int(bool1 & bool2))
+    empiler(int(bool1 and bool2))
 
 
 def ou():
     # bool1 ou bool2
     bool1 = depiler()
     bool2 = depiler()
-    empiler(int(bool1 | bool2))
+    empiler(int(bool1 or bool2))
 
 
 def non():
@@ -166,6 +165,7 @@ def non():
 def tra(n):
     # print("tra")
     # print(n)
+    global cptSaut 
     cptSaut = n
 
 
@@ -173,7 +173,7 @@ def tze(n):
     # print("tze")
     boolean = depiler()
     if not bool(boolean):
-        print("False")
+        global cptSaut 
         cptSaut = n
 
 
@@ -182,7 +182,7 @@ def erreur(exp):
     sys.exit()
 
 
-with open("testFiles/prog3.txt") as f:
+with open("testFiles/prog2.txt") as f:
     for line in f:
         # print(cptLigne)
         # print(cptSaut)
