@@ -3,7 +3,7 @@
 import sys
 
 # @package compilateur
-# 	Compilateur de langage
+# 	Executeur de langage compile
 #
 
 pile = []
