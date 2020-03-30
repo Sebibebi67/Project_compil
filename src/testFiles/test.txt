@@ -1,0 +1,11 @@
+debutProg();
+empiler(7);
+empiler(6);
+egal();
+tze(9);
+empiler(1);
+put();
+tra(11);
+empiler(2);
+put();
+finProg();
