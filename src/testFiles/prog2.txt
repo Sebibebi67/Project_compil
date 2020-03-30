@@ -23,7 +23,7 @@ tze(28);
 empiler(0);
 valeurPile();
 put();
-tra(30);
+tra(29);
 empiler(0);
 put();
 finProg();
