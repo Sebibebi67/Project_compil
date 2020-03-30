@@ -36,8 +36,8 @@ def affectation():
     # a := n
     n = depiler()
     a = depiler()
-    a = n
-    empiler(a)
+    global pile
+    pile[a] = n
 
 
 def valeurPile():
@@ -90,7 +90,7 @@ def mult():
     # a + b
     b = depiler()
     a = depiler()
-    empiler(a+b)
+    empiler(a*b)
 
 
 def div():
@@ -178,7 +178,9 @@ def tze(n):
 
 
 def erreur(exp):
+    # shows exp and end the programm
     print(exp)
+    print("\nUne Erreur est survenue\nFin de Programme")
     sys.exit()
 
 
@@ -188,5 +190,6 @@ with open("testFiles/prog2.txt") as f:
         # print(cptSaut)
         if cptSaut <= cptLigne:
             eval(line.split(";")[0])
+            print(cptLigne, pile)
         cptLigne += 1
         # print(pile)

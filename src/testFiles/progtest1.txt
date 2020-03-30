@@ -1,0 +1,5 @@
+debutProg();
+empiler(0);
+empiler(0);
+ou();
+finProg();
