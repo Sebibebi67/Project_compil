@@ -184,11 +184,12 @@ def erreur(exp):
     sys.exit()
 
 
-with open("testFiles/progtest1.txt") as f:
+with open("testFiles/prog2.txt") as f:
     for line in f:
         # print(cptLigne)
         # print(cptSaut)
         if cptSaut <= cptLigne:
             eval(line.split(";")[0])
+            print(cptLigne, pile)
         cptLigne += 1
         # print(pile)
