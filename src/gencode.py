@@ -1,4 +1,4 @@
-## This function translates *valid* pseudo code (see examples) into NilNovi Object code. It does not consider grammatical errors, those must be treated before this code is run.
+## This class translates VALID pseudo code (see examples) into NilNovi Object code. It does not consider grammatical errors, those must be treated before this program is run.
 
 class Generator(object)
 	
@@ -15,17 +15,15 @@ class Generator(object)
 	def __init__(self, t):
 		self.table = t
 	
-	# Main function
+	# Main function TODO
 	def generate():
 		i = 0 	# current line
 		while i < len(table) :
-			instr = ""
-			w = table[i]	# current word
-			if w == "procedure" :
+			if table[i] == "procedure" :
 				i++
 				id[table[i]] = i 	# stores procedure identifier
 				i++
-			elif w == "is" :
+			elif table[i] == "is" :
 				i++
 				while not table[i] == "begin" :	# declarations
 					stock.append(table[i])	# stores first variable
@@ -38,22 +36,42 @@ class Generator(object)
 					for k in stock :
 						var[stock[k]] = type[table[i]]	# registers type
 					i += 2 	# skips ";"
-			elif w == "while" :
-				i++
-				i = expression(i)
-			elif w == "if" :
-				i++
-				i = expression(i)
-			elif w == "put" :
-				i++
-			elif w == "get" :
-				i++
-			elif w == "return" :
-				i++
-			elif w == "end" :
+			elif table[i] == "end" :
+			else :
+				i = instructions(i)
 		print(chain)
 		
-	# Breaks down a boolean expression using OR
+	# Breaks down an instructions block TODO
+	# Ends on the line AFTER the block
+	def instructions(i):
+			if table[i] == "while" :
+				i++
+				i = expression(i)
+				i++		# skips "loop"
+				i = instructions(i)
+				i++		# skips "end"
+			elif table[i] == "if" :
+				i++
+				i = expression(i)
+				i++		# skips "then"
+				i = instructions(i)
+				if table[i] == "else" :
+					i = instructions(i)
+				i++		# skips "end"
+			elif table[i] == "put" :
+				i++
+				i = expression(i)
+				i++		# skips ")"
+			elif table[i] == "get" :
+				i += 2
+				i++		# skips ")"
+			elif table[i] == "return" :
+				i += 2
+				i = expression(i)
+		return i
+		
+	# Breaks down a boolean expression using OR TODO
+	# Ends on the line AFTER the expression
 	def expression(i):
 		i = exp1(i)
 		i++
@@ -62,7 +80,7 @@ class Generator(object)
 			i = exp1(i)
 		return i
 		
-	# Breaks down a boolean expression using AND
+	# Breaks down a boolean expression using AND TODO
 	def exp1(i):
 		i = exp2(i)
 		i++
@@ -71,7 +89,7 @@ class Generator(object)
 			i = exp2(i)
 		return i
 		
-	# Breaks down a boolean expression
+	# Breaks down a boolean expression TODO
 	def exp2(i):
 		i = exp3(i)
 		i++
@@ -95,7 +113,7 @@ class Generator(object)
 			i = exp3(i)
 		return i
 		
-	# Breaks down an addition / substraction
+	# Breaks down an addition / substraction TODO
 	def exp3(i):
 		i = exp4(i)
 		i++
@@ -107,7 +125,7 @@ class Generator(object)
 			i = exp4(i)
 		return i
 		
-	# Breaks down a multiplication / division
+	# Breaks down a multiplication / division TODO
 	def exp4(i):
 		i = prim(i)
 		i++
@@ -116,7 +134,7 @@ class Generator(object)
 			i = prim(i)
 		return i
 		
-	# Breaks down a primary operator
+	# Breaks down a primary operator TODO
 	def prim(i):
 		if table[i] == "+" :
 			i++
@@ -129,7 +147,7 @@ class Generator(object)
 			i = elemPrim(i)
 		return i
 		
-	# Translates an expression
+	# Translates an expression TODO
 	def elemPrim(i):
 		if isinstance(table[i], (int, long)) :	# Integer
 			i++
