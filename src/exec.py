@@ -147,14 +147,14 @@ def et():
     # bool1 et bool2
     bool1 = depiler()
     bool2 = depiler()
-    empiler(int(bool1 & bool2))
+    empiler(int(bool1 and bool2))
 
 
 def ou():
     # bool1 ou bool2
     bool1 = depiler()
     bool2 = depiler()
-    empiler(int(bool1 | bool2))
+    empiler(int(bool1 or bool2))
 
 
 def non():
