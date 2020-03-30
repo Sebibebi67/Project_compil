@@ -180,7 +180,9 @@ def tze(n):
 
 
 def erreur(exp):
+    # shows exp and end the programm
     print(exp)
+    print("\nUne Erreur est survenue\nFin de Programme")
     sys.exit()
 
 
