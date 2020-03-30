@@ -21,7 +21,6 @@ def finProg():
 
 def reserver(n):
     for i in range(0, n):
-        print("ok")
         empiler(0)
 
 
@@ -166,6 +165,7 @@ def non():
 def tra(n):
     # print("tra")
     # print(n)
+    global cptSaut 
     cptSaut = n
 
 
@@ -173,7 +173,7 @@ def tze(n):
     # print("tze")
     boolean = depiler()
     if not bool(boolean):
-        print("False")
+        global cptSaut 
         cptSaut = n
 
 
@@ -182,7 +182,7 @@ def erreur(exp):
     sys.exit()
 
 
-with open("testFiles/prog3.txt") as f:
+with open("testFiles/prog2.txt") as f:
     for line in f:
         # print(cptLigne)
         # print(cptSaut)

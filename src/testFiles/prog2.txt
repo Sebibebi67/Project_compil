@@ -1,6 +1,6 @@
 debutProg();
 reserver(1);
-empiler(0)
+empiler(0);
 get();
 empiler(0);
 valeurPile();
