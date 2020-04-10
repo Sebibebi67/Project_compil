@@ -1,10 +1,12 @@
 # This class translates VALID pseudo code (see examples) into NilNovi Object code. It does not consider grammatical errors, those must be treated before this program is run.
 
+test = ["procedure", "pp", "is", "i", ",", "j", ",", "k", ":", "integer", ";", "begin", "get", "j", ";", "end"]
 
 class Generator(object):
 
 	s = ";\n"  # separator
 	chain = "debutProg()" + s 	# NilNovi Object code
+	lines = 1 	# line counter of the NNO code
 	stock = []  # temporarily stores names to allocate
 	id = {}		# associates identifiers to their line number
 	var = {}  	# associates variables to their address
@@ -41,7 +43,9 @@ class Generator(object):
 				for k in range(len(stock)):
 					var[stock[k]] = k 	# registers each variable's address
 				chain += "reserver(" + len(stock) + ")" + s		# NNO : blocking addresses
+				lines += 1
 				stock = []
+				i += 1 	# skips "begin"
 				
 				
 			elif table[i] != "end":
@@ -50,9 +54,11 @@ class Generator(object):
 				
 			else :
 				chain += "finProg()"
-				i += 1
+				lines += 1
+				i += 2 	# skips "."
 				
 		print(chain)
+		print(lines)
 
 
 
@@ -82,14 +88,16 @@ class Generator(object):
 				i += 1
 				i = expression(i)
 				chain += "put()" + s
-				i += 1		# skips ")"
+				lines += 1
+				i += 2		# skips ";"
 				
 				
 			elif table[i] == "get":
-				i += 2
+				i += 1
 				chain += "empilerAd(" + var[table[i]] + ")" + s 	# NNO : stacks the variable
 				chain += "get()" + s
-				i += 1		# skips ")"
+				lines += 2
+				i += 2		# skips ";"
 				
 				
 			elif table[i] == "return":
@@ -246,8 +254,3 @@ class Generator(object):
 				i += 1
 				
 		return i
-		
-		
-		
-	def error(text):
-		raise KeyError(text)
