@@ -13,6 +13,7 @@ logger = logging.getLogger('anasyn')
 
 DEBUG = False
 LOGGING_LEVEL = logging.DEBUG
+thisList =["start"]
 
 
 class AnaSynException(Exception):
@@ -166,6 +167,7 @@ def declaVar(lexical_analyser):
 
 def listeIdent(lexical_analyser):
 	ident = lexical_analyser.acceptIdentifier()
+	thisList.append(str(ident))
 	logger.debug("identifier found: "+str(ident))
 
 	if lexical_analyser.isCharacter(","):
@@ -222,7 +224,7 @@ def listePe(lexical_analyser):
 def expression(lexical_analyser):
     #TODO
 	logger.debug("parsing expression: " + str(lexical_analyser.get_value()))
-
+	#thisList.append(str(lexical_analyser.get_value()))
 	exp1(lexical_analyser)
 	if lexical_analyser.isKeyword("or"):
 		lexical_analyser.acceptKeyword("or")
@@ -343,6 +345,7 @@ def opUnaire(lexical_analyser):
 
 def elemPrim(lexical_analyser):
 	logger.debug("parsing elemPrim: " + str(lexical_analyser.get_value()))
+	#thisList.append(str(lexical_analyser.get_value()))
 	if lexical_analyser.isCharacter("("):
 		lexical_analyser.acceptCharacter("(")
 		expression(lexical_analyser)
@@ -372,6 +375,7 @@ def valeur(lexical_analyser):
 		entier = lexical_analyser.acceptInteger()
         #TODO
 		logger.debug("integer value: " + str(entier))
+		thisList.append(str(entier))
 		return "integer"
 	elif lexical_analyser.isKeyword("true") or lexical_analyser.isKeyword("false"):
 		vtype = valBool(lexical_analyser)
@@ -393,6 +397,7 @@ def valBool(lexical_analyser):
 
 def es(lexical_analyser):
 	logger.debug("parsing E/S instruction: " + lexical_analyser.get_value())
+	#thisList.append(lexical_analyser.get_value())
 	if lexical_analyser.isKeyword("get"):
 		lexical_analyser.acceptKeyword("get")
 		lexical_analyser.acceptCharacter("(")
@@ -501,6 +506,7 @@ def main():
 	if args.show_ident_table:
 			print("------ IDENTIFIER TABLE ------")
 			#print(str(identifierTable))
+			print(thisList)
 			print("------ END OF IDENTIFIER TABLE ------")
 
 
