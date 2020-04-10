@@ -248,6 +248,16 @@ def erreur(exp):
     sys.exit()
 
 
+"""TODO NNP:
+    empilerAd(n) -> 
+    empilerParam(n) ->
+    retourFonc() -> fin Fonc
+    retourProc() -> fin proc
+    reserverBloc() -> reserve un nouveau bloc en memoire pour l
+    traStat(n, t) -> appel ligne n avec t params
+"""
+
+
 with open("testFiles/prog2.txt") as f:
     for line in f:
         programme.append(line.split(";")[0])
