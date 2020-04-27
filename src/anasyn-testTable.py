@@ -4,6 +4,13 @@
 # 	Syntactical Analyser package. 
 #
 
+########################################################################				 	
+#### TO DO
+# Compléter la list (thisList) avec les indentificateurs nécessaires
+# Une fois complétée, la parse à nouveau pour créer la table (plus simple)
+####
+########################################################################
+
 import sys, argparse, re
 import logging
 
