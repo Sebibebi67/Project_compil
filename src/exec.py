@@ -8,7 +8,8 @@ import sys
 
 pile = []
 cptLigne = 0
-# cptSaut = 0
+pointeurLigne = []
+
 
 fin = False
 
@@ -242,7 +243,7 @@ def tze(n):
 
 
 def erreur(exp):
-    # shows exp and end the programm
+    # montre l'erreur et fini le programme
     print(exp)
     print("\nUne Erreur est survenue\nFin de Programme")
     sys.exit()
@@ -257,6 +258,73 @@ def erreur(exp):
     traStat(n, t) -> appel ligne n avec t params
 """
 
+
+def empilerAd(n):
+    #empile l'adresse globale n
+    empiler(n+pointeurLigne[-1])
+    
+
+def empilerParam(n):
+    #empile l'adresse locale n
+    pile.append(n+pointeurLigne[-1])
+    valeurPile()
+
+def retourFonc():
+    #fin de fonction
+    global pile
+
+    #on sauve la valeur a retourner
+    retour = pile.pop()
+
+    #on vide la pile de toutes les potentielles valeurs stockées
+    while pile[-1] != None:
+        pile.pop()
+    
+    #on retire le bloc
+    for _ in range (3):
+        pile.pop()
+
+    #on remet la valeur de retour en sommet de pile
+    pile.append(retour)
+
+    #on renvoie à la ligne suivante du programme
+    global cptLigne
+    pointeurLigne.pop()
+    cptLigne = pointeurLigne.pop()
+
+def retourProc():
+    #fin de procedure
+    
+    #on vide la pile de toutes les potentielles valeurs stockées
+    while pile[-1] != None:
+        pile.pop()
+    
+    #on retire le bloc
+    for _ in range (3):
+        pile.pop()
+
+    #on renvoie a la ligne suivante du programme
+    global cptLigne
+    pointeurLigne.pop()
+    cptLigne = pointeurLigne.pop()
+
+def reserverBloc():
+    for _ in range(3):
+        pile.append(None)
+
+def traStat(n, t):
+    #appel de la ligne n avec t paramètre
+
+    #sauvegarde de la prochaine ligne a executer apres le retour de fonction
+    global pointeurLigne
+    global cptLigne
+    pointeurLigne.append(cptLigne+1)
+
+    #deplacement à la ligne n
+    cptLigne = n-1
+
+    #stockage du decalage adresse-position dans la pile
+    pointeurLigne.append(pile.len()-t)
 
 with open("testFiles/prog2.txt") as f:
     for line in f:
