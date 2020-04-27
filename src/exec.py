@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import sys
+import time
 
 # @package compilateur
 # 	Executeur de langage compile
@@ -276,7 +277,7 @@ def retourFonc():
     #on sauve la valeur a retourner
     retour = pile.pop()
 
-    #on vide la pile de toutes les potentielles valeurs stockées
+    #on vide la pile de toutes les potentielles valeurs stockees
     while pile[-1] != None:
         pile.pop()
     
@@ -287,7 +288,7 @@ def retourFonc():
     #on remet la valeur de retour en sommet de pile
     pile.append(retour)
 
-    #on renvoie à la ligne suivante du programme
+    #on renvoie a la ligne suivante du programme
     global cptLigne
     pointeurLigne.pop()
     cptLigne = pointeurLigne.pop()
@@ -295,7 +296,7 @@ def retourFonc():
 def retourProc():
     #fin de procedure
     
-    #on vide la pile de toutes les potentielles valeurs stockées
+    #on vide la pile de toutes les potentielles valeurs stockees
     while pile[-1] != None:
         pile.pop()
     
@@ -311,24 +312,27 @@ def retourProc():
 def reserverBloc():
     for _ in range(3):
         pile.append(None)
+    global cptLigne
+    cptLigne =+ 1
 
 def traStat(n, t):
-    #appel de la ligne n avec t paramètre
+    #appel de la ligne n avec t parametres
 
     #sauvegarde de la prochaine ligne a executer apres le retour de fonction
     global pointeurLigne
     global cptLigne
     pointeurLigne.append(cptLigne+1)
 
-    #deplacement à la ligne n
+    #deplacement a la ligne n
     cptLigne = n-1
 
     #stockage du decalage adresse-position dans la pile
     pointeurLigne.append(pile.len()-t)
 
-with open("testFiles/prog2.txt") as f:
+with open("testFiles/testNNP.txt") as f:
     for line in f:
         programme.append(line.split(";")[0])
     while not fin:
         print(cptLigne+1)
         eval(programme[cptLigne])
+        time.sleep(1)
