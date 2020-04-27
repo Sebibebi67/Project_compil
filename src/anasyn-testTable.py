@@ -4,6 +4,13 @@
 # 	Syntactical Analyser package. 
 #
 
+########################################################################				 	
+#### TO DO
+# Compléter la list (thisList) avec les indentificateurs nécessaires
+# Une fois complétée, la parse à nouveau pour créer la table (plus simple)
+####
+########################################################################
+
 import sys, argparse, re
 import logging
 
@@ -142,10 +149,12 @@ def mode(lexical_analyser):
 def nnpType(lexical_analyser):
 	if lexical_analyser.isKeyword("integer"):
 		lexical_analyser.acceptKeyword("integer")
+		thisList.append("integer")
 		logger.debug("integer type")
 	elif lexical_analyser.isKeyword("boolean"):
 		lexical_analyser.acceptKeyword("boolean")
-		logger.debug("boolean type")                
+		logger.debug("boolean type")  
+		thisList.append("boolean")              
 	else:
 		logger.error("Unknown type found <"+ lexical_analyser.get_value() +">!")
 		raise AnaSynException("Unknown type found <"+ lexical_analyser.get_value() +">!")
