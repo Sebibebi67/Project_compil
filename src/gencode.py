@@ -1,4 +1,4 @@
-# This class translates VALID pseudo code (see examples) into NilNovi Object code. It does not consider grammatical errors, those must be treated before this program is run.
+# This class translates VALself.id pseudo code (see examples) into NilNovi Object code. It does not consself.ider grammatical errors, those must be treated before this program is run.
 
 test = ["procedure", "pp", "is", "i", ",", "j", ",", "k", ":", "integer", ";", "begin", "get", "j", ";", "end"]
 
@@ -15,94 +15,95 @@ class Generator(object):
 	# The constructor
 	def __init__(self, t):
 		self.table = t
+		self.generate()
 
 	# Main function TODO
-	def generate():
+	def generate(self):
 		i = 0 	# current line
 		
-		while i < len(table):
-			if table[i] == "procedure":
+		while i < len(self.table):
+			if self.table[i] == "procedure":
 				i += 1
-				id[table[i]] = i 	# stores procedure identifier
-				i += 1
-				
-				
-			elif table[i] == "is":
+				self.id[self.table[i]] = i 	# stores procedure identifier
 				i += 1
 				
-				while not table[i] == "begin":  # declarations
-					stock.append(table[i])  # stores first variable
+				
+			elif self.table[i] == "is":
+				i += 1
+				
+				while not self.table[i] == "begin":  # declarations
+					self.stock.append(self.table[i])  # stores first variable
 					i += 1
 					
-					while table[i] == ",":	# there are several variables of the same type
+					while self.table[i] == ",":	# there are several variables of the same type
 						i += 1
-						stock.append(table[i])	# stores next variable
+						self.stock.append(self.table[i])	# stores next variable
 						i += 1
 					i += 3 	# skips ": [type] ;"
 					
-				for k in range(len(stock)):
-					var[stock[k]] = k 	# registers each variable's address
-				chain += "reserver(" + len(stock) + ")" + s		# NNO : blocking addresses
-				lines += 1
-				stock = []
+				for k in range(len(self.stock)):
+					self.var[self.stock[k]] = k 	# registers each variable's address
+				self.chain += "reserver(" + str(len(self.stock)) + ")" + self.s		# NNO : blocking addresses
+				self.lines += 1
+				self.stock = []
 				i += 1 	# skips "begin"
 				
 				
-			elif table[i] != "end":
-				i = instructions(i)
+			elif self.table[i] != "end":
+				i = self.instructions(i)
 				
 				
 			else :
-				chain += "finProg()"
-				lines += 1
+				self.chain += "finProg()"
+				self.lines += 1
 				i += 2 	# skips "."
 				
-		print(chain)
-		print(lines)
+		print(self.chain)
+		print(self.lines)
 
 
 
 	# Breaks down an instructions block TODO
 	# Ends on the line AFTER the block
-	def instructions(i):
-			if table[i] == "while":
+	def instructions(self, i):
+			if self.table[i] == "while":
 				i += 1
-				i = expression(i)
+				i = self.expression(i)
 				i += 1		# skips "loop"
-				i = instructions(i)
+				i = self.instructions(i)
 				i += 1		# skips "end"
 				
 				
-			elif table[i] == "if":
+			elif self.table[i] == "if":
 				i += 1
-				i = expression(i)
+				i = self.expression(i)
 				i += 1		# skips "then"
-				i = instructions(i)
+				i = self.instructions(i)
 				
-				if table[i] == "else":
-					i = instructions(i)
+				if self.table[i] == "else":
+					i = self.instructions(i)
 				i += 1		# skips "end"
 				
 				
-			elif table[i] == "put":
+			elif self.table[i] == "put":
 				i += 1
-				i = expression(i)
-				chain += "put()" + s
-				lines += 1
+				i = self.expression(i)
+				self.chain += "put()" + self.s
+				self.lines += 1
 				i += 2		# skips ";"
 				
 				
-			elif table[i] == "get":
+			elif self.table[i] == "get":
 				i += 1
-				chain += "empilerAd(" + var[table[i]] + ")" + s 	# NNO : stacks the variable
-				chain += "get()" + s
-				lines += 2
+				self.chain += "empilerAd(" + str(self.var[self.table[i]]) + ")" + self.s 	# NNO : stacks the variable
+				self.chain += "get()" + self.s
+				self.lines += 2
 				i += 2		# skips ";"
 				
 				
-			elif table[i] == "return":
+			elif self.table[i] == "return":
 				i += 2
-				i = expression(i)
+				i = self.expression(i)
 				
 			return i
 		
@@ -110,147 +111,145 @@ class Generator(object):
 		
 	# Breaks down a boolean expression using OR TODO
 	# Ends on the line AFTER the expression
-	def expression(i):
-		i = exp1(i)
-		i += 1
+	def expression(self, i):
+		i = self.exp1(i)
 		
-		if table[i] == "or" :
+		if self.table[i] == "or" :
 			i += 1
-			i = exp1(i)
+			i = self.exp1(i)
 			
 		return i
 		
 		
 		
 	# Breaks down a boolean expression using AND TODO
-	def exp1(i):
-		i = exp2(i)
-		i += 1
+	def exp1(self, i):
+		i = self.exp2(i)
 		
-		if table[i] == "and" :
+		if self.table[i] == "and" :
 			i += 1
-			i = exp2(i)
+			i = self.exp2(i)
 			
 		return i
 		
 		
 		
 	# Breaks down a boolean expression TODO
-	def exp2(i):
-		i = exp3(i)
-		i += 1
+	def exp2(self, i):
+		i = self.exp3(i)
 		
-		if table[i] == "=" :
+		if self.table[i] == "=" :
 			i += 1
-			i = exp3(i)
+			i = self.exp3(i)
 			
 			
-		elif table[i] == "/=" :
+		elif self.table[i] == "/=" :
 			i += 1
-			i = exp3(i)
+			i = self.exp3(i)
 			
 			
-		elif table[i] == ">" :
+		elif self.table[i] == ">" :
 			i += 1
-			i = exp3(i)
+			i = self.exp3(i)
 			
 			
-		elif table[i] == ">=" :
+		elif self.table[i] == ">=" :
 			i += 1
-			i = exp3(i)
+			i = self.exp3(i)
 			
 			
-		elif table[i] == "<" :
+		elif self.table[i] == "<" :
 			i += 1
-			i = exp3(i)
+			i = self.exp3(i)
 			
 			
-		elif table[i] == "<=" :
+		elif self.table[i] == "<=" :
 			i += 1
-			i = exp3(i)
+			i = self.exp3(i)
 			
 		return i
 		
 		
 		
 	# Breaks down an addition / substraction TODO
-	def exp3(i):
-		i = exp4(i)
-		i += 1
+	def exp3(self, i):
+		i = self.exp4(i)
 		
-		if table[i] == "+" :
+		if self.table[i] == "+" :
 			i += 1
-			i = exp4(i)
+			i = self.exp4(i)
 			
 			
-		elif table[i] == "-" :
+		elif self.table[i] == "-" :
 			i += 1
-			i = exp4(i)
+			i = self.exp4(i)
 			
 		return i
 		
 		
 		
 	# Breaks down a multiplication / division TODO
-	def exp4(i):
-		i = prim(i)
-		i += 1
+	def exp4(self, i):
+		i = self.prim(i)
 		
-		if table[i] == "*" :
+		if self.table[i] == "*" :
 			i += 1
-			i = prim(i)
+			i = self.prim(i)
 			
 		return i
 		
 		
 		
 	# Breaks down a primary operator TODO
-	def prim(i):
+	def prim(self, i):
 		
-		if table[i] == "+" :
+		if self.table[i] == "+" :
 			i += 1
-			i = elemPrim(i)
+			i = self.elemPrim(i)
 			
 			
-		elif table[i] == "-" :
+		elif self.table[i] == "-" :
 			i += 1
-			i = elemPrim(i)
+			i = self.elemPrim(i)
 			
 			
-		elif table[i] == "not" :
+		elif self.table[i] == "not" :
 			i += 1
-			i = elemPrim(i)
+			i = self.elemPrim(i)
+			
+		else :
+			i = self.elemPrim(i)
 			
 		return i
 		
 		
 		
 	# Translates an expression TODO
-	def elemPrim(i):
-		if isinstance(table[i], (int, long)) :	# Integer
+	def elemPrim(self, i):
+		if isinstance(self.table[i], (int, long)) :	# Integer
 			i += 1
 			
 			
-		elif table[i] == "true" :
+		elif self.table[i] == "true" :
 			i += 1
 			
 			
-		elif table[i] == "false" :
+		elif self.table[i] == "false" :
 			i += 1
 			
 			
-		elif table[i] == "(" :	# Boolean expression
+		elif self.table[i] == "(" :	# Boolean expression
 			i += 1
-			i = expression(i)
+			i = self.expression(i)
 			i += 1
 			
 			
-		else :	# Identifier / variable
+		else :	# identifier / variable
 		
-			if table[i] in id :	# Identifier
+			if self.table[i] in self.id :	# identifier
 				i += 1
 				
-			else :	# Variable
+			else :	# variable
 				i += 1
 				
 		return i
