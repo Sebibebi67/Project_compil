@@ -250,16 +250,6 @@ def erreur(exp):
     sys.exit()
 
 
-"""TODO NNP:
-    empilerAd(n) -> adresse (var globale)
-    empilerParam(n) -> adresse de adresse var locale)
-    retourFonc() -> fin Fonc
-    retourProc() -> fin proc
-    reserverBloc() -> reserve un nouveau bloc en memoire pour l
-    traStat(n, t) -> appel ligne n avec t params
-"""
-
-
 def empilerAd(n):
     #empile l'adresse globale n
     empiler(n+pointeurLigne[-1])
@@ -313,7 +303,7 @@ def reserverBloc():
     for _ in range(3):
         pile.append(None)
     global cptLigne
-    cptLigne =+ 1
+    cptLigne += 1
 
 def traStat(n, t):
     #appel de la ligne n avec t parametres
@@ -327,12 +317,12 @@ def traStat(n, t):
     cptLigne = n-1
 
     #stockage du decalage adresse-position dans la pile
-    pointeurLigne.append(pile.len()-t)
+    pointeurLigne.append(len(pile)-t)
 
-with open("testFiles/testNNP.txt") as f:
+with open("testFiles/testNNP2.txt") as f:
     for line in f:
         programme.append(line.split(";")[0])
     while not fin:
         print(cptLigne+1)
         eval(programme[cptLigne])
-        time.sleep(1)
+        # time.sleep(1)
