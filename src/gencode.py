@@ -1,12 +1,12 @@
 # This class translates VALself.id pseudo code (see examples) into NilNovi Object code. It does not consself.ider grammatical errors, those must be treated before this program is run.
 
-test = ["procedure", "pp", "is", "i", ",", "j", ",", "k", ":", "integer", ";", "begin", "get", "j", ";", "end"]
+test = ["procedure", "pp", "is", "i", ",", "j", ",", "k", ":", "integer", ";", "begin", "if", "1","<","2","then", "get", "j", ";","end", "end"]
 
 class Generator(object):
 
 	s = ";\n"  # separator
-	chain = "debutProg()" + s 	# NilNovi Object code
-	lines = 1 	# line counter of the NNO code
+	chain = "debutProg()" + s 	# NilNovi code
+	lines = 1 	# line counter of the NNP code
 	stock = []  # temporarily stores names to allocate
 	id = {}		# associates identifiers to their line number
 	var = {}  	# associates variables to their address
@@ -43,14 +43,15 @@ class Generator(object):
 					
 				for k in range(len(self.stock)):
 					self.var[self.stock[k]] = k 	# registers each variable's address
-				self.chain += "reserver(" + str(len(self.stock)) + ")" + self.s		# NNO : blocking addresses
+				self.chain += "reserver(" + str(len(self.stock)) + ")" + self.s		# NNP : blocking addresses
 				self.lines += 1
 				self.stock = []
 				i += 1 	# skips "begin"
 				
 				
 			elif self.table[i] != "end":
-				i = self.instructions(i)
+				i, instr = self.instructions(i)
+				self.chain += instr
 				
 				
 			else :
@@ -66,167 +67,228 @@ class Generator(object):
 	# Breaks down an instructions block TODO
 	# Ends on the line AFTER the block
 	def instructions(self, i):
-			if self.table[i] == "while":
-				i += 1
-				i = self.expression(i)
-				i += 1		# skips "loop"
-				i = self.instructions(i)
-				i += 1		# skips "end"
+		total, expr, instr = "", "", ""
+		
+		if self.table[i] == "while":
+			i += 1
+			i = self.expression(i)		# condition
+			i += 1		# skips "loop"
+			i = self.instructions(i)	# instructions
+			i += 1		# skips "end"
 				
 				
-			elif self.table[i] == "if":
-				i += 1
-				i = self.expression(i)
-				i += 1		# skips "then"
-				i = self.instructions(i)
+		elif self.table[i] == "if":
+			i += 1
+			i, expr = self.expression(i)	# condition
+			i += 1		# skips "then"
+			self.lines += 1 	# line reserved for "tze"
+			i, instr = self.instructions(i)	# instructions
+			expr += "tze(" + str(self.lines) + ")" + self.s 	# jumps to end if the condition is false
+			expr += instr
+			
+			if self.table[i] == "else":
+				i, instr = self.instructions(i)	# else instructions
+				self.lines += 1 	# line reserved for "tra"
+				expr += "tra(" + str(self.lines) + ")" + self.s 	# jumps to end if the condition is true
+				expr += instr
+			i += 1		# skips "end"
+			total += expr
+			
+			
+		elif self.table[i] == "put":
+			i += 1
+			i, expr = self.expression(i)
+			total += expr
+			total += "put()" + self.s
+			self.lines += 1
+			i += 2		# skips ";"
+			
+			
+		elif self.table[i] == "get":
+			i += 1
+			total += "empilerAd(" + str(self.var[self.table[i]]) + ")" + self.s 	# NNP : stacks the variable
+			total += "get()" + self.s
+			self.lines += 2
+			i += 2		# skips ";"
+			
+		
+		elif self.table[i] in self.id :	# identifier
+			i += 1
 				
-				if self.table[i] == "else":
-					i = self.instructions(i)
-				i += 1		# skips "end"
 				
-				
-			elif self.table[i] == "put":
-				i += 1
-				i = self.expression(i)
-				self.chain += "put()" + self.s
-				self.lines += 1
-				i += 2		# skips ";"
-				
-				
-			elif self.table[i] == "get":
-				i += 1
-				self.chain += "empilerAd(" + str(self.var[self.table[i]]) + ")" + self.s 	# NNO : stacks the variable
-				self.chain += "get()" + self.s
-				self.lines += 2
-				i += 2		# skips ";"
-				
-				
-			elif self.table[i] == "return":
-				i += 2
-				i = self.expression(i)
-				
-			return i
+		elif self.table[i] in self.var : # variable assignment
+			total += "empilerAd(" + str(self.var[self.table[i]]) + ")" + self.s
+			self.lines += 1
+			i += 2 	# skips ":="
+			i, expr = self.expression(i)
+			total += expr
+			total += "affectation()" + self.s
+			self.lines += 1
+		
+			
+		elif self.table[i] == "return":
+			i += 2
+			i = self.expression(i)
+			
+		return i, total
 		
 		
 		
 	# Breaks down a boolean expression using OR TODO
 	# Ends on the line AFTER the expression
 	def expression(self, i):
-		i = self.exp1(i)
+		expr, e = "", ""
+		i, expr = self.exp1(i)
 		
 		if self.table[i] == "or" :
 			i += 1
-			i = self.exp1(i)
+			i, e = self.exp1(i)
+			e += "ou()" + self.s
+			self.lines += 1
 			
-		return i
+		return i, expr+e
 		
 		
 		
 	# Breaks down a boolean expression using AND TODO
 	def exp1(self, i):
-		i = self.exp2(i)
+		expr, e = "", ""
+		i, expr = self.exp2(i)
 		
 		if self.table[i] == "and" :
 			i += 1
-			i = self.exp2(i)
+			i, e = self.exp2(i)
+			e += "et()" + self.s
+			self.lines += 1
 			
-		return i
+		return i, expr+e
 		
 		
 		
 	# Breaks down a boolean expression TODO
 	def exp2(self, i):
-		i = self.exp3(i)
+		expr, e = "", ""
+		i, expr = self.exp3(i)
 		
 		if self.table[i] == "=" :
 			i += 1
-			i = self.exp3(i)
+			i, e = self.exp3(i)
+			e += "egal()" + self.s
+			self.lines += 1
 			
 			
 		elif self.table[i] == "/=" :
 			i += 1
-			i = self.exp3(i)
+			i, e = self.exp3(i)
+			e += "diff()" + self.s
+			self.lines += 1
 			
 			
 		elif self.table[i] == ">" :
 			i += 1
-			i = self.exp3(i)
+			i, e = self.exp3(i)
+			e += "sup()" + self.s
+			self.lines += 1
 			
 			
 		elif self.table[i] == ">=" :
 			i += 1
-			i = self.exp3(i)
+			i, e = self.exp3(i)
+			e += "supeg()" + self.s
+			self.lines += 1
 			
 			
 		elif self.table[i] == "<" :
 			i += 1
-			i = self.exp3(i)
+			i, e = self.exp3(i)
+			e += "inf()" + self.s
+			self.lines += 1
 			
 			
 		elif self.table[i] == "<=" :
 			i += 1
-			i = self.exp3(i)
+			i, e = self.exp3(i)
+			e += "infeg()" + self.s
+			self.lines += 1
 			
-		return i
+		return i, expr+e
 		
 		
 		
 	# Breaks down an addition / substraction TODO
 	def exp3(self, i):
-		i = self.exp4(i)
+		expr, e = "", ""
+		i, expr = self.exp4(i)
 		
 		if self.table[i] == "+" :
 			i += 1
-			i = self.exp4(i)
+			i, e = self.exp4(i)
+			e += "add()" + self.s
+			self.lines += 1
 			
 			
 		elif self.table[i] == "-" :
 			i += 1
-			i = self.exp4(i)
+			i, e = self.exp4(i)
+			e += "sub()" + self.s
+			self.lines += 1
 			
-		return i
+		return i, expr+e
 		
 		
 		
 	# Breaks down a multiplication / division TODO
 	def exp4(self, i):
-		i = self.prim(i)
+		expr, e = "", ""
+		i, expr = self.prim(i)
 		
 		if self.table[i] == "*" :
 			i += 1
-			i = self.prim(i)
+			i, e = self.prim(i)
+			e += "mult()" + self.s
+			self.lines += 1		
 			
-		return i
+		elif self.table[i] == "/" :
+			i += 1
+			i, e = self.prim(i)
+			e += "div()" + self.s
+			self.lines += 1
+			
+		return i, expr+e
 		
 		
 		
-	# Breaks down a primary operator TODO
+	# Translates a primary operator TODO
 	def prim(self, i):
+		expr = ""
+		i, expr = self.elemPrim(i)
 		
 		if self.table[i] == "+" :
 			i += 1
-			i = self.elemPrim(i)
 			
 			
 		elif self.table[i] == "-" :
 			i += 1
-			i = self.elemPrim(i)
+			expr += "moins()" + self.s
+			self.lines += 1
 			
 			
 		elif self.table[i] == "not" :
 			i += 1
-			i = self.elemPrim(i)
+			expr += "non()" + self.s
+			self.lines += 1
 			
-		else :
-			i = self.elemPrim(i)
-			
-		return i
+		return i, expr
 		
 		
 		
 	# Translates an expression TODO
 	def elemPrim(self, i):
-		if isinstance(self.table[i], (int, long)) :	# Integer
+		expr = ""
+		
+		if self.table[i].isdigit() :	# Integer
+			expr += "empiler(" + str(self.table[i]) + ")" + self.s
+			self.lines += 1
 			i += 1
 			
 			
@@ -240,7 +302,7 @@ class Generator(object):
 			
 		elif self.table[i] == "(" :	# Boolean expression
 			i += 1
-			i = self.expression(i)
+			i, expr = self.expression(i)
 			i += 1
 			
 			
@@ -250,6 +312,9 @@ class Generator(object):
 				i += 1
 				
 			else :	# variable
+				expr += "empilerAd(" + str(self.var[self.table[i]]) + ")" + self.s
+				expr += "valeurPile()" + self.s
+				self.lines += 2
 				i += 1
 				
-		return i
+		return i, expr
