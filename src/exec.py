@@ -249,8 +249,8 @@ def erreur(exp):
 
 
 """TODO NNP:
-    empilerAd(n) -> 
-    empilerParam(n) ->
+    empilerAd(n) -> adresse (var globale)
+    empilerParam(n) -> adresse de adresse var locale)
     retourFonc() -> fin Fonc
     retourProc() -> fin proc
     reserverBloc() -> reserve un nouveau bloc en memoire pour l
