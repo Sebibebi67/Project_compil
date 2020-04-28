@@ -1,6 +1,6 @@
-# This class translates VALself.id pseudo code (see examples) into NilNovi Object code. It does not consself.ider grammatical errors, those must be treated before this program is run.
+# This class translates VALID pseudo code (see examples) into NilNovi Object code. It does not consider grammatical errors, those must be treated before this program is run.
 
-test = ["procedure", "pp", "is", "i", ",", "j", ",", "k", ":", "integer", ";", "begin", "if", "1","<","2","then", "get", "j", ";","end", "end"]
+test = ["procedure", "pp", "is", "i", ",", "j", ",", "k", ":", "integer", ";", "begin", "put", "(", "not", "(", "i", "<", "j", "and", "j", ">", "k", ")", "or", "i", "=", "k", ")", ";", "end"]
 
 class Generator(object):
 
@@ -59,22 +59,28 @@ class Generator(object):
 				self.lines += 1
 				i += 2 	# skips "."
 				
-		print(self.chain)
-		print(self.lines)
+		self.printWithLines()
 
 
 
 	# Breaks down an instructions block TODO
 	# Ends on the line AFTER the block
 	def instructions(self, i):
-		total, expr, instr = "", "", ""
+		total, expr, instr = "", "", "" 	# used for "tze" / "tra" insertion
 		
 		if self.table[i] == "while":
 			i += 1
-			i = self.expression(i)		# condition
+			lines = self.lines 	# first line of condition
+			i, expr = self.expression(i)	# condition
 			i += 1		# skips "loop"
-			i = self.instructions(i)	# instructions
+			self.lines += 1 	# line reserved for "tze"
+			i, instr = self.instructions(i) # instructions
+			expr += "tze(" + str(self.lines+1) + ")" + self.s 	# jumps to end if the condition is false
+			expr += instr
+			expr += "tra(" + str(lines) + ")" + self.s 	# loops to condition
+			self.lines += 1
 			i += 1		# skips "end"
+			total += expr
 				
 				
 		elif self.table[i] == "if":
@@ -124,11 +130,12 @@ class Generator(object):
 			total += expr
 			total += "affectation()" + self.s
 			self.lines += 1
+			i += 2 	# skips ";"
 		
 			
 		elif self.table[i] == "return":
 			i += 2
-			i = self.expression(i)
+			i, expr = self.expression(i)
 			
 		return i, total
 		
@@ -151,6 +158,7 @@ class Generator(object):
 		
 		
 	# Breaks down a boolean expression using AND TODO
+	# Ends on the line AFTER the expression
 	def exp1(self, i):
 		expr, e = "", ""
 		i, expr = self.exp2(i)
@@ -166,6 +174,7 @@ class Generator(object):
 		
 		
 	# Breaks down a boolean expression TODO
+	# Ends on the line AFTER the expression
 	def exp2(self, i):
 		expr, e = "", ""
 		i, expr = self.exp3(i)
@@ -216,6 +225,7 @@ class Generator(object):
 		
 		
 	# Breaks down an addition / substraction TODO
+	# Ends on the line AFTER the expression
 	def exp3(self, i):
 		expr, e = "", ""
 		i, expr = self.exp4(i)
@@ -238,6 +248,7 @@ class Generator(object):
 		
 		
 	# Breaks down a multiplication / division TODO
+	# Ends on the line AFTER the expression
 	def exp4(self, i):
 		expr, e = "", ""
 		i, expr = self.prim(i)
@@ -259,30 +270,36 @@ class Generator(object):
 		
 		
 	# Translates a primary operator TODO
+	# Ends on the line AFTER the expression
 	def prim(self, i):
-		expr = ""
-		i, expr = self.elemPrim(i)
 		
 		if self.table[i] == "+" :
 			i += 1
+			i, expr = self.elemPrim(i)
 			
-			
-		elif self.table[i] == "-" :
+		
+		if self.table[i] == "-" :
 			i += 1
+			i, expr = self.elemPrim(i)
 			expr += "moins()" + self.s
 			self.lines += 1
 			
 			
 		elif self.table[i] == "not" :
 			i += 1
+			i, expr = self.elemPrim(i)
 			expr += "non()" + self.s
 			self.lines += 1
+			
+		else :
+			i, expr = self.elemPrim(i)
 			
 		return i, expr
 		
 		
 		
 	# Translates an expression TODO
+	# Ends on the line AFTER the expression
 	def elemPrim(self, i):
 		expr = ""
 		
@@ -303,7 +320,7 @@ class Generator(object):
 		elif self.table[i] == "(" :	# Boolean expression
 			i += 1
 			i, expr = self.expression(i)
-			i += 1
+			i += 1 	# skips ")"
 			
 			
 		else :	# identifier / variable
@@ -318,3 +335,10 @@ class Generator(object):
 				i += 1
 				
 		return i, expr
+		
+		
+		
+	def printWithLines(self):
+		chain = self.chain.split(";\n")
+		for l in range(self.lines):
+			print(str(l) + " " + chain[l])
