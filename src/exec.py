@@ -4,29 +4,38 @@
 
 
 #---------------------Encodage---------------------#
+
 # -*- coding: utf-8 -*-
+
 #--------------------------------------------------#
 
 
 #---------------------Imports----------------------#
+
 import sys #Permet de forcer la fin du programme
 import time #Permet d'utiliser un délai
+
 #--------------------------------------------------#
 
 
 #--------------------Description-------------------#
+
 # Ce fichier gère l'exécution du code compilé dans
 #les langages NNP et NNA
+
 #--------------------------------------------------#
 
 
 #----------------------Auteurs---------------------#
+
 # Sébastien HERT
 # Adam RIVIERE
+
 #--------------------------------------------------#
 
 
 #----------------Variables globales----------------#
+
 pile = [] # Contient les valeurs stockées en mémoire
 cptLigne = 0 # Indique la ligne actuelle
 pointeurLigne = [] # Stocke les indices de ligne et
@@ -35,6 +44,7 @@ pointeurLigne = [] # Stocke les indices de ligne et
 programme = [] # Stocke les lignes lues dans le
 # fichier copilé
 fin = False # Permet de gérer la fin du programme
+
 #--------------------------------------------------#
 
 
@@ -699,13 +709,18 @@ def traStat(n, t):
 
 #-----------------------Main-----------------------#
 
-with open("testFiles/testNNP2.txt") as f:
-    for line in f:
-        programme.append(line.split(";")[0])
-    while not fin:
-        print(cptLigne+1)
-        eval(programme[cptLigne])
-        # time.sleep(1)
+f = open("testFiles/testNNP2.txt")
+
+for line in f:
+	programme.append(line.split(";")[0])
+
+f.close()
+
+while not fin:
+	print(cptLigne+1)
+	eval(programme[cptLigne])
+	# time.sleep(1)
+
 #--------------------------------------------------#
 
 
