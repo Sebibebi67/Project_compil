@@ -18,7 +18,7 @@ class Generator(object):
 	def __init__(self, t):
 		self.table = t
 		self.generate(0)
-		self.printNoLines()
+		self.printWithLines()
 
 	# Main function TODO
 	def generate(self, i):
