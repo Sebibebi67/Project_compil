@@ -358,6 +358,7 @@ def opUnaire(lexical_analyser):
 
 def elemPrim(lexical_analyser):
 	logger.debug("parsing elemPrim: " + str(lexical_analyser.get_value()))
+	thisList.append(str(lexical_analyser.get_value()))
 	#thisList.append(str(lexical_analyser.get_value()))
 	if lexical_analyser.isCharacter("("):
 		lexical_analyser.acceptCharacter("(")
@@ -378,8 +379,8 @@ def elemPrim(lexical_analyser):
 			logger.debug("Call to function: " + ident)
 		else:
 			logger.debug("Use of an identifier as an expression: " + ident)
-			if not lexical_analyser.isCharacter(")"):
-				thisList.append(str(lexical_analyser.get_value()))
+			#if not lexical_analyser.isCharacter(")"):
+			thisList.append(str(lexical_analyser.get_value()))
             # ...
 	else:
 		logger.error("Unknown Value!")
@@ -390,7 +391,7 @@ def valeur(lexical_analyser):
 		entier = lexical_analyser.acceptInteger()
         #TODO
 		logger.debug("integer value: " + str(entier))
-		thisList.append(str(entier))
+		#thisList.append(str(entier))
 		return "integer"
 	elif lexical_analyser.isKeyword("true") or lexical_analyser.isKeyword("false"):
 		vtype = valBool(lexical_analyser)
