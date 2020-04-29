@@ -160,11 +160,13 @@ def mode(lexical_analyser):
 def nnpType(lexical_analyser):
 	if lexical_analyser.isKeyword("integer"):
 		lexical_analyser.acceptKeyword("integer")
+		thisList.append(":")
 		thisList.append("integer")
 		logger.debug("integer type")
 	elif lexical_analyser.isKeyword("boolean"):
 		lexical_analyser.acceptKeyword("boolean")
 		logger.debug("boolean type")  
+		thisList.append(":")
 		thisList.append("boolean")              
 	else:
 		logger.error("Unknown type found <"+ lexical_analyser.get_value() +">!")
