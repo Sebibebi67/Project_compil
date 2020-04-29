@@ -1,88 +1,88 @@
-# This class translates VALID pseudo code (see examples) into NilNovi Object code. It does not consider grammatical errors, those must be treated before this program is run.
+# This class translates VALID pseudo code (see examples) into NilNovi code. It does not consider grammatical errors, those must be treated before this program is run.
 
-test = ['procedure', 'pp', 'is', 'procedure', 'affiche', 'is', 'i', 'j',':', 'integer', 'begin', 'i', '1', 'while', 'i', '/=', '5', 'j', '1', 'while', 'j', '/=', '5', 'put', '(', 'j', ')', 'j', 'j', '+', '1', 'end', 'i', 'i', '+', '1', 'end', 'end', 'a', 'b', 'c',':', 'integer', 'begin','get', '(', 'a', ')', 'b', 'a', '+', '1', 'put', '(', 'b', ')', 'end']
+test = ['procedure', 'pp', 'is', 'procedure', 'affiche', 'is', 'i', 'j',':', 'integer', 'begin', 'i', '1', 'while', 'i', '/=', '5', 'j', '1', 'while', 'j', '/=', '5', 'put', '(', 'j', ')', 'j', 'j', '+', '1', 'end', 'i', 'i', '+', '1', 'end', 'end', 'a', 'b', 'c',':', 'integer', 'begin','get', '(', 'a', ')', 'affiche','(',')', 'b', 'a', '+', '1', 'put', '(', 'b', ')', 'end']
 
 class Generator(object):
 
-	s = ";\n"  # separator
-	chain = "debutProg()" + s 	# NilNovi code
+	s = ";\n" 	# separator
 	lines = 1 	# line counter of the NNP code
-	stock = []  # temporarily stores names to allocate
 	id = {}		# associates identifiers to their line numbers
 	var = {}  	# associates variables to their addresses
 	param = {} 	# associates parameters to their local adresses
 	table = []  # pseudo code
-	proc = [] 	# proc[-1] is True if we are in a procedure, False if not
 
 	# The constructor
 	def __init__(self, t):
 		self.table = t
-		self.generate(0)
-		self.printWithLines()
+		_, chain = self.generate(0, "debutProg()" + self.s)
+		self.printNoLines(chain)
 
 	# Main function TODO
-	def generate(self, i):
+	def generate(self, i, chain):
+		stock = []  # temporarily stores names to allocate
 		
 		while i < len(self.table):
 			if self.table[i] == "procedure" or self.table[i] == "function" :
 				if self.table[i] == "procedure" :
-					self.proc.append(True)
+					proc = True
 				else :
-					self.proc.append(False)
+					proc = False
 				i += 1
-				self.id[self.table[i]] = self.lines 	# stores procedure identifier
+				self.id[self.table[i]] = self.lines 	# stores procedure / function identifier
 				i += 1
 				
-				if self.table[i] == "(" :
+				if self.table[i] == "(" : 	# parameters
 					
-					while not self.table[i] == ")":  # parameters
-						self.stock.append(self.table[i])  # stores first parameter
+					while not self.table[i] != ")" :
+						stock.append(self.table[i])  # stores first parameter
 						i += 4 	# skips ": [in/out] [type]"
 						
-					for k in range(len(self.stock)):
-						self.param[self.stock[k]] = k 	# registers each parameter's number
-					self.stock = []
+					for k in range(len(stock)):
+						self.param[stock[k]] = k 	# registers each parameter's number
+					stock = []
 				
 				
 			elif self.table[i] == "is":
 				i += 1
 				
 				if self.table[i] == "procedure" or self.table[i] == "function" :
-					i = self.generate(i)
+					self.lines += 1 	# line reserved for "tra"
+					i, temp = self.generate(i, "")
+					chain += "tra(" + str(self.lines+1) + ")" + self.s
+					chain += temp
 				
 				while self.table[i] != "begin":  # declarations
-					self.stock.append(self.table[i])  # stores first variable
+					stock.append(self.table[i])  # stores first variable
 					i += 1
 					
 					if self.table[i] == ":" :
 						i += 2 	# skips ": [type]"
 					
-				for k in range(len(self.stock)):
-					self.var[self.stock[k]] = k 	# registers each variable's address
-				self.chain += "reserver(" + str(len(self.stock)) + ")" + self.s		# NNP : blocking addresses
+				for k in range(len(stock)):
+					self.var[stock[k]] = k 	# registers each variable's address
+				chain += "reserver(" + str(len(stock)) + ")" + self.s
 				self.lines += 1
-				self.stock = []
+				stock = []
 				i += 1 	# skips "begin"
 				
 				
 			elif self.table[i] != "end":
 				i, instr = self.instructions(i)
-				self.chain += instr
+				chain += instr
 			
 			
 			else :
-				if self.proc :
-					self.chain += "retourProc()" + self.s
+				if proc :
+					chain += "retourProc()" + self.s
 				self.param = {}
 				self.var = {}
-				self.proc.pop()
 				i += 1
 				if i == len(self.table) :	# program ends
-					self.chain += "finProg()"
+					chain += "finProg()"
 					self.lines += 1
-				break
+				break 	# end of procedure / function
 				
-		return i
+		return i, chain
 
 
 
@@ -147,7 +147,21 @@ class Generator(object):
 			
 		
 		elif self.table[i] in self.id :	# call to identifier
-			i += 1
+			call = self.id[self.table[i]]
+			paramCount = 0
+			total += "reserverBloc()" + self.s
+			self.lines += 1
+			i += 2 	# skips "("
+			
+			while self.table[i] != ")" :
+				i, expr = self.expression(i)
+				total += expr
+				paramCount += 1
+				i += 1
+			i += 1 	# skips ")"
+			
+			total += "traStat(" + str(call) + "," + str(paramCount) + ")" + self.s
+			self.lines += 1
 				
 				
 		elif self.table[i] in self.var : # variable assignment
@@ -384,14 +398,16 @@ class Generator(object):
 		
 		
 		
-	def printNoLines(self):
-		chain = self.chain.split(";\n")
+	def printNoLines(self, chain):
+		table = chain.split(";\n")
 		for l in range(self.lines):
-			print(chain[l])
+			print(table[l])
 		
 		
 		
-	def printWithLines(self):
-		chain = self.chain.split(";\n")
+	def printWithLines(self, chain):
+		table = chain.split(";\n")
+		space = "  "
 		for l in range(self.lines):
-			print(str(l) + " " + chain[l])
+			if l > 9 : space = " "
+			print(str(l) + space + table[l])
