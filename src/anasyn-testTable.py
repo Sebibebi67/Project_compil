@@ -6,8 +6,8 @@
 
 ########################################################################				 	
 #### TO DO
-# Compléter la list (thisList) avec les indentificateurs nécessaires
-# Une fois complétée, la parse à nouveau pour créer la table (plus simple)
+# Completer la list (thisList) avec les indentificateurs necessaires
+# Une fois completee, la parse a nouveau pour creer la table (plus simple)
 ####
 ########################################################################
 
@@ -20,7 +20,7 @@ logger = logging.getLogger('anasyn')
 
 DEBUG = False
 LOGGING_LEVEL = logging.DEBUG
-thisList =["start"]
+thisList = []
 
 
 class AnaSynException(Exception):
@@ -40,8 +40,10 @@ def program(lexical_analyser):
 	
 def specifProgPrinc(lexical_analyser):
 	lexical_analyser.acceptKeyword("procedure")
+	thisList.append("procedure")
 	ident = lexical_analyser.acceptIdentifier()
 	logger.debug("Name of program : "+ident)
+	thisList.append(str(ident))
 	
 def  corpsProgPrinc(lexical_analyser):
 	if not lexical_analyser.isKeyword("begin"):
