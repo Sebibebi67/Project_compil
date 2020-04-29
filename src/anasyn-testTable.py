@@ -199,15 +199,21 @@ def suiteInstr(lexical_analyser):
 
 def instr(lexical_analyser):		
 	if lexical_analyser.isKeyword("while"):
+		thisList.append("while")
 		boucle(lexical_analyser)
 	elif lexical_analyser.isKeyword("if"):
+		thisList.append("if")
 		altern(lexical_analyser)
 	elif lexical_analyser.isKeyword("get") or lexical_analyser.isKeyword("put"):
 		es(lexical_analyser)
 	elif lexical_analyser.isKeyword("return"):
+		thisList.append("return")
 		retour(lexical_analyser)
 	elif lexical_analyser.isIdentifier():
+		thisList.append(str(lexical_analyser.get_value()))
 		ident = lexical_analyser.acceptIdentifier()
+		if not lexical_analyser.isCharacter("("):
+			thisList.append(str(lexical_analyser.get_value()))
 		if lexical_analyser.isSymbol(":="):				
 			# affectation
 			lexical_analyser.acceptSymbol(":=")
@@ -379,8 +385,8 @@ def elemPrim(lexical_analyser):
 			logger.debug("Call to function: " + ident)
 		else:
 			logger.debug("Use of an identifier as an expression: " + ident)
-			#if not lexical_analyser.isCharacter(")"):
-			thisList.append(str(lexical_analyser.get_value()))
+			if not lexical_analyser.isCharacter(")"):
+				thisList.append(str(lexical_analyser.get_value()))
             # ...
 	else:
 		logger.error("Unknown Value!")
@@ -416,12 +422,14 @@ def es(lexical_analyser):
 	#thisList.append(lexical_analyser.get_value())
 	if lexical_analyser.isKeyword("get"):
 		lexical_analyser.acceptKeyword("get")
+		thisList.append("get")
 		lexical_analyser.acceptCharacter("(")
 		ident = lexical_analyser.acceptIdentifier()
 		lexical_analyser.acceptCharacter(")")
 		logger.debug("Call to get "+ident)
 	elif lexical_analyser.isKeyword("put"):
 		lexical_analyser.acceptKeyword("put")
+		thisList.append("put")
 		lexical_analyser.acceptCharacter("(")
 		expression(lexical_analyser)
 		lexical_analyser.acceptCharacter(")")
