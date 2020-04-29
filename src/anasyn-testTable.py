@@ -6,8 +6,8 @@
 
 ########################################################################				 	
 #### TO DO
-# Compléter la list (thisList) avec les indentificateurs nécessaires
-# Une fois complétée, la parse à nouveau pour créer la table (plus simple)
+# Completer la list (thisList) avec les indentificateurs necessaires
+# Une fois completee, la parse a nouveau pour creer la table (plus simple)
 ####
 ########################################################################
 
