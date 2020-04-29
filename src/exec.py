@@ -718,7 +718,7 @@ for line in f:
 f.close()
 
 while not fin:
-	print(cptLigne+1)
+	# print(cptLigne+1)
 	eval(programme[cptLigne])
 	# time.sleep(1)
 
