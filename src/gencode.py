@@ -24,7 +24,15 @@ class Generator(object):
 		while i < len(self.table):
 			if self.table[i] == "procedure":
 				i += 1
-				self.id[self.table[i]] = i 	# stores procedure identifier
+				self.id[self.table[i]] = lines 	# stores procedure identifier
+				ret = "retourProc()" + self.s
+				i += 1
+				
+				
+			elif self.table[i] == "function":
+				i += 1
+				self.id[self.table[i]] = lines 	# stores function identifier
+				ret = "retourFonc()" + self.s
 				i += 1
 				
 				
@@ -50,7 +58,7 @@ class Generator(object):
 				
 				
 			elif self.table[i] != "end":
-				i, instr = self.instructions(i)
+				i, instr = self.instructions(i, ret)
 				self.chain += instr
 				
 				
@@ -65,7 +73,7 @@ class Generator(object):
 
 	# Breaks down an instructions block TODO
 	# Ends on the line AFTER the block
-	def instructions(self, i):
+	def instructions(self, i, ret):
 		total, expr, instr = "", "", "" 	# used for "tze" / "tra" insertion
 		
 		if self.table[i] == "while":
@@ -136,12 +144,15 @@ class Generator(object):
 		elif self.table[i] == "return":
 			i += 2
 			i, expr = self.expression(i)
+			total += expr
+			total += ret
+			self.lines += 1
 			
 		return i, total
 		
 		
 		
-	# Breaks down a boolean expression using OR TODO
+	# Breaks down a boolean expression using OR
 	# Ends on the line AFTER the expression
 	def expression(self, i):
 		expr, e = "", ""
@@ -157,7 +168,7 @@ class Generator(object):
 		
 		
 		
-	# Breaks down a boolean expression using AND TODO
+	# Breaks down a boolean expression using AND
 	# Ends on the line AFTER the expression
 	def exp1(self, i):
 		expr, e = "", ""
@@ -173,7 +184,7 @@ class Generator(object):
 		
 		
 		
-	# Breaks down a boolean expression TODO
+	# Breaks down a boolean expression
 	# Ends on the line AFTER the expression
 	def exp2(self, i):
 		expr, e = "", ""
@@ -224,7 +235,7 @@ class Generator(object):
 		
 		
 		
-	# Breaks down an addition / substraction TODO
+	# Breaks down an addition / substraction
 	# Ends on the line AFTER the expression
 	def exp3(self, i):
 		expr, e = "", ""
@@ -247,7 +258,7 @@ class Generator(object):
 		
 		
 		
-	# Breaks down a multiplication / division TODO
+	# Breaks down a multiplication / division
 	# Ends on the line AFTER the expression
 	def exp4(self, i):
 		expr, e = "", ""
@@ -269,7 +280,7 @@ class Generator(object):
 		
 		
 		
-	# Translates a primary operator TODO
+	# Translates a primary operator
 	# Ends on the line AFTER the expression
 	def prim(self, i):
 		
