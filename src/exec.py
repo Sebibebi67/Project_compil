@@ -12,7 +12,8 @@
 
 #---------------------Imports----------------------#
 
-import sys #Permet de forcer la fin du programme
+import sys #Permet de forcer la fin du programme et 
+# de gérer les paramètres d'entrées
 import time #Permet d'utiliser un délai
 
 #--------------------------------------------------#
@@ -453,7 +454,7 @@ def et():
     - Sébastien HERT
     - Adam RIVIERE
     """
-    # bool1 et bool2
+    
     global cptLigne
     cpt = cptLigne
     bool1 = pile.pop()
@@ -709,7 +710,7 @@ def traStat(n, t):
 
 #-----------------------Main-----------------------#
 
-f = open("testFiles/testNNP2.txt")
+f = open(sys.argv[1])
 
 for line in f:
 	programme.append(line.split(";")[0])
