@@ -36,6 +36,7 @@ class AnaSynException(Exception):
 def program(lexical_analyser):
 	specifProgPrinc(lexical_analyser)
 	lexical_analyser.acceptKeyword("is")
+	thisList.append("is")
 	corpsProgPrinc(lexical_analyser)
 	
 def specifProgPrinc(lexical_analyser):
@@ -51,6 +52,7 @@ def  corpsProgPrinc(lexical_analyser):
 		partieDecla(lexical_analyser)
 		logger.debug("End of declarations")
 	lexical_analyser.acceptKeyword("begin")
+	thisList.append("begin")
 
 	if not lexical_analyser.isKeyword("end"):
 		logger.debug("Parsing instructions")
@@ -58,6 +60,7 @@ def  corpsProgPrinc(lexical_analyser):
 		logger.debug("End of instructions")
 			
 	lexical_analyser.acceptKeyword("end")
+	thisList.append("end")
 	lexical_analyser.acceptFel()
 	logger.debug("End of program")
 	
@@ -84,12 +87,15 @@ def declaOp(lexical_analyser):
 
 def procedure(lexical_analyser):
 	lexical_analyser.acceptKeyword("procedure")
+	thisList.append("procedure")
 	ident = lexical_analyser.acceptIdentifier()
 	logger.debug("Name of procedure : "+ident)
+	thisList.append(str(ident))
        
 	partieFormelle(lexical_analyser)
 
 	lexical_analyser.acceptKeyword("is")
+	thisList.append("is")
 	corpsProc(lexical_analyser)
        
 
@@ -104,14 +110,17 @@ def fonction(lexical_analyser):
 	nnpType(lexical_analyser)
         
 	lexical_analyser.acceptKeyword("is")
+	thisList.append("is")
 	corpsFonct(lexical_analyser)
 
 def corpsProc(lexical_analyser):
 	if not lexical_analyser.isKeyword("begin"):
 		partieDeclaProc(lexical_analyser)
 	lexical_analyser.acceptKeyword("begin")
+	thisList.append("begin")
 	suiteInstr(lexical_analyser)
 	lexical_analyser.acceptKeyword("end")
+	thisList.append("end")
 
 def corpsFonct(lexical_analyser):
 	if not lexical_analyser.isKeyword("begin"):
@@ -151,11 +160,13 @@ def mode(lexical_analyser):
 def nnpType(lexical_analyser):
 	if lexical_analyser.isKeyword("integer"):
 		lexical_analyser.acceptKeyword("integer")
+		thisList.append(":")
 		thisList.append("integer")
 		logger.debug("integer type")
 	elif lexical_analyser.isKeyword("boolean"):
 		lexical_analyser.acceptKeyword("boolean")
 		logger.debug("boolean type")  
+		thisList.append(":")
 		thisList.append("boolean")              
 	else:
 		logger.error("Unknown type found <"+ lexical_analyser.get_value() +">!")
@@ -197,15 +208,22 @@ def suiteInstr(lexical_analyser):
 
 def instr(lexical_analyser):		
 	if lexical_analyser.isKeyword("while"):
+		thisList.append("while")
 		boucle(lexical_analyser)
 	elif lexical_analyser.isKeyword("if"):
+		thisList.append("if")
 		altern(lexical_analyser)
 	elif lexical_analyser.isKeyword("get") or lexical_analyser.isKeyword("put"):
 		es(lexical_analyser)
 	elif lexical_analyser.isKeyword("return"):
+		thisList.append("return")
 		retour(lexical_analyser)
 	elif lexical_analyser.isIdentifier():
+		thisList.append(str(lexical_analyser.get_value()))
 		ident = lexical_analyser.acceptIdentifier()
+		if lexical_analyser.isCharacter("("):
+			thisList.append("(")
+			thisList.append(")")
 		if lexical_analyser.isSymbol(":="):				
 			# affectation
 			lexical_analyser.acceptSymbol(":=")
@@ -356,6 +374,7 @@ def opUnaire(lexical_analyser):
 
 def elemPrim(lexical_analyser):
 	logger.debug("parsing elemPrim: " + str(lexical_analyser.get_value()))
+	thisList.append(str(lexical_analyser.get_value()))
 	#thisList.append(str(lexical_analyser.get_value()))
 	if lexical_analyser.isCharacter("("):
 		lexical_analyser.acceptCharacter("(")
@@ -376,7 +395,9 @@ def elemPrim(lexical_analyser):
 			logger.debug("Call to function: " + ident)
 		else:
 			logger.debug("Use of an identifier as an expression: " + ident)
-                        # ...
+			if not lexical_analyser.isCharacter(")"):
+				thisList.append(str(lexical_analyser.get_value()))
+            # ...
 	else:
 		logger.error("Unknown Value!")
 		raise AnaSynException("Unknown Value!")
@@ -386,7 +407,7 @@ def valeur(lexical_analyser):
 		entier = lexical_analyser.acceptInteger()
         #TODO
 		logger.debug("integer value: " + str(entier))
-		thisList.append(str(entier))
+		#thisList.append(str(entier))
 		return "integer"
 	elif lexical_analyser.isKeyword("true") or lexical_analyser.isKeyword("false"):
 		vtype = valBool(lexical_analyser)
@@ -411,15 +432,22 @@ def es(lexical_analyser):
 	#thisList.append(lexical_analyser.get_value())
 	if lexical_analyser.isKeyword("get"):
 		lexical_analyser.acceptKeyword("get")
+		thisList.append("get")
+		thisList.append("(")
 		lexical_analyser.acceptCharacter("(")
 		ident = lexical_analyser.acceptIdentifier()
+		thisList.append(str(ident))
+		thisList.append(")")
 		lexical_analyser.acceptCharacter(")")
 		logger.debug("Call to get "+ident)
 	elif lexical_analyser.isKeyword("put"):
 		lexical_analyser.acceptKeyword("put")
+		thisList.append("put")
+		thisList.append("(")
 		lexical_analyser.acceptCharacter("(")
 		expression(lexical_analyser)
 		lexical_analyser.acceptCharacter(")")
+		thisList.append(")")
 		logger.debug("Call to put")
 	else:
 		logger.error("Unknown E/S instruction!")
@@ -435,6 +463,7 @@ def boucle(lexical_analyser):
 	suiteInstr(lexical_analyser)
 
 	lexical_analyser.acceptKeyword("end")
+	thisList.append("end")
 	logger.debug("end of while loop ")
 
 def altern(lexical_analyser):
@@ -451,6 +480,7 @@ def altern(lexical_analyser):
 		suiteInstr(lexical_analyser)
        
 	lexical_analyser.acceptKeyword("end")
+	thisList.append("end")
 	logger.debug("end of if")
 
 def retour(lexical_analyser):
