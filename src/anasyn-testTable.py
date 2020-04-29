@@ -40,7 +40,7 @@ def program(lexical_analyser):
 	
 def specifProgPrinc(lexical_analyser):
 	lexical_analyser.acceptKeyword("procedure")
-	thisList.append("procedure")
+	thisList.append("program")
 	ident = lexical_analyser.acceptIdentifier()
 	logger.debug("Name of program : "+ident)
 	thisList.append(str(ident))
@@ -84,8 +84,10 @@ def declaOp(lexical_analyser):
 
 def procedure(lexical_analyser):
 	lexical_analyser.acceptKeyword("procedure")
+	thisList.append("procedure")
 	ident = lexical_analyser.acceptIdentifier()
 	logger.debug("Name of procedure : "+ident)
+	thisList.append(str(ident))
        
 	partieFormelle(lexical_analyser)
 
@@ -376,7 +378,9 @@ def elemPrim(lexical_analyser):
 			logger.debug("Call to function: " + ident)
 		else:
 			logger.debug("Use of an identifier as an expression: " + ident)
-                        # ...
+			if not lexical_analyser.isCharacter(")"):
+				thisList.append(str(lexical_analyser.get_value()))
+            # ...
 	else:
 		logger.error("Unknown Value!")
 		raise AnaSynException("Unknown Value!")
