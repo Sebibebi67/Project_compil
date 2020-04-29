@@ -5,11 +5,12 @@ test = ['procedure', 'pp', 'is', 'procedure', 'affiche', 'is', 'i', 'j',':', 'in
 class Generator(object):
 
 	s = ";\n" 	# separator
-	lines = 1 	# line counter of the NNP code
+	lines = 2 	# line counter of the NNP code
 	id = {}		# associates identifiers to their line numbers
 	var = {}  	# associates variables to their addresses
 	param = {} 	# associates parameters to their local adresses
 	table = []  # pseudo code
+	proc = [] 	# proc[-1] is True if in a procedure, False if in a function
 
 	# The constructor
 	def __init__(self, t):
@@ -24,9 +25,9 @@ class Generator(object):
 		while i < len(self.table):
 			if self.table[i] == "procedure" or self.table[i] == "function" :
 				if self.table[i] == "procedure" :
-					proc = True
+					self.proc.append(True)
 				else :
-					proc = False
+					self.proc.append(False)
 				i += 1
 				self.id[self.table[i]] = self.lines 	# stores procedure / function identifier
 				i += 1
@@ -48,7 +49,7 @@ class Generator(object):
 				if self.table[i] == "procedure" or self.table[i] == "function" :
 					self.lines += 1 	# line reserved for "tra"
 					i, temp = self.generate(i, "")
-					chain += "tra(" + str(self.lines+1) + ")" + self.s
+					chain += "tra(" + str(self.lines) + ")" + self.s
 					chain += temp
 				
 				while self.table[i] != "begin":  # declarations
@@ -72,14 +73,15 @@ class Generator(object):
 			
 			
 			else :
-				if proc :
+				if not self.isMain() and self.proc[-1] : 	# end of a procedure ; function returns are handled in instructions
 					chain += "retourProc()" + self.s
+					self.lines += 1
+				self.proc.pop()
 				self.param = {}
 				self.var = {}
 				i += 1
-				if i == len(self.table) :	# program ends
+				if len(self.proc) == 0 :	# program ends
 					chain += "finProg()"
-					self.lines += 1
 				break 	# end of procedure / function
 				
 		return i, chain
@@ -140,11 +142,15 @@ class Generator(object):
 			
 		elif self.table[i] == "get":
 			i += 2 	# skips "("
-			total += "empilerAd(" + str(self.var[self.table[i]]) + ")" + self.s
+			if self.isMain() :
+				command = "empiler("
+			else :
+				command = "empilerAd("
+			total += command + str(self.var[self.table[i]]) + ")" + self.s
 			total += "get()" + self.s
 			self.lines += 2
 			i += 2 	# skips ")"
-			
+		
 		
 		elif self.table[i] in self.id :	# call to identifier
 			call = self.id[self.table[i]]
@@ -162,18 +168,22 @@ class Generator(object):
 			
 			total += "traStat(" + str(call) + "," + str(paramCount) + ")" + self.s
 			self.lines += 1
-				
-				
+		
+		
 		elif self.table[i] in self.var : # variable assignment
-			total += "empilerAd(" + str(self.var[self.table[i]]) + ")" + self.s
+			if self.isMain() :
+				command = "empiler("
+			else :
+				command = "empilerAd("
+			total += command + str(self.var[self.table[i]]) + ")" + self.s
 			self.lines += 1
 			i += 1
 			i, expr = self.expression(i)
 			total += expr
 			total += "affectation()" + self.s
 			self.lines += 1
-				
-				
+		
+		
 		elif self.table[i] in self.param : # parameter assignment
 			total += "empilerParam(" + str(self.param[self.table[i]]) + ")" + self.s
 			self.lines += 1
@@ -183,14 +193,14 @@ class Generator(object):
 			total += "affectation()" + self.s
 			self.lines += 1
 		
-			
+		
 		elif self.table[i] == "return":
 			i += 1
 			i, expr = self.expression(i)
 			total += expr
 			total += "retourFonct()" + self.s
 			self.lines += 1
-			
+		
 		return i, total
 		
 		
@@ -364,10 +374,14 @@ class Generator(object):
 			
 			
 		elif self.table[i] == "true" :
+			expr += "empiler(1)" + self.s
+			self.lines += 1
 			i += 1
 			
 			
 		elif self.table[i] == "false" :
+			expr += "empiler(0)" + self.s
+			self.lines += 1
 			i += 1
 			
 			
@@ -380,10 +394,14 @@ class Generator(object):
 		else :	# identifier / variable / parameter
 		
 			if self.table[i] in self.id :	# identifier
-				i += 1
+				i, expr = self.instructions(i) 	# calls to operations are handled by instructions
 				
 			elif self.table[i] in self.var :	# variable
-				expr += "empilerAd(" + str(self.var[self.table[i]]) + ")" + self.s
+				if self.isMain() :
+					command = "empiler("
+				else :
+					command = "empilerAd("
+				expr += command + str(self.var[self.table[i]]) + ")" + self.s
 				expr += "valeurPile()" + self.s
 				self.lines += 2
 				i += 1
@@ -409,5 +427,10 @@ class Generator(object):
 		table = chain.split(";\n")
 		space = "  "
 		for l in range(self.lines):
-			if l > 9 : space = " "
-			print(str(l) + space + table[l])
+			if l >= 9 : space = " "
+			print(str(l+1) + space + table[l])
+			
+			
+			
+	def isMain(self):
+		return len(self.proc) == 1
