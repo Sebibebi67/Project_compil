@@ -1,6 +1,6 @@
 # This class translates VALID pseudo code (see examples) into NilNovi Object code. It does not consider grammatical errors, those must be treated before this program is run.
 
-test = ["procedure", "pp", "is", "i", ",", "j", ",", "k", ":", "integer", ";", "begin", "put", "(", "not", "(", "i", "<", "j", "and", "j", ">", "k", ")", "or", "i", "=", "k", ")", ";", "end"]
+test = ['procedure', 'pp', 'is', 'procedure', 'affiche', 'is', 'i', 'j',':', 'integer', 'begin', 'i', '1', 'while', 'i', '/=', '5', 'j', '1', 'while', 'j', '/=', '5', 'put', '(', 'j', ')', 'j', 'j', '+', '1', 'end', 'i', 'i', '+', '1', 'end', 'end', 'a', 'b', 'c',':', 'integer', 'begin','get', '(', 'a', ')', 'b', 'a', '+', '1', 'put', '(', 'b', ')', 'end']
 
 class Generator(object):
 
@@ -8,46 +8,54 @@ class Generator(object):
 	chain = "debutProg()" + s 	# NilNovi code
 	lines = 1 	# line counter of the NNP code
 	stock = []  # temporarily stores names to allocate
-	id = {}		# associates identifiers to their line number
-	var = {}  	# associates variables to their address
+	id = {}		# associates identifiers to their line numbers
+	var = {}  	# associates variables to their addresses
+	param = {} 	# associates parameters to their local adresses
 	table = []  # pseudo code
+	proc = [] 	# proc[-1] is True if we are in a procedure, False if not
 
 	# The constructor
 	def __init__(self, t):
 		self.table = t
-		self.generate()
+		self.generate(0)
+		self.printNoLines()
 
 	# Main function TODO
-	def generate(self):
-		i = 0 	# current line
+	def generate(self, i):
 		
 		while i < len(self.table):
-			if self.table[i] == "procedure":
+			if self.table[i] == "procedure" or self.table[i] == "function" :
+				if self.table[i] == "procedure" :
+					self.proc.append(True)
+				else :
+					self.proc.append(False)
 				i += 1
-				self.id[self.table[i]] = lines 	# stores procedure identifier
-				ret = "retourProc()" + self.s
+				self.id[self.table[i]] = self.lines 	# stores procedure identifier
 				i += 1
 				
-				
-			elif self.table[i] == "function":
-				i += 1
-				self.id[self.table[i]] = lines 	# stores function identifier
-				ret = "retourFonc()" + self.s
-				i += 1
+				if self.table[i] == "(" :
+					
+					while not self.table[i] == ")":  # parameters
+						self.stock.append(self.table[i])  # stores first parameter
+						i += 4 	# skips ": [in/out] [type]"
+						
+					for k in range(len(self.stock)):
+						self.param[self.stock[k]] = k 	# registers each parameter's number
+					self.stock = []
 				
 				
 			elif self.table[i] == "is":
 				i += 1
 				
-				while not self.table[i] == "begin":  # declarations
+				if self.table[i] == "procedure" or self.table[i] == "function" :
+					i = self.generate(i)
+				
+				while self.table[i] != "begin":  # declarations
 					self.stock.append(self.table[i])  # stores first variable
 					i += 1
 					
-					while self.table[i] == ",":	# there are several variables of the same type
-						i += 1
-						self.stock.append(self.table[i])	# stores next variable
-						i += 1
-					i += 3 	# skips ": [type] ;"
+					if self.table[i] == ":" :
+						i += 2 	# skips ": [type]"
 					
 				for k in range(len(self.stock)):
 					self.var[self.stock[k]] = k 	# registers each variable's address
@@ -58,31 +66,39 @@ class Generator(object):
 				
 				
 			elif self.table[i] != "end":
-				i, instr = self.instructions(i, ret)
+				i, instr = self.instructions(i)
 				self.chain += instr
-				
-				
+			
+			
 			else :
-				self.chain += "finProg()"
-				self.lines += 1
-				i += 2 	# skips "."
+				if self.proc :
+					self.chain += "retourProc()" + self.s
+				self.param = {}
+				self.var = {}
+				self.proc.pop()
+				i += 1
+				if i == len(self.table) :	# program ends
+					self.chain += "finProg()"
+					self.lines += 1
+				break
 				
-		self.printWithLines()
+		return i
 
 
 
 	# Breaks down an instructions block TODO
 	# Ends on the line AFTER the block
-	def instructions(self, i, ret):
+	def instructions(self, i):
 		total, expr, instr = "", "", "" 	# used for "tze" / "tra" insertion
 		
 		if self.table[i] == "while":
 			i += 1
 			lines = self.lines 	# first line of condition
 			i, expr = self.expression(i)	# condition
-			i += 1		# skips "loop"
 			self.lines += 1 	# line reserved for "tze"
-			i, instr = self.instructions(i) # instructions
+			while self.table[i] != "end" :
+				i, block = self.instructions(i) # instructions
+				instr += block
 			expr += "tze(" + str(self.lines+1) + ")" + self.s 	# jumps to end if the condition is false
 			expr += instr
 			expr += "tra(" + str(lines) + ")" + self.s 	# loops to condition
@@ -94,15 +110,19 @@ class Generator(object):
 		elif self.table[i] == "if":
 			i += 1
 			i, expr = self.expression(i)	# condition
-			i += 1		# skips "then"
 			self.lines += 1 	# line reserved for "tze"
-			i, instr = self.instructions(i)	# instructions
+			while self.table[i] != "end" and self.table[i] != "else" :
+				i, block = self.instructions(i) # instructions
+				instr += block
 			expr += "tze(" + str(self.lines) + ")" + self.s 	# jumps to end if the condition is false
 			expr += instr
+			instr = ""
 			
 			if self.table[i] == "else":
-				i, instr = self.instructions(i)	# else instructions
 				self.lines += 1 	# line reserved for "tra"
+				while self.table[i] != "end" and self.table[i] != "else" :
+					i, block = self.instructions(i) # else instructions
+					instr += block
 				expr += "tra(" + str(self.lines) + ")" + self.s 	# jumps to end if the condition is true
 				expr += instr
 			i += 1		# skips "end"
@@ -110,42 +130,51 @@ class Generator(object):
 			
 			
 		elif self.table[i] == "put":
-			i += 1
+			i += 2 	# skips "("
 			i, expr = self.expression(i)
 			total += expr
 			total += "put()" + self.s
 			self.lines += 1
-			i += 2		# skips ";"
+			i += 1 	# skips ")"
 			
 			
 		elif self.table[i] == "get":
-			i += 1
-			total += "empilerAd(" + str(self.var[self.table[i]]) + ")" + self.s 	# NNP : stacks the variable
+			i += 2 	# skips "("
+			total += "empilerAd(" + str(self.var[self.table[i]]) + ")" + self.s
 			total += "get()" + self.s
 			self.lines += 2
-			i += 2		# skips ";"
+			i += 2 	# skips ")"
 			
 		
-		elif self.table[i] in self.id :	# identifier
+		elif self.table[i] in self.id :	# call to identifier
 			i += 1
 				
 				
 		elif self.table[i] in self.var : # variable assignment
 			total += "empilerAd(" + str(self.var[self.table[i]]) + ")" + self.s
 			self.lines += 1
-			i += 2 	# skips ":="
+			i += 1
 			i, expr = self.expression(i)
 			total += expr
 			total += "affectation()" + self.s
 			self.lines += 1
-			i += 2 	# skips ";"
+				
+				
+		elif self.table[i] in self.param : # parameter assignment
+			total += "empilerParam(" + str(self.param[self.table[i]]) + ")" + self.s
+			self.lines += 1
+			i += 1
+			i, expr = self.expression(i)
+			total += expr
+			total += "affectation()" + self.s
+			self.lines += 1
 		
 			
 		elif self.table[i] == "return":
-			i += 2
+			i += 1
 			i, expr = self.expression(i)
 			total += expr
-			total += ret
+			total += "retourFonct()" + self.s
 			self.lines += 1
 			
 		return i, total
@@ -334,18 +363,31 @@ class Generator(object):
 			i += 1 	# skips ")"
 			
 			
-		else :	# identifier / variable
+		else :	# identifier / variable / parameter
 		
 			if self.table[i] in self.id :	# identifier
 				i += 1
 				
-			else :	# variable
+			elif self.table[i] in self.var :	# variable
 				expr += "empilerAd(" + str(self.var[self.table[i]]) + ")" + self.s
 				expr += "valeurPile()" + self.s
 				self.lines += 2
 				i += 1
 				
+			else : 	# parameter
+				expr += "empilerParam(" + str(self.var[self.table[i]]) + ")" + self.s
+				expr += "valeurPile()" + self.s
+				self.lines += 2
+				i += 1
+				
 		return i, expr
+		
+		
+		
+	def printNoLines(self):
+		chain = self.chain.split(";\n")
+		for l in range(self.lines):
+			print(chain[l])
 		
 		
 		
