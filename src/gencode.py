@@ -1,26 +1,68 @@
-# This class translates VALID pseudo code (see examples) into NilNovi code. It does not consider grammatical errors, those must be treated before this program is run.
-
 test = ['procedure', 'pp', 'is', 'procedure', 'affiche', 'is', 'i', 'j',':', 'integer', 'begin', 'i', '1', 'while', 'i', '/=', '5', 'j', '1', 'while', 'j', '/=', '5', 'put', '(', 'j', ')', 'j', 'j', '+', '1', 'end', 'i', 'i', '+', '1', 'end', 'end', 'a', 'b', 'c',':', 'integer', 'begin','get', '(', 'a', ')', 'affiche','(',')', 'b', 'a', '+', '1', 'put', '(', 'b', ')', 'end']
 
 class Generator(object):
+	"""
+	Description : Compilateur générant le code NilNovi procédural correspondant à un programme valide en pseudo-code, formaté sous forme de liste, avec la commande :
+		g = Generator( [pseudo-code] )
+		
+	Auteur :
+	- Dejan PARIS
+	"""
 
-	s = ";\n" 	# separator
-	lines = 2 	# line counter of the NNP code
-	id = {}		# associates identifiers to their line numbers
-	var = {}  	# associates variables to their addresses
-	param = {} 	# associates parameters to their local adresses
-	table = []  # pseudo code
-	proc = [] 	# proc[-1] is True if in a procedure, False if in a function
+	s = ";\n" 	# Séparateur
+	lines = 2 	# Compteur de lignes du code NilNovi
+	id = {}		# Associe les noms de procédures / fonctions à leur numéro de ligne NilNovi
+	var = {}  	# Associe les variables à leurs adresses (locales ou globales)
+	param = {} 	# Associe les paramètres à leurs adresses locales
+	table = []  # Pseudo-code formaté
+	proc = [] 	# proc[-1] est "True" si le programme compile une procédure, "False" si c'est une fonction
 
-	# The constructor
+
+
 	def __init__(self, t):
+		"""
+		Description : Constructeur ; compile le pseudo-code formaté en paramètre et l'affiche.
+	
+		Paramètres :
+		- t : pseudo-code formaté à compiler.
+	
+		Retour : None
+		
+		Appelle :
+		- generate
+		- printNoLines
+		- printWithLines
+	
+		Auteur :
+		- Dejan PARIS
+		"""
 		self.table = t
 		_, chain = self.generate(0, "debutProg()" + self.s)
 		self.printNoLines(chain)
 
-	# Main function TODO
+
+
 	def generate(self, i, chain):
-		stock = []  # temporarily stores names to allocate
+		"""
+		Description : Traduit en code NilNovi une procédure ou une fonction (un programme est géré comme une procédure).
+	
+		Paramètres :
+		- i : la position du début de la procédure / fonction dans le pseudo-code
+		- chain : le début du code NilNovi
+	
+		Retour :
+		- i : la position suivant la procédure / fonction
+		- chain : le code NilNovi procédural
+		
+		Appelle :
+		- expression
+		- instructions
+		- generate
+	
+		Auteur :
+		- Dejan PARIS
+		"""
+		stock = []  # Stocke temporairement les noms à allouer
 		
 		while i < len(self.table):
 			if self.table[i] == "procedure" or self.table[i] == "function" :
@@ -29,42 +71,42 @@ class Generator(object):
 				else :
 					self.proc.append(False)
 				i += 1
-				self.id[self.table[i]] = self.lines 	# stores procedure / function identifier
+				self.id[self.table[i]] = self.lines 	# Enregistre la procédure / fonction
 				i += 1
 				
-				if self.table[i] == "(" : 	# parameters
+				if self.table[i] == "(" : 	# Paramètres
 					
 					while not self.table[i] != ")" :
-						stock.append(self.table[i])  # stores first parameter
-						i += 4 	# skips ": [in/out] [type]"
+						stock.append(self.table[i])
+						i += 4 	# Saute ": [in/out] [type]" dans le pseudo-code
 						
 					for k in range(len(stock)):
-						self.param[stock[k]] = k 	# registers each parameter's number
+						self.param[stock[k]] = k 	# Enregistre les paramètres
 					stock = []
 				
 				
 			elif self.table[i] == "is":
 				i += 1
 				
-				if self.table[i] == "procedure" or self.table[i] == "function" :
-					self.lines += 1 	# line reserved for "tra"
+				if self.table[i] == "procedure" or self.table[i] == "function" : # Compilation d'une procédure / fonction
+					self.lines += 1 	# Ligne réservée pour "tra"
 					i, temp = self.generate(i, "")
 					chain += "tra(" + str(self.lines) + ")" + self.s
 					chain += temp
 				
-				while self.table[i] != "begin":  # declarations
-					stock.append(self.table[i])  # stores first variable
+				while self.table[i] != "begin":  # Déclarations
+					stock.append(self.table[i])
 					i += 1
 					
 					if self.table[i] == ":" :
-						i += 2 	# skips ": [type]"
+						i += 2 	# Saute ": [type]"
 					
 				for k in range(len(stock)):
-					self.var[stock[k]] = k 	# registers each variable's address
+					self.var[stock[k]] = k 	# Enregistre les variables
 				chain += "reserver(" + str(len(stock)) + ")" + self.s
 				self.lines += 1
 				stock = []
-				i += 1 	# skips "begin"
+				i += 1 	# Saute "begin"
 				
 				
 			elif self.table[i] != "end":
@@ -73,75 +115,90 @@ class Generator(object):
 			
 			
 			else :
-				if not self.isMain() and self.proc[-1] : 	# end of a procedure ; function returns are handled in instructions
+				if not self.isMain() and self.proc[-1] : 	# Fin de procédure ; le retour des fonctions est géré par "instructions"
 					chain += "retourProc()" + self.s
 					self.lines += 1
 				self.proc.pop()
 				self.param = {}
 				self.var = {}
 				i += 1
-				if len(self.proc) == 0 :	# program ends
+				if len(self.proc) == 0 :	# Fin du programme
 					chain += "finProg()"
-				break 	# end of procedure / function
+				break
 				
 		return i, chain
 
 
 
-	# Breaks down an instructions block TODO
-	# Ends on the line AFTER the block
 	def instructions(self, i):
-		total, expr, instr = "", "", "" 	# used for "tze" / "tra" insertion
+		"""
+		Description : Traduit en code NilNovi une suite d'instructions.
+	
+		Paramètres :
+		- i : la position du début des instructions dans le pseudo-code
+	
+		Retour :
+		- i : la position suivant les instructions
+		- total : le code NilNovi permettant d'exécuter les instructions
+		
+		Appelle :
+		- expression
+		- instructions
+	
+		Auteur :
+		- Dejan PARIS
+		"""
+		total, expr, instr = "", "", "" 	# Utilisés pour l'insertion de "tze" / "tra"
 		
 		if self.table[i] == "while":
 			i += 1
-			lines = self.lines 	# first line of condition
-			i, expr = self.expression(i)	# condition
-			self.lines += 1 	# line reserved for "tze"
+			lines = self.lines 	# Début de la condition (retour de "tra")
+			i, expr = self.expression(i)	# Condition
+			self.lines += 1 	# Ligne réservée pour "tze"
 			while self.table[i] != "end" :
-				i, block = self.instructions(i) # instructions
+				i, block = self.instructions(i) # Instructions
 				instr += block
-			expr += "tze(" + str(self.lines+1) + ")" + self.s 	# jumps to end if the condition is false
+			expr += "tze(" + str(self.lines+1) + ")" + self.s 	# Saute la boucle si la condition est fausse
 			expr += instr
-			expr += "tra(" + str(lines) + ")" + self.s 	# loops to condition
+			expr += "tra(" + str(lines) + ")" + self.s 	# Retour à la condition
 			self.lines += 1
-			i += 1		# skips "end"
+			i += 1		# Saute "end"
 			total += expr
 				
 				
 		elif self.table[i] == "if":
 			i += 1
-			i, expr = self.expression(i)	# condition
-			self.lines += 1 	# line reserved for "tze"
+			i, expr = self.expression(i)	# Condition
+			self.lines += 1 	# Ligne réservée pour "tze"
 			while self.table[i] != "end" and self.table[i] != "else" :
-				i, block = self.instructions(i) # instructions
+				i, block = self.instructions(i) # Instructions
 				instr += block
-			expr += "tze(" + str(self.lines) + ")" + self.s 	# jumps to end if the condition is false
+			expr += "tze(" + str(self.lines) + ")" + self.s 	# Saute les instructions si la condition est fausse
 			expr += instr
 			instr = ""
 			
 			if self.table[i] == "else":
-				self.lines += 1 	# line reserved for "tra"
+				self.lines += 1 	# Ligne réservée pour "tra"
 				while self.table[i] != "end" and self.table[i] != "else" :
-					i, block = self.instructions(i) # else instructions
+					i, block = self.instructions(i) 	# Instructions si la condition est fausse
 					instr += block
-				expr += "tra(" + str(self.lines) + ")" + self.s 	# jumps to end if the condition is true
+				expr += "tra(" + str(self.lines) + ")" + self.s 	# Saute les instructions si la condition est vraie
 				expr += instr
-			i += 1		# skips "end"
+			i += 1		# Saute "end"
 			total += expr
 			
 			
 		elif self.table[i] == "put":
-			i += 2 	# skips "("
+			i += 2 	# Saute "("
 			i, expr = self.expression(i)
 			total += expr
 			total += "put()" + self.s
 			self.lines += 1
-			i += 1 	# skips ")"
+			i += 1 	# Saute ")"
 			
 			
 		elif self.table[i] == "get":
-			i += 2 	# skips "("
+			i += 2 	# Saute "("
 			if self.isMain() :
 				command = "empiler("
 			else :
@@ -149,28 +206,28 @@ class Generator(object):
 			total += command + str(self.var[self.table[i]]) + ")" + self.s
 			total += "get()" + self.s
 			self.lines += 2
-			i += 2 	# skips ")"
+			i += 2 	# Saute ")"
 		
 		
-		elif self.table[i] in self.id :	# call to identifier
+		elif self.table[i] in self.id :	# Procédure / Fonction
 			call = self.id[self.table[i]]
 			paramCount = 0
 			total += "reserverBloc()" + self.s
 			self.lines += 1
-			i += 2 	# skips "("
+			i += 2 	# Saute "("
 			
 			while self.table[i] != ")" :
 				i, expr = self.expression(i)
 				total += expr
 				paramCount += 1
 				i += 1
-			i += 1 	# skips ")"
+			i += 1 	# Saute ")"
 			
 			total += "traStat(" + str(call) + "," + str(paramCount) + ")" + self.s
 			self.lines += 1
 		
 		
-		elif self.table[i] in self.var : # variable assignment
+		elif self.table[i] in self.var : # Affectation d'une variable
 			if self.isMain() :
 				command = "empiler("
 			else :
@@ -184,7 +241,7 @@ class Generator(object):
 			self.lines += 1
 		
 		
-		elif self.table[i] in self.param : # parameter assignment
+		elif self.table[i] in self.param : # Affectation d'un paramètre
 			total += "empilerParam(" + str(self.param[self.table[i]]) + ")" + self.s
 			self.lines += 1
 			i += 1
@@ -194,7 +251,7 @@ class Generator(object):
 			self.lines += 1
 		
 		
-		elif self.table[i] == "return":
+		elif self.table[i] == "return":	# Fin de fonction
 			i += 1
 			i, expr = self.expression(i)
 			total += expr
@@ -205,10 +262,24 @@ class Generator(object):
 		
 		
 		
-	# Breaks down a boolean expression using OR
-	# Ends on the line AFTER the expression
 	def expression(self, i):
-		expr, e = "", ""
+		"""
+		Description : Traduit en code NilNovi une expression ou l'union de deux expressions booléennes.
+	
+		Paramètres :
+		- i : la position du début de l'expression dans le pseudo-code
+	
+		Retour :
+		- i : la position suivant l'expression
+		- expr+e : le code NilNovi permettant d'empiler la valeur de l'expression
+		
+		Appelle :
+		- exp1
+	
+		Auteur :
+		- Dejan PARIS
+		"""
+		e = ""
 		i, expr = self.exp1(i)
 		
 		if self.table[i] == "or" :
@@ -221,10 +292,24 @@ class Generator(object):
 		
 		
 		
-	# Breaks down a boolean expression using AND
-	# Ends on the line AFTER the expression
 	def exp1(self, i):
-		expr, e = "", ""
+		"""
+		Description : Traduit en code NilNovi une expression ou l'intersection de deux expressions booléennes.
+	
+		Paramètres :
+		- i : la position du début de l'expression dans le pseudo-code
+	
+		Retour :
+		- i : la position suivant l'expression
+		- expr+e : le code NilNovi permettant d'empiler la valeur de l'expression
+		
+		Appelle :
+		- exp2
+	
+		Auteur :
+		- Dejan PARIS
+		"""
+		e = ""
 		i, expr = self.exp2(i)
 		
 		if self.table[i] == "and" :
@@ -237,10 +322,24 @@ class Generator(object):
 		
 		
 		
-	# Breaks down a boolean expression
-	# Ends on the line AFTER the expression
 	def exp2(self, i):
-		expr, e = "", ""
+		"""
+		Description : Traduit en code NilNovi une expression ou la comparaison de deux expressions avec =, /=, >, >=, <, <=.
+	
+		Paramètres :
+		- i : la position du début de l'expression dans le pseudo-code
+	
+		Retour :
+		- i : la position suivant l'expression
+		- expr+e : le code NilNovi permettant d'empiler la valeur de l'expression
+		
+		Appelle :
+		- exp3
+	
+		Auteur :
+		- Dejan PARIS
+		"""
+		e = ""
 		i, expr = self.exp3(i)
 		
 		if self.table[i] == "=" :
@@ -288,10 +387,24 @@ class Generator(object):
 		
 		
 		
-	# Breaks down an addition / substraction
-	# Ends on the line AFTER the expression
 	def exp3(self, i):
-		expr, e = "", ""
+		"""
+		Description : Traduit en code NilNovi une expression ou l'addition / la soustraction de deux expressions.
+	
+		Paramètres :
+		- i : la position du début de l'expression dans le pseudo-code
+	
+		Retour :
+		- i : la position suivant l'expression
+		- expr+e : le code NilNovi permettant d'empiler la valeur de l'expression
+		
+		Appelle :
+		- exp4
+	
+		Auteur :
+		- Dejan PARIS
+		"""
+		e = ""
 		i, expr = self.exp4(i)
 		
 		if self.table[i] == "+" :
@@ -311,10 +424,24 @@ class Generator(object):
 		
 		
 		
-	# Breaks down a multiplication / division
-	# Ends on the line AFTER the expression
 	def exp4(self, i):
-		expr, e = "", ""
+		"""
+		Description : Traduit en code NilNovi une expression ou la multiplication / division de deux expressions.
+	
+		Paramètres :
+		- i : la position du début de l'expression dans le pseudo-code
+	
+		Retour :
+		- i : la position suivant l'expression
+		- expr+e : le code NilNovi permettant d'empiler la valeur de l'expression
+		
+		Appelle :
+		- prim
+	
+		Auteur :
+		- Dejan PARIS
+		"""
+		e = ""
 		i, expr = self.prim(i)
 		
 		if self.table[i] == "*" :
@@ -322,6 +449,7 @@ class Generator(object):
 			i, e = self.prim(i)
 			e += "mult()" + self.s
 			self.lines += 1		
+			
 			
 		elif self.table[i] == "/" :
 			i += 1
@@ -335,45 +463,48 @@ class Generator(object):
 		
 	def prim(self, i):
 		"""
-		Description : Affiche le résultat de la compilation, tel qu'exploité par l'exécuteur, avec les numéros de lignes commençant à 1.
+		Description : Traduit en code NilNovi une expression composée d'un opérateur primaire (∅, +, -, not) et d'un élément primaire.
 	
 		Paramètres :
-		- chain : le code NilNovi à afficher
+		- i : la position de l'opérateur dans le pseudo-code
 	
-		Retour : None
+		Retour :
+		- i : la position suivant l'expression
+		- expr+e : le code NilNovi permettant d'empiler la valeur de l'expression
+		
+		Appelle :
+		- elemPrim
 	
-		Auteurs :
+		Auteur :
 		- Dejan PARIS
 		"""
+		e, lines = "", 0
 		
 		if self.table[i] == "+" :
 			i += 1
-			i, expr = self.elemPrim(i)
 			
 		
-		if self.table[i] == "-" :
+		elif self.table[i] == "-" :
 			i += 1
-			i, expr = self.elemPrim(i)
-			expr += "moins()" + self.s
-			self.lines += 1
+			e = "moins()" + self.s
+			lines += 1
 			
 			
 		elif self.table[i] == "not" :
 			i += 1
-			i, expr = self.elemPrim(i)
-			expr += "non()" + self.s
-			self.lines += 1
+			e = "non()" + self.s
+			lines += 1
+		
+		i, expr = self.elemPrim(i)
+		self.lines += lines
 			
-		else :
-			i, expr = self.elemPrim(i)
-			
-		return i, expr
+		return i, expr+e
 		
 		
 		
 	def elemPrim(self, i):
 		"""
-		Description : Traduit en code NilNovi un élément primaire (booléen, entier, appel à une procédure/fonction, variable ou paramètre).
+		Description : Traduit en code NilNovi une expression ou un élément primaire (booléen, entier, appel à une procédure/fonction, variable ou paramètre).
 	
 		Paramètres :
 		- i : la position de l'élément dans le pseudo-code
@@ -381,19 +512,23 @@ class Generator(object):
 		Retour :
 		- i : la position suivant l'élément
 		- expr : le code NilNovi permettant d'empiler l'élément
+		
+		Appelle :
+		- expression
+		- instructions
 	
-		Auteurs :
+		Auteur :
 		- Dejan PARIS
 		"""
 		expr = ""
 		
-		if self.table[i].isdigit() :	# Integer
+		if self.table[i].isdigit() :	# Entier
 			expr += "empiler(" + str(self.table[i]) + ")" + self.s
 			self.lines += 1
 			i += 1
 			
 			
-		elif self.table[i] == "true" :
+		elif self.table[i] == "true" : 	# Booléen
 			expr += "empiler(1)" + self.s
 			self.lines += 1
 			i += 1
@@ -405,10 +540,10 @@ class Generator(object):
 			i += 1
 			
 			
-		elif self.table[i] == "(" :	# Boolean expression
+		elif self.table[i] == "(" :	# Expression booléenne
 			i += 1
 			i, expr = self.expression(i)
-			i += 1 	# skips ")"
+			i += 1 	# Saute ")"
 			
 			
 		else :	# Procédure / Fonction / Paramètre / Variable
@@ -445,7 +580,7 @@ class Generator(object):
 	
 		Retour : None
 	
-		Auteurs :
+		Auteur :
 		- Dejan PARIS
 		"""
 		table = chain.split("\n")
@@ -463,7 +598,7 @@ class Generator(object):
 	
 		Retour : None
 	
-		Auteurs :
+		Auteur :
 		- Dejan PARIS
 		"""
 		table = chain.split("\n")
@@ -480,9 +615,10 @@ class Generator(object):
 	
 		Paramètres : None
 	
-		Retour : None
+		Retour :
+		- booléen
 	
-		Auteurs :
+		Auteur :
 		- Dejan PARIS
 		"""
 		return len(self.proc) == 1
