@@ -22,7 +22,8 @@ DEBUG = False
 LOGGING_LEVEL = logging.DEBUG
 
 listeIdentificateur = []
-tableIdentificateur = [[]]
+tableIdentificateur = []
+porteeActuelle = 1
 
 class AnaSynException(Exception):
 	def __init__(self, value):
@@ -162,13 +163,13 @@ def nnpType(lexical_analyser):
 	if lexical_analyser.isKeyword("integer"):
 		lexical_analyser.acceptKeyword("integer")
 		ajoutIdentificateur(":")
-		ajoutIdentificateur("integer")
+		ajoutIdentificateur("integer","type")
 		logger.debug("integer type")
 	elif lexical_analyser.isKeyword("boolean"):
 		lexical_analyser.acceptKeyword("boolean")
 		logger.debug("boolean type")  
 		ajoutIdentificateur(":")
-		ajoutIdentificateur("boolean")              
+		ajoutIdentificateur("boolean","type")              
 	else:
 		logger.error("Unknown type found <"+ lexical_analyser.get_value() +">!")
 		raise AnaSynException("Unknown type found <"+ lexical_analyser.get_value() +">!")
@@ -190,7 +191,7 @@ def declaVar(lexical_analyser):
 
 def listeIdent(lexical_analyser):
 	ident = lexical_analyser.acceptIdentifier()
-	ajoutIdentificateur(str(ident))
+	ajoutIdentificateur(str(ident),"variable")
 	logger.debug("identifier found: "+str(ident))
 
 	if lexical_analyser.isCharacter(","):
@@ -487,8 +488,23 @@ def retour(lexical_analyser):
 
 ########################################################################
 	
-def ajoutIdentificateur(identificateur):
+def ajoutIdentificateur(identificateur,tableOperation = "None"):
 	listeIdentificateur.append(identificateur)
+	if(tableOperation == "None"):
+		return
+	elif(tableOperation == "variable"):
+		tableIdentificateur.append([identificateur])
+		tableIdentificateur[-1].append(porteeActuelle)
+		tableIdentificateur[-1].append("null")
+	elif(tableOperation == "type"):
+		portee = tableIdentificateur[-1][1]
+		i = 0
+		while(tableIdentificateur[-1-i][1] == portee and tableIdentificateur[-1-i][2] == "null"):
+			tableIdentificateur[-1-i][2] = identificateur
+			l = len(tableIdentificateur)
+			i += 1
+			if(i > l-1):
+				break
 
 ########################################################################
 def main():
