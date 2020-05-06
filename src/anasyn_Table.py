@@ -23,7 +23,7 @@ LOGGING_LEVEL = logging.DEBUG
 
 listeIdentificateur = []
 tableIdentificateur = []
-porteeActuelle = 1
+porteeActuelle = 0
 
 class AnaSynException(Exception):
 	def __init__(self, value):
@@ -496,6 +496,7 @@ def ajoutIdentificateur(identificateur,tableOperation = "None"):
 		tableIdentificateur.append([identificateur])
 		tableIdentificateur[-1].append(porteeActuelle)
 		tableIdentificateur[-1].append("null")
+		tableIdentificateur[-1].append(None)
 	elif(tableOperation == "type"):
 		portee = tableIdentificateur[-1][1]
 		i = 0
