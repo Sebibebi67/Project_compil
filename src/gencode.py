@@ -1,4 +1,29 @@
-test = ['procedure', 'pp', 'is', 'procedure', 'affiche', 'is', 'i', 'j',':', 'integer', 'begin', 'i', '1', 'while', 'i', '/=', '5', 'j', '1', 'while', 'j', '/=', '5', 'put', '(', 'j', ')', 'j', 'j', '+', '1', 'end', 'i', 'i', '+', '1', 'end', 'end', 'a', 'b', 'c',':', 'integer', 'begin','get', '(', 'a', ')', 'affiche','(',')', 'b', 'a', '+', '1', 'put', '(', 'b', ')', 'end']
+#!/usr/bin/python3
+
+#======================exec.py=====================#
+
+
+#---------------------Encodage---------------------#
+
+# -*- coding: utf-8 -*-
+
+#--------------------------------------------------#
+
+
+#--------------------Description-------------------#
+
+# Ce fichier gère la compilation du pseudo-code
+# formaté en langage NilNovi procédural.
+
+#--------------------------------------------------#
+
+
+#----------------------Auteurs---------------------#
+
+# Dejan PARIS
+
+#--------------------------------------------------#
+
 
 class Generator(object):
 	"""
