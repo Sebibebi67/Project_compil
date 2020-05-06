@@ -6,7 +6,7 @@
 
 ########################################################################				 	
 #### TO DO
-# Completer la list (thisList) avec les indentificateurs necessaires
+# Completer la list (listeIdentificateur) avec les indentificateurs necessaires
 # Une fois completee, la parse a nouveau pour creer la table (plus simple)
 ####
 ########################################################################
@@ -20,8 +20,9 @@ logger = logging.getLogger('anasyn')
 
 DEBUG = False
 LOGGING_LEVEL = logging.DEBUG
-thisList = []
 
+listeIdentificateur = []
+tableIdentificateur = [[]]
 
 class AnaSynException(Exception):
 	def __init__(self, value):
@@ -36,15 +37,15 @@ class AnaSynException(Exception):
 def program(lexical_analyser):
 	specifProgPrinc(lexical_analyser)
 	lexical_analyser.acceptKeyword("is")
-	thisList.append("is")
+	ajoutIdentificateur("is")
 	corpsProgPrinc(lexical_analyser)
 	
 def specifProgPrinc(lexical_analyser):
 	lexical_analyser.acceptKeyword("procedure")
-	thisList.append("procedure")
+	ajoutIdentificateur("procedure")
 	ident = lexical_analyser.acceptIdentifier()
 	logger.debug("Name of program : "+ident)
-	thisList.append(str(ident))
+	ajoutIdentificateur(str(ident))
 	
 def  corpsProgPrinc(lexical_analyser):
 	if not lexical_analyser.isKeyword("begin"):
@@ -52,7 +53,7 @@ def  corpsProgPrinc(lexical_analyser):
 		partieDecla(lexical_analyser)
 		logger.debug("End of declarations")
 	lexical_analyser.acceptKeyword("begin")
-	thisList.append("begin")
+	ajoutIdentificateur("begin")
 
 	if not lexical_analyser.isKeyword("end"):
 		logger.debug("Parsing instructions")
@@ -60,7 +61,7 @@ def  corpsProgPrinc(lexical_analyser):
 		logger.debug("End of instructions")
 			
 	lexical_analyser.acceptKeyword("end")
-	thisList.append("end")
+	ajoutIdentificateur("end")
 	lexical_analyser.acceptFel()
 	logger.debug("End of program")
 	
@@ -87,15 +88,15 @@ def declaOp(lexical_analyser):
 
 def procedure(lexical_analyser):
 	lexical_analyser.acceptKeyword("procedure")
-	thisList.append("procedure")
+	ajoutIdentificateur("procedure")
 	ident = lexical_analyser.acceptIdentifier()
 	logger.debug("Name of procedure : "+ident)
-	thisList.append(str(ident))
+	ajoutIdentificateur(str(ident))
        
 	partieFormelle(lexical_analyser)
 
 	lexical_analyser.acceptKeyword("is")
-	thisList.append("is")
+	ajoutIdentificateur("is")
 	corpsProc(lexical_analyser)
        
 
@@ -110,17 +111,17 @@ def fonction(lexical_analyser):
 	nnpType(lexical_analyser)
         
 	lexical_analyser.acceptKeyword("is")
-	thisList.append("is")
+	ajoutIdentificateur("is")
 	corpsFonct(lexical_analyser)
 
 def corpsProc(lexical_analyser):
 	if not lexical_analyser.isKeyword("begin"):
 		partieDeclaProc(lexical_analyser)
 	lexical_analyser.acceptKeyword("begin")
-	thisList.append("begin")
+	ajoutIdentificateur("begin")
 	suiteInstr(lexical_analyser)
 	lexical_analyser.acceptKeyword("end")
-	thisList.append("end")
+	ajoutIdentificateur("end")
 
 def corpsFonct(lexical_analyser):
 	if not lexical_analyser.isKeyword("begin"):
@@ -160,14 +161,14 @@ def mode(lexical_analyser):
 def nnpType(lexical_analyser):
 	if lexical_analyser.isKeyword("integer"):
 		lexical_analyser.acceptKeyword("integer")
-		thisList.append(":")
-		thisList.append("integer")
+		ajoutIdentificateur(":")
+		ajoutIdentificateur("integer")
 		logger.debug("integer type")
 	elif lexical_analyser.isKeyword("boolean"):
 		lexical_analyser.acceptKeyword("boolean")
 		logger.debug("boolean type")  
-		thisList.append(":")
-		thisList.append("boolean")              
+		ajoutIdentificateur(":")
+		ajoutIdentificateur("boolean")              
 	else:
 		logger.error("Unknown type found <"+ lexical_analyser.get_value() +">!")
 		raise AnaSynException("Unknown type found <"+ lexical_analyser.get_value() +">!")
@@ -189,7 +190,7 @@ def declaVar(lexical_analyser):
 
 def listeIdent(lexical_analyser):
 	ident = lexical_analyser.acceptIdentifier()
-	thisList.append(str(ident))
+	ajoutIdentificateur(str(ident))
 	logger.debug("identifier found: "+str(ident))
 
 	if lexical_analyser.isCharacter(","):
@@ -208,22 +209,22 @@ def suiteInstr(lexical_analyser):
 
 def instr(lexical_analyser):		
 	if lexical_analyser.isKeyword("while"):
-		thisList.append("while")
+		ajoutIdentificateur("while")
 		boucle(lexical_analyser)
 	elif lexical_analyser.isKeyword("if"):
-		thisList.append("if")
+		ajoutIdentificateur("if")
 		altern(lexical_analyser)
 	elif lexical_analyser.isKeyword("get") or lexical_analyser.isKeyword("put"):
 		es(lexical_analyser)
 	elif lexical_analyser.isKeyword("return"):
-		thisList.append("return")
+		ajoutIdentificateur("return")
 		retour(lexical_analyser)
 	elif lexical_analyser.isIdentifier():
-		thisList.append(str(lexical_analyser.get_value()))
+		ajoutIdentificateur(str(lexical_analyser.get_value()))
 		ident = lexical_analyser.acceptIdentifier()
 		if lexical_analyser.isCharacter("("):
-			thisList.append("(")
-			thisList.append(")")
+			ajoutIdentificateur("(")
+			ajoutIdentificateur(")")
 		if lexical_analyser.isSymbol(":="):				
 			# affectation
 			lexical_analyser.acceptSymbol(":=")
@@ -253,7 +254,6 @@ def listePe(lexical_analyser):
 def expression(lexical_analyser):
     #TODO
 	logger.debug("parsing expression: " + str(lexical_analyser.get_value()))
-	#thisList.append(str(lexical_analyser.get_value()))
 	exp1(lexical_analyser)
 	if lexical_analyser.isKeyword("or"):
 		lexical_analyser.acceptKeyword("or")
@@ -374,8 +374,7 @@ def opUnaire(lexical_analyser):
 
 def elemPrim(lexical_analyser):
 	logger.debug("parsing elemPrim: " + str(lexical_analyser.get_value()))
-	thisList.append(str(lexical_analyser.get_value()))
-	#thisList.append(str(lexical_analyser.get_value()))
+	ajoutIdentificateur(str(lexical_analyser.get_value()))
 	if lexical_analyser.isCharacter("("):
 		lexical_analyser.acceptCharacter("(")
 		expression(lexical_analyser)
@@ -396,7 +395,7 @@ def elemPrim(lexical_analyser):
 		else:
 			logger.debug("Use of an identifier as an expression: " + ident)
 			if not lexical_analyser.isCharacter(")"):
-				thisList.append(str(lexical_analyser.get_value()))
+				ajoutIdentificateur(str(lexical_analyser.get_value()))
             # ...
 	else:
 		logger.error("Unknown Value!")
@@ -407,7 +406,6 @@ def valeur(lexical_analyser):
 		entier = lexical_analyser.acceptInteger()
         #TODO
 		logger.debug("integer value: " + str(entier))
-		#thisList.append(str(entier))
 		return "integer"
 	elif lexical_analyser.isKeyword("true") or lexical_analyser.isKeyword("false"):
 		vtype = valBool(lexical_analyser)
@@ -429,25 +427,24 @@ def valBool(lexical_analyser):
 
 def es(lexical_analyser):
 	logger.debug("parsing E/S instruction: " + lexical_analyser.get_value())
-	#thisList.append(lexical_analyser.get_value())
 	if lexical_analyser.isKeyword("get"):
 		lexical_analyser.acceptKeyword("get")
-		thisList.append("get")
-		thisList.append("(")
+		ajoutIdentificateur("get")
+		ajoutIdentificateur("(")
 		lexical_analyser.acceptCharacter("(")
 		ident = lexical_analyser.acceptIdentifier()
-		thisList.append(str(ident))
-		thisList.append(")")
+		ajoutIdentificateur(str(ident))
+		ajoutIdentificateur(")")
 		lexical_analyser.acceptCharacter(")")
 		logger.debug("Call to get "+ident)
 	elif lexical_analyser.isKeyword("put"):
 		lexical_analyser.acceptKeyword("put")
-		thisList.append("put")
-		thisList.append("(")
+		ajoutIdentificateur("put")
+		ajoutIdentificateur("(")
 		lexical_analyser.acceptCharacter("(")
 		expression(lexical_analyser)
 		lexical_analyser.acceptCharacter(")")
-		thisList.append(")")
+		ajoutIdentificateur(")")
 		logger.debug("Call to put")
 	else:
 		logger.error("Unknown E/S instruction!")
@@ -463,7 +460,7 @@ def boucle(lexical_analyser):
 	suiteInstr(lexical_analyser)
 
 	lexical_analyser.acceptKeyword("end")
-	thisList.append("end")
+	ajoutIdentificateur("end")
 	logger.debug("end of while loop ")
 
 def altern(lexical_analyser):
@@ -480,7 +477,7 @@ def altern(lexical_analyser):
 		suiteInstr(lexical_analyser)
        
 	lexical_analyser.acceptKeyword("end")
-	thisList.append("end")
+	ajoutIdentificateur("end")
 	logger.debug("end of if")
 
 def retour(lexical_analyser):
@@ -490,10 +487,10 @@ def retour(lexical_analyser):
 
 ########################################################################
 	
-def ajoutIdentificateur():
-	return 0
+def ajoutIdentificateur(identificateur):
+	listeIdentificateur.append(identificateur)
 
-########################################################################				 	
+########################################################################
 def main():
  	
 	parser = argparse.ArgumentParser(description='Do the syntactical analysis of a NNP program.')
@@ -548,9 +545,10 @@ def main():
 	program(lexical_analyser)
 		
 	if args.show_ident_table:
+			print("------ IDENTIFIER LIST ------")
+			print(listeIdentificateur)
 			print("------ IDENTIFIER TABLE ------")
-			#print(str(identifierTable))
-			print(thisList)
+			print(tableIdentificateur)
 			print("------ END OF IDENTIFIER TABLE ------")
 
 
