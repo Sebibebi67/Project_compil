@@ -333,9 +333,18 @@ class Generator(object):
 		
 		
 		
-	# Translates a primary operator
-	# Ends on the line AFTER the expression
 	def prim(self, i):
+		"""
+		Description : Affiche le résultat de la compilation, tel qu'exploité par l'exécuteur, avec les numéros de lignes commençant à 1.
+	
+		Paramètres :
+		- chain : le code NilNovi à afficher
+	
+		Retour : None
+	
+		Auteurs :
+		- Dejan PARIS
+		"""
 		
 		if self.table[i] == "+" :
 			i += 1
@@ -362,9 +371,20 @@ class Generator(object):
 		
 		
 		
-	# Translates an expression TODO
-	# Ends on the line AFTER the expression
 	def elemPrim(self, i):
+		"""
+		Description : Traduit en code NilNovi un élément primaire (booléen, entier, appel à une procédure/fonction, variable ou paramètre).
+	
+		Paramètres :
+		- i : la position de l'élément dans le pseudo-code
+	
+		Retour :
+		- i : la position suivant l'élément
+		- expr : le code NilNovi permettant d'empiler l'élément
+	
+		Auteurs :
+		- Dejan PARIS
+		"""
 		expr = ""
 		
 		if self.table[i].isdigit() :	# Integer
@@ -391,12 +411,12 @@ class Generator(object):
 			i += 1 	# skips ")"
 			
 			
-		else :	# identifier / variable / parameter
+		else :	# Procédure / Fonction / Paramètre / Variable
 		
-			if self.table[i] in self.id :	# identifier
-				i, expr = self.instructions(i) 	# calls to operations are handled by instructions
+			if self.table[i] in self.id :	# Procédure / Fonction
+				i, expr = self.instructions(i) 	# Les appels sont gérés par "instructions"
 				
-			elif self.table[i] in self.var :	# variable
+			elif self.table[i] in self.var :	# Variable
 				if self.isMain() :
 					command = "empiler("
 				else :
@@ -406,7 +426,7 @@ class Generator(object):
 				self.lines += 2
 				i += 1
 				
-			else : 	# parameter
+			else : 	# Paramètre
 				expr += "empilerParam(" + str(self.var[self.table[i]]) + ")" + self.s
 				expr += "valeurPile()" + self.s
 				self.lines += 2
@@ -417,14 +437,36 @@ class Generator(object):
 		
 		
 	def printNoLines(self, chain):
-		table = chain.split(";\n")
+		"""
+		Description : Affiche le résultat de la compilation, tel qu'exploité par l'exécuteur, sans numéro de ligne.
+	
+		Paramètres :
+		- chain : le code NilNovi à afficher
+	
+		Retour : None
+	
+		Auteurs :
+		- Dejan PARIS
+		"""
+		table = chain.split("\n")
 		for l in range(self.lines):
 			print(table[l])
 		
 		
 		
 	def printWithLines(self, chain):
-		table = chain.split(";\n")
+		"""
+		Description : Affiche le résultat de la compilation, tel qu'exploité par l'exécuteur, avec les numéros de lignes commençant à 1.
+	
+		Paramètres :
+		- chain : le code NilNovi à afficher
+	
+		Retour : None
+	
+		Auteurs :
+		- Dejan PARIS
+		"""
+		table = chain.split("\n")
 		space = "  "
 		for l in range(self.lines):
 			if l >= 9 : space = " "
@@ -433,4 +475,14 @@ class Generator(object):
 			
 			
 	def isMain(self):
+		"""
+		Description : Indique si la procédure en cours de compilation est le programme principal.
+	
+		Paramètres : None
+	
+		Retour : None
+	
+		Auteurs :
+		- Dejan PARIS
+		"""
 		return len(self.proc) == 1
