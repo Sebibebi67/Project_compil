@@ -46,8 +46,8 @@ def specifProgPrinc(lexical_analyser):
 	ajoutIdentificateur("procedure")
 	ident = lexical_analyser.acceptIdentifier()
 	logger.debug("Name of program : "+ident)
-	ajoutIdentificateur(str(ident))
-	
+	ajoutIdentificateur(str(ident),"corps")
+
 def  corpsProgPrinc(lexical_analyser):
 	if not lexical_analyser.isKeyword("begin"):
 		logger.debug("Parsing declarations")
@@ -62,7 +62,7 @@ def  corpsProgPrinc(lexical_analyser):
 		logger.debug("End of instructions")
 			
 	lexical_analyser.acceptKeyword("end")
-	ajoutIdentificateur("end")
+	ajoutIdentificateur("end","end")
 	lexical_analyser.acceptFel()
 	logger.debug("End of program")
 	
@@ -92,7 +92,7 @@ def procedure(lexical_analyser):
 	ajoutIdentificateur("procedure")
 	ident = lexical_analyser.acceptIdentifier()
 	logger.debug("Name of procedure : "+ident)
-	ajoutIdentificateur(str(ident))
+	ajoutIdentificateur(str(ident),"corps")
        
 	partieFormelle(lexical_analyser)
 
@@ -122,7 +122,7 @@ def corpsProc(lexical_analyser):
 	ajoutIdentificateur("begin")
 	suiteInstr(lexical_analyser)
 	lexical_analyser.acceptKeyword("end")
-	ajoutIdentificateur("end")
+	ajoutIdentificateur("end","end")
 
 def corpsFonct(lexical_analyser):
 	if not lexical_analyser.isKeyword("begin"):
@@ -210,10 +210,10 @@ def suiteInstr(lexical_analyser):
 
 def instr(lexical_analyser):		
 	if lexical_analyser.isKeyword("while"):
-		ajoutIdentificateur("while")
+		ajoutIdentificateur("while","corps")
 		boucle(lexical_analyser)
 	elif lexical_analyser.isKeyword("if"):
-		ajoutIdentificateur("if")
+		ajoutIdentificateur("if","corps")
 		altern(lexical_analyser)
 	elif lexical_analyser.isKeyword("get") or lexical_analyser.isKeyword("put"):
 		es(lexical_analyser)
@@ -461,7 +461,7 @@ def boucle(lexical_analyser):
 	suiteInstr(lexical_analyser)
 
 	lexical_analyser.acceptKeyword("end")
-	ajoutIdentificateur("end")
+	ajoutIdentificateur("end","end")
 	logger.debug("end of while loop ")
 
 def altern(lexical_analyser):
@@ -478,7 +478,7 @@ def altern(lexical_analyser):
 		suiteInstr(lexical_analyser)
        
 	lexical_analyser.acceptKeyword("end")
-	ajoutIdentificateur("end")
+	ajoutIdentificateur("end","end")
 	logger.debug("end of if")
 
 def retour(lexical_analyser):
@@ -489,7 +489,9 @@ def retour(lexical_analyser):
 ########################################################################
 	
 def ajoutIdentificateur(identificateur,tableOperation = "None"):
+	global listeIdentificateur,tableIdentificateur,porteeActuelle
 	listeIdentificateur.append(identificateur)
+	
 	if(tableOperation == "None"):
 		return
 	elif(tableOperation == "variable"):
@@ -497,6 +499,7 @@ def ajoutIdentificateur(identificateur,tableOperation = "None"):
 		tableIdentificateur[-1].append(porteeActuelle)
 		tableIdentificateur[-1].append("null")
 		tableIdentificateur[-1].append(None)
+	
 	elif(tableOperation == "type"):
 		portee = tableIdentificateur[-1][1]
 		i = 0
@@ -506,10 +509,18 @@ def ajoutIdentificateur(identificateur,tableOperation = "None"):
 			i += 1
 			if(i > l-1):
 				break
+	
+	elif(tableOperation == "corps"):
+		porteeActuelle += 1
+		tableIdentificateur.append([identificateur])
+		tableIdentificateur[-1].append(porteeActuelle)
+		tableIdentificateur[-1].append("corps")
+		tableIdentificateur[-1].append(None)
+	elif(tableOperation == "end"):
+		porteeActuelle -= 1
 
 ########################################################################
 def main():
- 	
 	parser = argparse.ArgumentParser(description='Do the syntactical analysis of a NNP program.')
 	parser.add_argument('inputfile', type=str, nargs=1, help='name of the input source file')
 	parser.add_argument('-o', '--outputfile', dest='outputfile', action='store', \
