@@ -29,7 +29,6 @@ import sys
 #----------------------Auteurs---------------------#
 
 # Sébastien HERT
-# Adam RIVIERE
 
 #--------------------------------------------------#
 
@@ -43,13 +42,83 @@ import sys
 
 #---------------------Méthodes---------------------#
 
-def checkErreurs():
-    return True
 
+def checkGetBooleen():
+    """
+    Description : Vérifie que l'on ne tente pas de récupérer une valeur de booléen
 
-# lecture d'un booléen
-# écriture d'expressions booléennes
-# typage incorrect
-# condition incorrecte dans une alternative
-# condition incorrecte dans un while
-# double déclaration
+    Paramètres : None
+
+    Retour : None
+
+    Auteurs :
+    - Sébastien HERT
+    """
+    # TODO
+    
+
+def checkPutBooleen():
+    """
+    Description : Vérifie que l'on ne tente pas d'afficher un booléen
+
+    Paramètres : None
+
+    Retour : None
+
+    Auteurs :
+    - Sébastien HERT
+    """
+    # TODO
+    
+
+def checkTypage():
+    """
+    Description : Vérifie que les 2 paramètres sont de même type, avant de tenter une affectation
+
+    Paramètres : None
+
+    Retour : None
+
+    Auteurs :
+    - Sébastien HERT
+    """
+    # TODO
+
+def checkIf():
+    """
+    Description : Vérifie que la condition d'un "if" est valide
+
+    Paramètres : None
+
+    Retour : None
+
+    Auteurs :
+    - Sébastien HERT
+    """
+    # TODO
+
+def checkWhile():
+    """
+    Description : Vérifie que la condition d'un "while" est valide
+
+    Paramètres : None
+
+    Retour : None
+
+    Auteurs :
+    - Sébastien HERT
+    """
+    # TODO
+
+def checkDoubleDeclaration():
+    """
+    Description : Vérifie que la déclaration d'une variable ne fait pas doublon
+
+    Paramètres : None
+
+    Retour : None
+
+    Auteurs :
+    - Sébastien HERT
+    """
+    # TODO
