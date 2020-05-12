@@ -9,6 +9,11 @@
 
 #--------------------------------------------------#
 
+#---------------------Imports----------------------#
+
+import sys # Pour récupérer le résultat
+
+#--------------------------------------------------#
 
 #--------------------Description-------------------#
 
@@ -55,15 +60,16 @@ class Generator(object):
 		
 		Appelle :
 		- generate
-		- printNoLines
-		- printWithLines
+		- (printNoLines)
+		- (printWithLines)
 	
 		Auteur :
 		- Dejan PARIS
 		"""
 		self.table = t
 		_, chain = self.generate(0, "debutProg()" + self.s)
-		self.printNoLines(chain)
+		# self.printNoLines(chain)
+		# self.printWithLines(chain)
 
 
 
@@ -647,3 +653,20 @@ class Generator(object):
 		- Dejan PARIS
 		"""
 		return len(self.proc) == 1
+		
+		
+		
+		
+
+#--------------------------------------------------#
+
+
+#-----------------------Main-----------------------#
+
+g = Generator(sys.argv[1])
+print(g.chain)
+
+#--------------------------------------------------#
+
+
+#==================================================#
