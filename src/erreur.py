@@ -75,10 +75,13 @@ def checkTypage(identTable, name, scope, type):
     """
     Description : Vérifie que les 2 paramètres sont de même type, avant de tenter une affectation
 
-    Paramètres : None
+    Paramètres :
+    - identTable : table des identificateurs
+    - name : nom du paramètre / de la variable à tester
+    - scope : portée du paramètre / de la variable
+    - type : type supposé du paramètre / de la variable
 
-    Retour :
-    - 0 si 
+    Retour : None
 
     Auteurs :
     - Sébastien HERT
@@ -87,7 +90,8 @@ def checkTypage(identTable, name, scope, type):
     for e in identTable[:-1] :
         if e[0] == name :
             if e[1] == scope :
-                if e[3] == type :
+                if e[3] != type :
+                    print("Erreur : " + name + " est déclaré comme " + e[3])
                     sys.exit(0)
 
 
