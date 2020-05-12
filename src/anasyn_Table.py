@@ -105,6 +105,7 @@ def fonction(lexical_analyser):
 	lexical_analyser.acceptKeyword("function")
 	ident = lexical_analyser.acceptIdentifier()
 	logger.debug("Name of function : "+ident)
+	ajoutIdentificateur(str(ident),"corps")
 	
 	partieFormelle(lexical_analyser)
 
