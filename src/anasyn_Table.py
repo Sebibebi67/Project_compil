@@ -24,6 +24,8 @@ LOGGING_LEVEL = logging.DEBUG
 listeIdentificateur = []
 tableIdentificateur = []
 porteeActuelle = 0
+indiceValeurAffectation = None
+valeurAffectee = []
 
 class AnaSynException(Exception):
 	def __init__(self, value):
@@ -222,17 +224,21 @@ def instr(lexical_analyser):
 		ajoutIdentificateur("return")
 		retour(lexical_analyser)
 	elif lexical_analyser.isIdentifier():
-		ajoutIdentificateur(str(lexical_analyser.get_value()))
+		saveIdent = str(lexical_analyser.get_value())
 		ident = lexical_analyser.acceptIdentifier()
 		if lexical_analyser.isCharacter("("):
+			ajoutIdentificateur(saveIdent)
 			ajoutIdentificateur("(")
 			ajoutIdentificateur(")")
 		if lexical_analyser.isSymbol(":="):				
 			# affectation
+			ajoutIdentificateur(saveIdent,"affectation")
 			lexical_analyser.acceptSymbol(":=")
 			expression(lexical_analyser)
 			logger.debug("parsed affectation")
+			ajoutIdentificateur(None,"finAffectation")
 		elif lexical_analyser.isCharacter("("):
+			ajoutIdentificateur(saveIdent)
 			lexical_analyser.acceptCharacter("(")
 			if not lexical_analyser.isCharacter(")"):
 				listePe(lexical_analyser)
@@ -376,7 +382,7 @@ def opUnaire(lexical_analyser):
 
 def elemPrim(lexical_analyser):
 	logger.debug("parsing elemPrim: " + str(lexical_analyser.get_value()))
-	ajoutIdentificateur(str(lexical_analyser.get_value()))
+	ajoutIdentificateur(str(lexical_analyser.get_value()),"valeurAffectee")
 	if lexical_analyser.isCharacter("("):
 		lexical_analyser.acceptCharacter("(")
 		expression(lexical_analyser)
@@ -397,8 +403,7 @@ def elemPrim(lexical_analyser):
 		else:
 			logger.debug("Use of an identifier as an expression: " + ident)
 			if not lexical_analyser.isCharacter(")"):
-				ajoutIdentificateur(str(lexical_analyser.get_value()))
-            # ...
+				ajoutIdentificateur(str(lexical_analyser.get_value()),"valeurAffectee")
 	else:
 		logger.error("Unknown Value!")
 		raise AnaSynException("Unknown Value!")
@@ -490,7 +495,11 @@ def retour(lexical_analyser):
 ########################################################################
 	
 def ajoutIdentificateur(identificateur,tableOperation = "None"):
-	global listeIdentificateur,tableIdentificateur,porteeActuelle
+	global listeIdentificateur
+	global tableIdentificateur
+	global porteeActuelle
+	global indiceValeurAffectation
+	global valeurAffectee
 	listeIdentificateur.append(identificateur)
 	
 	if(tableOperation == "None"):
@@ -517,6 +526,31 @@ def ajoutIdentificateur(identificateur,tableOperation = "None"):
 		tableIdentificateur[-1].append(porteeActuelle)
 		tableIdentificateur[-1].append("corps")
 		tableIdentificateur[-1].append(None)
+
+	elif(tableOperation == "affectation"):
+		i = 0
+		while(tableIdentificateur[i][0] != identificateur):
+			i += 1
+		indiceValeurAffectation = i
+
+	elif(tableOperation == "valeurAffectee"):
+		if(indiceValeurAffectation != None):
+			valeurAffectee.append(identificateur)
+
+	elif(tableOperation == "finAffectation"):
+		evaluation = ""
+		for i in range(len(valeurAffectee)):
+			for j in range(len(tableIdentificateur)):
+				if(valeurAffectee[i] == tableIdentificateur[j][0]):
+					if(tableIdentificateur[j][-1] == None):
+						valeurAffectee[i] = str(0)
+					else:
+						valeurAffectee[i] = str(tableIdentificateur[j][-1])
+			evaluation += valeurAffectee[i]
+		tableIdentificateur[indiceValeurAffectation][-1] = eval(evaluation)
+		indiceValeurAffectation = None
+		valeurAffectee = []
+
 	elif(tableOperation == "end"):
 		porteeActuelle -= 1
 
