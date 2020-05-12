@@ -481,6 +481,7 @@ def altern(lexical_analyser):
 
 	if lexical_analyser.isKeyword("else"):
 		lexical_analyser.acceptKeyword("else")
+		ajoutIdentificateur("else","corps")
 		suiteInstr(lexical_analyser)
        
 	lexical_analyser.acceptKeyword("end")
@@ -505,7 +506,8 @@ def ajoutIdentificateur(identificateur,tableOperation = "None"):
 	if(tableOperation == "None"):
 		return
 	elif(tableOperation == "corps"):
-		porteeActuelle += 1
+		if(identificateur != "else"):
+			porteeActuelle += 1
 		tableIdentificateur.append([identificateur])
 		tableIdentificateur[-1].append(porteeActuelle)
 		tableIdentificateur[-1].append("corps")
