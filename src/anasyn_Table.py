@@ -436,7 +436,7 @@ def es(lexical_analyser):
 	logger.debug("parsing E/S instruction: " + lexical_analyser.get_value())
 	if lexical_analyser.isKeyword("get"):
 		lexical_analyser.acceptKeyword("get")
-		ajoutIdentificateur("get")
+		ajoutIdentificateur("get","getput")
 		ajoutIdentificateur("(")
 		lexical_analyser.acceptCharacter("(")
 		ident = lexical_analyser.acceptIdentifier()
@@ -446,7 +446,7 @@ def es(lexical_analyser):
 		logger.debug("Call to get "+ident)
 	elif lexical_analyser.isKeyword("put"):
 		lexical_analyser.acceptKeyword("put")
-		ajoutIdentificateur("put")
+		ajoutIdentificateur("put","getput")
 		ajoutIdentificateur("(")
 		lexical_analyser.acceptCharacter("(")
 		expression(lexical_analyser)
@@ -504,6 +504,13 @@ def ajoutIdentificateur(identificateur,tableOperation = "None"):
 	
 	if(tableOperation == "None"):
 		return
+	elif(tableOperation == "corps"):
+		porteeActuelle += 1
+		tableIdentificateur.append([identificateur])
+		tableIdentificateur[-1].append(porteeActuelle)
+		tableIdentificateur[-1].append("corps")
+		tableIdentificateur[-1].append(None)
+
 	elif(tableOperation == "variable"):
 		tableIdentificateur.append([identificateur])
 		tableIdentificateur[-1].append(porteeActuelle)
@@ -519,13 +526,6 @@ def ajoutIdentificateur(identificateur,tableOperation = "None"):
 			i += 1
 			if(i > l-1):
 				break
-	
-	elif(tableOperation == "corps"):
-		porteeActuelle += 1
-		tableIdentificateur.append([identificateur])
-		tableIdentificateur[-1].append(porteeActuelle)
-		tableIdentificateur[-1].append("corps")
-		tableIdentificateur[-1].append(None)
 
 	elif(tableOperation == "affectation"):
 		i = 0
@@ -550,6 +550,12 @@ def ajoutIdentificateur(identificateur,tableOperation = "None"):
 		tableIdentificateur[indiceValeurAffectation][-1] = eval(evaluation)
 		indiceValeurAffectation = None
 		valeurAffectee = []
+
+	elif(tableOperation == "getput"):
+		tableIdentificateur.append([identificateur])
+		tableIdentificateur[-1].append(porteeActuelle)
+		tableIdentificateur[-1].append("getput")
+		tableIdentificateur[-1].append(None)
 
 	elif(tableOperation == "end"):
 		porteeActuelle -= 1
@@ -608,10 +614,11 @@ def main():
 	program(lexical_analyser)
 		
 	if args.show_ident_table:
-			print("------ IDENTIFIER LIST ------")
-			print(listeIdentificateur)
+			#print("------ IDENTIFIER LIST ------")
+			#print(listeIdentificateur)
 			print("------ IDENTIFIER TABLE ------")
-			print(tableIdentificateur)
+			for i in range(len(tableIdentificateur)):
+				print(tableIdentificateur[i])
 			print("------ END OF IDENTIFIER TABLE ------")
 
 
