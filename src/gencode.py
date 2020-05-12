@@ -40,6 +40,7 @@ class Generator(object):
 	"""
 
 	s = ";\n" 	# Séparateur
+	chain = [] 	# Résultat de la compilation
 	lines = 2 	# Compteur de lignes du code NilNovi
 	id = {}		# Associe les noms de procédures / fonctions à leur numéro de ligne NilNovi
 	var = {}  	# Associe les variables à leurs adresses (locales ou globales)
@@ -66,10 +67,10 @@ class Generator(object):
 		Auteur :
 		- Dejan PARIS
 		"""
-		self.table = t
-		_, chain = self.generate(0, "debutProg()" + self.s)
-		# self.printNoLines(chain)
-		# self.printWithLines(chain)
+		self.table = t.split(",")
+		_, self.chain = self.generate(0, "debutProg()" + self.s)
+		# self.printNoLines(self.chain)
+		# self.printWithLines(self.chain)
 
 
 
@@ -134,7 +135,8 @@ class Generator(object):
 					
 				for k in range(len(stock)):
 					self.var[stock[k]] = k 	# Enregistre les variables
-				chain += "reserver(" + str(len(stock)) + ")" + self.s
+				if len(stock) > 0 : 
+					chain += "reserver(" + str(len(stock)) + ")" + self.s
 				self.lines += 1
 				stock = []
 				i += 1 	# Saute "begin"
@@ -663,6 +665,7 @@ class Generator(object):
 
 #-----------------------Main-----------------------#
 
+print(sys.argv[1])
 g = Generator(sys.argv[1])
 print(g.chain)
 
