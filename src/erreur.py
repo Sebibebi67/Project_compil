@@ -19,9 +19,9 @@ import sys
 
 #--------------------Description-------------------#
 
-# Ce fichier gère les potentielles erreurs de code
-#donné en paramètre du programme, permettant le bon
-#fonctionnement de ce dernier
+# Ce fichier gère les potentielles erreurs du code
+# donné en paramètre du programme, permettant le bon
+# fonctionnement de ce dernier.
 
 #--------------------------------------------------#
 
