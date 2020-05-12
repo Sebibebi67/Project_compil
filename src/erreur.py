@@ -71,18 +71,25 @@ def checkPutBooleen():
     # TODO
     
 
-def checkTypage():
+def checkTypage(identTable, name, scope, type):
     """
     Description : Vérifie que les 2 paramètres sont de même type, avant de tenter une affectation
 
     Paramètres : None
 
-    Retour : None
+    Retour :
+    - 0 si 
 
     Auteurs :
     - Sébastien HERT
+    - Dejan PARIS
     """
-    # TODO
+    for e in identTable[:-1] :
+        if e[0] == name :
+            if e[1] == scope :
+                if e[3] == type :
+                    sys.exit(0)
+
 
 def checkIf():
     """
