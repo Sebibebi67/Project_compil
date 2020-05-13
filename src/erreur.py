@@ -120,7 +120,7 @@ def checkWhile():
 
 def checkDoubleDeclaration(identTable, name, scope):
     """
-    Description : Vérifie que la déclaration d'une variable ne fait pas doublon
+    Description : Vérifie que la déclaration d'un paramètre / d'une variable ne fait pas doublon
 
     Paramètres : None
 
@@ -135,5 +135,30 @@ def checkDoubleDeclaration(identTable, name, scope):
             low_scope = e[1]
         if e[1] == low_scope :
             if e[0] == name :
-                print("Erreur : " + name + " est déclarée plusieurs fois")
+                print("Erreur : " + name + " est déclaré plusieurs fois")
+                sys.exit(0)
+                
+
+
+def checkNonDeclare(identTable, name, scope):
+    """
+    Description : Vérifie qu'un paramètre / une variable a été déclaré(e)
+
+    Paramètres : None
+
+    Retour : None
+
+    Auteurs :
+    - Sébastien HERT
+    """
+    defined = False
+    low_scope = scope
+    for e in identTable[:-1] :
+        if e[1] < low_scope :
+            low_scope = e[1]
+        if e[1] == low_scope :
+            if e[0] == name :
+                defined = True
+    if not defined :
+                print("Erreur : " + name + " n'est pas déclaré")
                 sys.exit(0)
