@@ -43,42 +43,35 @@ import sys
 #---------------------Méthodes---------------------#
 
 
-def checkGetBooleen():
+def checkBooleen(identTable, name):
     """
-    Description : Vérifie que l'on ne tente pas de récupérer une valeur de booléen
-
-    Paramètres : None
-
-    Retour : None
-
-    Auteurs :
-    - Sébastien HERT
-    """
-    # TODO
-    
-
-def checkPutBooleen():
-    """
-    Description : Vérifie que l'on ne tente pas d'afficher un booléen
-
-    Paramètres : None
-
-    Retour : None
-
-    Auteurs :
-    - Sébastien HERT
-    """
-    # TODO
-    
-
-def checkTypage(identTable, name, scope, type):
-    """
-    Description : Vérifie que les 2 paramètres sont de même type, avant de tenter une affectation
+    Description : Vérifie que le paramètre / la variable "name" n'est pas un booléen (pour get() et put()).
 
     Paramètres :
     - identTable : table des identificateurs
     - name : nom du paramètre / de la variable à tester
-    - scope : portée du paramètre / de la variable
+
+    Retour : None
+
+    Auteurs :
+    - Sébastien HERT
+    - Dejan PARIS
+    """
+    for e in identTable[:-1] :
+        if e[0] == name :
+                if e[3] == "boolean" :
+                    print("Erreur : l'argument " + name + " de get() ou put() ne peut pas être un booléen")
+                    sys.exit(0)
+    
+    
+
+def checkTypage(identTable, name, scope, type):
+    """
+    Description : Vérifie que le paramètre / la variable "name" est utilisée conformément à son type.
+
+    Paramètres :
+    - identTable : table des identificateurs
+    - name : nom du paramètre / de la variable à tester
     - type : type supposé du paramètre / de la variable
 
     Retour : None
@@ -89,10 +82,10 @@ def checkTypage(identTable, name, scope, type):
     """
     for e in identTable[:-1] :
         if e[0] == name :
-            if e[1] == scope :
-                if e[3] != type :
-                    print("Erreur : " + name + " est déclaré comme " + e[3])
-                    sys.exit(0)
+            if e[3] != type :
+                print("Erreur : " + name + " est déclaré comme " + e[3])
+                sys.exit(0)
+
 
 
 def checkIf():
@@ -108,6 +101,8 @@ def checkIf():
     """
     # TODO
 
+
+
 def checkWhile():
     """
     Description : Vérifie que la condition d'un "while" est valide
@@ -121,7 +116,9 @@ def checkWhile():
     """
     # TODO
 
-def checkDoubleDeclaration():
+
+
+def checkDoubleDeclaration(identTable, name, scope):
     """
     Description : Vérifie que la déclaration d'une variable ne fait pas doublon
 
@@ -132,4 +129,11 @@ def checkDoubleDeclaration():
     Auteurs :
     - Sébastien HERT
     """
-    # TODO
+    low_scope = scope
+    for e in identTable[:-1] :
+        if e[1] < low_scope :
+            low_scope = e[1]
+        if e[1] == low_scope :
+            if e[0] == name :
+                print("Erreur : " + name + " est déclarée plusieurs fois")
+                sys.exit(0)
