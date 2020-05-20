@@ -21,6 +21,7 @@ logger = logging.getLogger('anasyn')
 DEBUG = False
 LOGGING_LEVEL = logging.DEBUG
 
+#CALC = False
 listeIdentificateur = []
 tableIdentificateur = []
 porteeActuelle = 0
@@ -501,7 +502,8 @@ def ajoutIdentificateur(identificateur,tableOperation = "None"):
 	global porteeActuelle
 	global indiceValeurAffectation
 	global valeurAffectee
-	listeIdentificateur.append(identificateur)
+	if(identificateur != None): #case finAffectation
+		listeIdentificateur.append(identificateur)
 	
 	if(tableOperation == "None"):
 		return
@@ -577,6 +579,8 @@ def main():
                 help='shows the final identifiers table')
 	parser.add_argument('--show-ident-list', action='store_true', \
                 help='shows the identifiers list used in gencode.py')
+	parser.add_argument('--calc-ident-table', action='store_true', \
+                help='shows the identifiers table + UNUSED/UNFINISHED : compute values of variables')
 	args = parser.parse_args()
 
 	filename = args.inputfile[0]
