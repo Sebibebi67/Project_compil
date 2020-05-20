@@ -159,7 +159,7 @@ class Generator(object):
 				self.var = {}
 				i += 1
 				if len(self.proc) == 0 :	# Fin du programme
-					chain += "finProg()"
+					chain += "finProg();"
 				break
 				
 		return i, chain
