@@ -268,10 +268,11 @@ def add():
     """
 
     global cptLigne
+    cpt = cptLigne
     b = pile.pop()
     a = pile.pop()
     empiler(a+b)
-    cptLigne = cptLigne+1
+    cptLigne = cpt+1
 
 
 def mult():
