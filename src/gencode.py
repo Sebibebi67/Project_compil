@@ -67,7 +67,7 @@ class Generator(object):
 		Auteur :
 		- Dejan PARIS
 		"""
-		self.table = t.split("\n")
+		self.table = t
 		_, self.chain = self.generate(0, "debutProg()" + self.s)
 		# self.printNoLines(self.chain)
 		# self.printWithLines(self.chain)
@@ -668,8 +668,9 @@ class Generator(object):
 
 #-----------------------Main-----------------------#
 
-print(sys.argv[1])
-g = Generator(sys.argv[1])
+table = sys.argv[1].split(";")
+# print(table)
+g = Generator(table)
 print(g.chain)
 
 #--------------------------------------------------#
