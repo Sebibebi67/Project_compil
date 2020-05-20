@@ -668,8 +668,11 @@ def main():
 			print(tableIdentificateur[i])
 
 	if args.show_ident_list:
+    		ident_list=""
 		for i in range(len(listeIdentificateur)):
-			print(listeIdentificateur[i])
+			ident_list=ident_list+listeIdentificateur[i]+";"
+			# print(listeIdentificateur[i]+";")
+		print(ident_list)
 
 	if outputFilename != "":
 			try:
