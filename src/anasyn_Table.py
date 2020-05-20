@@ -575,6 +575,8 @@ def main():
                 help='enables output of pseudo-code instead of assembly code')
 	parser.add_argument('--show-ident-table', action='store_true', \
                 help='shows the final identifiers table')
+	parser.add_argument('--show-ident-list', action='store_true', \
+                help='shows the identifiers list used in gencode.py')
 	args = parser.parse_args()
 
 	filename = args.inputfile[0]
@@ -616,13 +618,11 @@ def main():
 	program(lexical_analyser)
 		
 	if args.show_ident_table:
-			#print("------ IDENTIFIER LIST ------")
-			#print(listeIdentificateur)
-			print("------ IDENTIFIER TABLE ------")
-			for i in range(len(tableIdentificateur)):
-				print(tableIdentificateur[i])
-			print("------ END OF IDENTIFIER TABLE ------")
+		for i in range(len(tableIdentificateur)):
+			print(tableIdentificateur[i])
 
+	if args.show_ident_list:
+		print(listeIdentificateur)
 
 	if outputFilename != "":
 			try:
