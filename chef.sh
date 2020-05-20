@@ -28,62 +28,224 @@
 #--------------------------------------------------#
 
 
+#---------------------Fonctions--------------------#
+
+function erreur(){
+    lenError=50
+    stringError="Erreur"
+
+
+    lenParam=${#stringError}
+
+    lenEq1=$(( ($lenError-$lenParam)/2 -1 ))
+    lenEq2=$(( $lenError-$lenParam-$lenEq1-2 ))
+    error=""
+    for (( i = 0; i < $lenEq1; i++ )); do
+        error="${error}-"
+    done
+    error="${error} \e[31m\e[1m$stringError\e[0m\e[31m "
+    for (( i = 0; i < $lenEq2; i++ )); do
+        error="${error}-"
+    done
+
+    echo -e "\e[31m${error}"
+    echo -e "\e[31m$*"
+}
+
+function titre(){
+    lenTitle=50
+
+    if [ $# -eq 0 ]; then
+        param="Titre"
+    else
+        param=$*
+    fi
+
+    lenParam=${#param}
+    lenEq1=$(( ($lenTitle-$lenParam)/2 -1 ))
+    lenEq2=$(( $lenTitle-$lenParam-$lenEq1-2 ))
+    title=""
+    for (( i = 0; i < $lenEq1; i++ )); do
+        title="${title}="
+    done
+    title="${title} $param "
+    for (( i = 0; i < $lenEq2; i++ )); do
+        title="${title}="
+    done
+
+    echo -e "\e[35m\e[1m${title}\n\e[0m"
+}
+
+function success(){
+    echo -e "\e[32m$*\n\e[0m"
+}
+
+function help(){
+    echo TODO
+}
+
+function verifFichier(){
+    #Vérification de la validité du fichier
+    if [ ! -f $1 ]; then
+        erreur "Le fichier n'est pas valide"
+        exit
+    fi
+}
+
+function tmp(){
+    #Création d'un répertoire temporaire
+    if [ ! -d tmp ]; then
+        mkdir tmp
+    fi
+}
+
+function table(){
+    #Création de la table des identifiants
+    titre "Création de la table des identifiants"
+    case $1 in
+        '-show')
+            ./src/anasyn_Table.py $2 --show-ident-table
+            echo "";;
+        '-file')
+            ./src/anasyn_Table.py $2 --show-ident-table >> tmp/IdentTable.txt;;
+        *)
+            echo error;;
+    esac
+    success "Création réussie"
+}
+
+function liste(){
+    #Création de la liste des identifiants
+    titre "Création de la liste des identifiants"
+    ident_list=$( ./src/anasyn_Table.py $1 --show-ident-list )
+    success "Création réussie"
+}
+
+function nilnovi(){
+    #Création du fichier en langage NilNovi
+    titre "Création du programme en NilNovi"
+    case $1 in
+        '-show')
+            ./src/gencode.py $ident_list
+            echo "";;
+        '-file')
+            ./src/gencode.py $ident_list >> tmp/NilNovi.txt;;
+        *)
+            echo error;;
+    esac
+    ./src/gencode.py $ident_list >> tmp/NilNovi.txt
+    success "Création réussie"
+}
+
+function exe(){
+    #Exécution du fichier en NilNovi
+    titre "Exécution du programme en NilNovi"
+    if [ $# -eq 0 ]; then
+        ./src/exec.py ./tmp/NilNovi.txt
+    elif [ $# -eq 1 ]; then
+        ./src/exec.py $1
+    else
+        echo error
+    fi
+}
+
+#--------------------------------------------------#
+
+
 #----------------------Script----------------------#
 
 set -e
 
-echo -e "\e[35m\e[1m================ Initialisation ===============\n\e[0m"
+if [ $1 == '-help' ] || [ $1 == '--help' ] || [ $1 == '-h' ] ; then
+    help
+fi
 
-echo -e "\e[35m\e[1m========== Vérification du paramètre ==========\n\e[0m"
+titre "Initialisation"
+
+titre "Vérification des paramètres"
 
 
 #Vérification du nombre de paramètres
 if [ $# -eq 0 ]; then
-    echo -e "\e[31m------Erreur : Il manque le nom de fichier-----\e[0m\n"
+    erreur "Il manque des paramètres"
     echo -e "\e[34msyntaxe attendue :\e[0m ./chef.sh <fichier>\n"
     exit
 fi
-if [ $# -gt 1 ]; then
-    echo -e "\e[31m---------- \e[1mErreur\e[0m\e[31m - Trop d'arguments ----------\e[0m\n"
+if [ $# -gt 2 ]; then
+    erreur "Trop d'arguments"
     echo -e "\e[34msyntaxe attendue :\e[0m ./chef.sh <fichier>\n"
     exit
 fi
 
 
-#Vérification de la validité du fichier
-if [ ! -f $1 ]; then
-    echo -e "\e[31m -----\e[1mErreur\e[0m\e[31m : Le fichier n'est pas valide---- \e[0m\n"
-    exit
+#Vérification du paramètre d'exécution
+case $1 in
+    '-c'|'-complete')
+        #Vérification de la validité du fichier
+        verifFichier $2
+
+        #Création d'un répertoire temporaire
+        tmp
+
+        #Création de la table des identifiants
+        table -file $2
+
+        #Création de la liste des identifiants
+        ident_list=""
+        liste $2
+
+        #Création du fichier en langage NilNovi
+        nilnovi -file
+
+        #Exécution du fichier en NilNovi
+        exe;;
+
+
+    '-e'|'-exec')
+        #Vérification de la validité du fichier
+        verifFichier $2
+
+        #Exécution du fichier en NilNovi
+        exe $2;;
+
+
+    '-t'|'-table')
+        #Vérification de la validité du fichier
+        verifFichier $2
+
+        #Création de la table des identifiants
+        table -show $2;;
+
+
+    '-nn'|'-nilnovi')
+                #Vérification de la validité du fichier
+        verifFichier $2
+
+        #Création d'un répertoire temporaire
+        tmp
+
+        #Création de la table des identifiants
+        table -file $2
+
+        #Création de la liste des identifiants
+        ident_list=""
+        liste $2
+
+        #Création du fichier en langage NilNovi
+        nilnovi -show;;
+
+
+    *)
+        echo error;;
+esac
+
+
+echo ""
+titre "Terminaison"
+
+if [ -d tmp ]; then
+    rm -r tmp 
 fi
-
-
-#Création d'un répertoire temporaire
-if [ ! -d tmp ]; then
-    mkdir tmp
-fi
-
-#Création de la liste des identifiants
-echo -e "\e[35m\e[1m==== Création de la table des identifiants ====\n\e[0m"
-./src/anasyn_Table.py $1 --show-ident-table >> tmp/IdentTable.txt
-echo -e "\e[32mCréation réussie\n\e[0m"
-
-
-#Création de la liste des identifiants
-echo -e "\e[35m\e[1m==== Création de la liste des identifiants ====\n\e[0m"
-ident_list=$( ./src/anasyn_Table.py $1 --show-ident-list )
-echo -e "\e[32mCréation réussie\n\e[0m"
-
-#Création du fichier en langage NilNovi
-echo -e "\e[35m\e[1m======= Création du fichier en NilNovi ========\n\e[0m"
-./src/gencode.py $ident_list >> tmp/NilNovi.txt
-echo -e "\e[32mCréation réussie\n\e[0m"
-
-#Exécution du fichier en NilNovi
-echo -e "\e[35m\e[1m======= Exécution du fichier en NilNovi =======\n\e[0m"
-./src/exec.py ./tmp/NilNovi.txt
-
-echo -e "\e[35m\e[1m\n================== Terminaison ================\e[0m"
-rm -r tmp
 
 #--------------------------------------------------#
 
