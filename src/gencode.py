@@ -85,15 +85,16 @@ class Generator(object):
 		Retour :
 		- i : la position suivant la procédure / fonction
 		- chain : le code NilNovi procédural
-		
+
 		Appelle :
 		- expression
 		- instructions
 		- generate
-	
+
 		Auteur :
 		- Dejan PARIS
 		"""
+		paramCount = 0 	# Utilisé pour attribuer des adresses locales aux paramètres et variables
 		stock = []  # Stocke temporairement les noms à allouer
 		
 		while i < len(self.table):
@@ -114,6 +115,7 @@ class Generator(object):
 						
 					for k in range(len(stock)):
 						self.param[stock[k]] = k 	# Enregistre les paramètres
+					paramCount = len(stock)
 					stock = []
 				
 				
@@ -134,10 +136,11 @@ class Generator(object):
 						i += 2 	# Saute ": [type]"
 					
 				for k in range(len(stock)):
-					self.var[stock[k]] = k 	# Enregistre les variables
+					self.var[stock[k]] = k + paramCount 	# Enregistre les variables
 				if len(stock) > 0 : 
 					chain += "reserver(" + str(len(stock)) + ")" + self.s
 				self.lines += 1
+				paramCount = 0
 				stock = []
 				i += 1 	# Saute "begin"
 				
