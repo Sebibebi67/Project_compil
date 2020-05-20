@@ -501,7 +501,8 @@ def ajoutIdentificateur(identificateur,tableOperation = "None"):
 	global porteeActuelle
 	global indiceValeurAffectation
 	global valeurAffectee
-	listeIdentificateur.append(identificateur)
+	if(identificateur != None): #case finAffectation
+		listeIdentificateur.append(identificateur)
 	
 	if(tableOperation == "None"):
 		return
@@ -622,7 +623,8 @@ def main():
 			print(tableIdentificateur[i])
 
 	if args.show_ident_list:
-		print(listeIdentificateur)
+		for i in range(len(listeIdentificateur)):
+			print(listeIdentificateur[i])
 
 	if outputFilename != "":
 			try:
