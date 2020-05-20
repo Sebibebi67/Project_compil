@@ -21,7 +21,6 @@ logger = logging.getLogger('anasyn')
 DEBUG = False
 LOGGING_LEVEL = logging.DEBUG
 
-#CALC = False
 listeIdentificateur = []
 tableIdentificateur = []
 porteeActuelle = 0
@@ -579,8 +578,6 @@ def main():
                 help='shows the final identifiers table')
 	parser.add_argument('--show-ident-list', action='store_true', \
                 help='shows the identifiers list used in gencode.py')
-	parser.add_argument('--calc-ident-table', action='store_true', \
-                help='shows the identifiers table + UNUSED/UNFINISHED : compute values of variables')
 	args = parser.parse_args()
 
 	filename = args.inputfile[0]
@@ -626,7 +623,8 @@ def main():
 			print(tableIdentificateur[i])
 
 	if args.show_ident_list:
-		print(listeIdentificateur)
+		for i in range(len(listeIdentificateur)):
+			print(listeIdentificateur[i])
 
 	if outputFilename != "":
 			try:
