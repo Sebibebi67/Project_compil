@@ -31,14 +31,13 @@
 #---------------------Fonctions--------------------#
 
 function erreur(){
-    lenError=50
     stringError="Erreur"
 
 
     lenParam=${#stringError}
 
-    lenEq1=$(( ($lenError-$lenParam)/2 -1 ))
-    lenEq2=$(( $lenError-$lenParam-$lenEq1-2 ))
+    lenEq1=$(( ($lenTitle-$lenParam)/2 -1 ))
+    lenEq2=$(( $lenTitle-$lenParam-$lenEq1-2 ))
     error=""
     for (( i = 0; i < $lenEq1; i++ )); do
         error="${error}-"
@@ -53,8 +52,6 @@ function erreur(){
 }
 
 function titre(){
-    lenTitle=50
-
     if [ $# -eq 0 ]; then
         param="Titre"
     else
@@ -156,6 +153,8 @@ function exe(){
 
 set -e
 
+lenTitle=50
+
 if [ $1 == '-help' ] || [ $1 == '--help' ] || [ $1 == '-h' ] ; then
     help
 fi
@@ -218,7 +217,7 @@ case $1 in
 
 
     '-nn'|'-nilnovi')
-                #Vérification de la validité du fichier
+        #Vérification de la validité du fichier
         verifFichier $2
 
         #Création d'un répertoire temporaire
@@ -236,7 +235,7 @@ case $1 in
 
 
     *)
-        echo error;;
+        erreur "Le premier paramètre n'a pas été reconnu";;
 esac
 
 
