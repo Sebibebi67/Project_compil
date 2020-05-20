@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# -*- coding: utf-8 -*-
+
 ## 	@package anasyn
 # 	Syntactical Analyser package. 
 #
@@ -21,11 +23,21 @@ logger = logging.getLogger('anasyn')
 DEBUG = False
 LOGGING_LEVEL = logging.DEBUG
 
+"""
+Description : Déclarations globales utiles
+
+Paramètres : None
+
+Retour : None
+
+Auteurs :
+- Alex JOBARD, Thomas LEPERCQ
+"""
 listeIdentificateur = []
 tableIdentificateur = []
 porteeActuelle = 0
-indiceValeurAffectation = None
-valeurAffectee = []
+indiceValeurAffectation = None 	# UNFINISHED / UNUSED
+valeurAffectee = []				# UNFINISHED / UNUSED
 
 class AnaSynException(Exception):
 	def __init__(self, value):
@@ -494,33 +506,44 @@ def retour(lexical_analyser):
 	expression(lexical_analyser)
 
 ########################################################################
-	
+
+"""
+Description : méthode appelée pour construire la table d'identificateurs
+
+Paramètres : identificateur, tableOperation
+
+Retour : None
+
+Auteurs :
+- Alex JOBARD, Thomas LEPERCQ
+"""	
 def ajoutIdentificateur(identificateur,tableOperation = "None"):
-	global listeIdentificateur
-	global tableIdentificateur
-	global porteeActuelle
-	global indiceValeurAffectation
-	global valeurAffectee
-	if(identificateur != None): #case finAffectation
+	global listeIdentificateur		# Liste pour gencode.py
+	global tableIdentificateur		# Table d'identificateurs
+	global porteeActuelle 			# Scope
+	global indiceValeurAffectation 	# UNFINISHED / UNUSED
+	global valeurAffectee			# UNFINISHED / UNUSED
+
+	if(identificateur != None): 		# case finAffectation (UNFINISHED / UNUSED)
 		listeIdentificateur.append(identificateur)
 	
 	if(tableOperation == "None"):
 		return
-	elif(tableOperation == "corps"):
-		if(identificateur != "else"):
+	elif(tableOperation == "corps"): 	# Identificateur d'une procédure, fonction ou boucle
+		if(identificateur != "else"):	# Le scope ne change pas entre un if et le else correspondant
 			porteeActuelle += 1
 		tableIdentificateur.append([identificateur])
 		tableIdentificateur[-1].append(porteeActuelle)
 		tableIdentificateur[-1].append("corps")
 		tableIdentificateur[-1].append(None)
 
-	elif(tableOperation == "variable"):
+	elif(tableOperation == "variable"): # Identificateur d'une variable
 		tableIdentificateur.append([identificateur])
 		tableIdentificateur[-1].append(porteeActuelle)
 		tableIdentificateur[-1].append("null")
 		tableIdentificateur[-1].append(None)
 	
-	elif(tableOperation == "type"):
+	elif(tableOperation == "type"):		# Type d'une variable déjà déclarée
 		portee = tableIdentificateur[-1][1]
 		i = 0
 		while(tableIdentificateur[-1-i][1] == portee and tableIdentificateur[-1-i][2] == "null"):
@@ -530,38 +553,50 @@ def ajoutIdentificateur(identificateur,tableOperation = "None"):
 			if(i > l-1):
 				break
 
-	elif(tableOperation == "affectation"):
-		i = 0
-		while(tableIdentificateur[i][0] != identificateur):
-			i += 1
-		indiceValeurAffectation = i
-
-	elif(tableOperation == "valeurAffectee"):
-		if(indiceValeurAffectation != None):
-			valeurAffectee.append(identificateur)
-
-	elif(tableOperation == "finAffectation"):
-		evaluation = ""
-		for i in range(len(valeurAffectee)):
-			for j in range(len(tableIdentificateur)):
-				if(valeurAffectee[i] == tableIdentificateur[j][0]):
-					if(tableIdentificateur[j][-1] == None):
-						valeurAffectee[i] = str(0)
-					else:
-						valeurAffectee[i] = str(tableIdentificateur[j][-1])
-			evaluation += valeurAffectee[i]
-		tableIdentificateur[indiceValeurAffectation][-1] = eval(evaluation)
-		indiceValeurAffectation = None
-		valeurAffectee = []
-
-	elif(tableOperation == "getput"):
+	elif(tableOperation == "getput"):	# Identificateur d'un appel à put ou get
 		tableIdentificateur.append([identificateur])
 		tableIdentificateur[-1].append(porteeActuelle)
 		tableIdentificateur[-1].append("getput")
 		tableIdentificateur[-1].append(None)
 
-	elif(tableOperation == "end"):
+	elif(tableOperation == "end"):		# Gestion du scope à la fin d'une procédure, fonction ou boucle
 		porteeActuelle -= 1
+
+	################# UNFINISHED - UNUSED ################# 
+	"""
+	Description : Calcul des valeurs finales des variables déclarées
+
+	Paramètres : indentificateur
+
+	Retour : valeur finale de la variable dans la derniere colonne
+	de la table des identificateurs
+
+	Auteurs :
+	- Thomas LEPERCQ
+	"""
+	# elif(tableOperation == "affectation"):
+	# 	i = 0
+	# 	while(tableIdentificateur[i][0] != identificateur):
+	# 		i += 1
+	# 	indiceValeurAffectation = i
+
+	# elif(tableOperation == "valeurAffectee"):
+	# 	if(indiceValeurAffectation != None):
+	# 		valeurAffectee.append(identificateur)
+
+	# elif(tableOperation == "finAffectation"):
+	# 	evaluation = ""
+	# 	for i in range(len(valeurAffectee)):
+	# 		for j in range(len(tableIdentificateur)):
+	# 			if(valeurAffectee[i] == tableIdentificateur[j][0]):
+	# 				if(tableIdentificateur[j][-1] == None):
+	# 					valeurAffectee[i] = str(0)
+	# 				else:
+	# 					valeurAffectee[i] = str(tableIdentificateur[j][-1])
+	# 		evaluation += valeurAffectee[i]
+	# 	tableIdentificateur[indiceValeurAffectation][-1] = eval(evaluation)
+	# 	indiceValeurAffectation = None
+	# 	valeurAffectee = []
 
 ########################################################################
 def main():
@@ -617,7 +652,17 @@ def main():
 	# launch the analysis of the program
 	lexical_analyser.init_analyser()
 	program(lexical_analyser)
-		
+	
+	"""
+	Description : Gestion des arguments pour l'exécution
+
+	Paramètres : args
+
+	Retour : Table des identificateurs ou liste donnée à gencode.py
+
+	Auteurs :
+	- Alex JOBARD
+	"""
 	if args.show_ident_table:
 		for i in range(len(tableIdentificateur)):
 			print(tableIdentificateur[i])
