@@ -237,18 +237,20 @@ def instr(lexical_analyser):
 		retour(lexical_analyser)
 	elif lexical_analyser.isIdentifier():
 		saveIdent = str(lexical_analyser.get_value())
+		print("ICI",saveIdent)
 		ident = lexical_analyser.acceptIdentifier()
-		if lexical_analyser.isCharacter("("):
-			ajoutIdentificateur(saveIdent)
-			ajoutIdentificateur("(")
-			ajoutIdentificateur(")")
+		# if lexical_analyser.isCharacter("("):
+		#   # ERREUR AVEC LE ELIF "(" SUIVANT
+		# 	ajoutIdentificateur(saveIdent)
+		# 	ajoutIdentificateur("(")
+		# 	ajoutIdentificateur(")")
 		if lexical_analyser.isSymbol(":="):				
 			# affectation
 			ajoutIdentificateur(saveIdent,"affectation")
 			lexical_analyser.acceptSymbol(":=")
 			expression(lexical_analyser, [False])
 			logger.debug("parsed affectation")
-			ajoutIdentificateur(None,"finAffectation")
+			# ajoutIdentificateur(None,"finAffectation")
 		elif lexical_analyser.isCharacter("("):
 			ajoutIdentificateur(saveIdent)
 			lexical_analyser.acceptCharacter("(")
