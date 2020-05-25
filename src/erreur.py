@@ -44,140 +44,140 @@ import sys
 
 
 def checkBooleen(identTable, name):
-    """
-    Description : Vérifie que le paramètre / la variable "name" n'est pas un booléen (pour get() et put()).
+	"""
+	Description : Vérifie que le paramètre / la variable "name" n'est pas un booléen (pour get() et put()).
 
-    Paramètres :
-    - identTable : table des identificateurs
-    - name : nom du paramètre / de la variable à tester
+	Paramètres :
+	- identTable : table des identificateurs
+	- name : nom du paramètre / de la variable à tester
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Dejan PARIS
-    """
-    for e in identTable[:-1] :
-        if e[0] == name :
-            if e[2] == "boolean" :
-                print("Erreur : l'argument " + name + " de get() ou put() ne peut pas être un booléen")
-                sys.exit(0)
-    
+	Auteurs :
+	- Sébastien HERT
+	- Dejan PARIS
+	"""
+	for e in identTable[:-1] :
+		if e[0] == name :
+			if e[2] == "boolean" :
+				print("Erreur : l'argument " + name + " de get() ou put() ne peut pas être un booléen")
+				sys.exit(0)
+	
 
-    
+	
 def checkBoolean(identTable, name):
-    """
-    Description : Vérifie si le paramètre / la variable "name" est un booléen.
+	"""
+	Description : Vérifie si le paramètre / la variable "name" est un booléen.
 
-    Paramètres :
-    - identTable : table des identificateurs
-    - name : nom du paramètre / de la variable à tester
+	Paramètres :
+	- identTable : table des identificateurs
+	- name : nom du paramètre / de la variable à tester
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Dejan PARIS
-    """
-    for e in identTable[:-1] :
-        if e[0] == name :
-            return e[2] == "boolean"
+	Auteurs :
+	- Dejan PARIS
+	"""
+	for e in identTable[:-1] :
+		if e[0] == name :
+			return e[2] == "boolean"
 
-    
+	
 
 def checkTypage(identTable, name, scope, type):
-    """
-    Description : Vérifie que le paramètre / la variable "name" est utilisée conformément à son type.
+	"""
+	Description : Vérifie que le paramètre / la variable "name" est utilisée conformément à son type.
 
-    Paramètres :
-    - identTable : table des identificateurs
-    - name : nom du paramètre / de la variable à tester
-    - type : type supposé du paramètre / de la variable
+	Paramètres :
+	- identTable : table des identificateurs
+	- name : nom du paramètre / de la variable à tester
+	- type : type supposé du paramètre / de la variable
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Dejan PARIS
-    """
-    for e in identTable[:-1] :
-        if e[0] == name :
-            if e[2] != type :
-                print("Erreur : " + name + " est déclaré comme " + e[3])
-                sys.exit(0)
+	Auteurs :
+	- Sébastien HERT
+	- Dejan PARIS
+	"""
+	for e in identTable[:-1] :
+		if e[0] == name :
+			if e[2] != type :
+				print("Erreur : " + name + " est déclaré comme " + e[3])
+				sys.exit(0)
 
 
 
 def checkIf(identTable, line):
-    """
-    Description : Vérifie que la condition d'un "if" est valide
+	"""
+	Description : Vérifie que la condition d'un "if" est valide
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    """
-    # TODO
+	Auteurs :
+	- Sébastien HERT
+	"""
+	# TODO
 
 
 
 def checkWhile():
-    """
-    Description : Vérifie que la condition d'un "while" est valide
+	"""
+	Description : Vérifie que la condition d'un "while" est valide
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    """
-    # TODO
+	Auteurs :
+	- Sébastien HERT
+	"""
+	# TODO
 
 
 
 def checkDoubleDeclaration(identTable, name, scope):
-    """
-    Description : Vérifie que la déclaration d'un paramètre / d'une variable ne fait pas doublon
+	"""
+	Description : Vérifie que la déclaration d'un paramètre / d'une variable ne fait pas doublon
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    """
-    low_scope = scope
-    for e in identTable[:-1] :
-        if e[1] < low_scope :
-            low_scope = e[1]
-        if e[1] == low_scope :
-            if e[0] == name :
-                print("Erreur : " + name + " est déclaré plusieurs fois")
-                sys.exit(0)
-                
+	Auteurs :
+	- Sébastien HERT
+	"""
+	low_scope = scope
+	for e in identTable[:-1] :
+		if e[1] < low_scope :
+			low_scope = e[1]
+		if e[1] == low_scope :
+			if e[0] == name :
+				print("Erreur : " + name + " est déclaré plusieurs fois")
+				sys.exit(0)
+				
 
 
 def checkNonDeclare(identTable, name, scope):
-    """
-    Description : Vérifie qu'un paramètre / une variable a été déclaré(e)
+	"""
+	Description : Vérifie qu'un paramètre / une variable a été déclaré(e)
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    """
-    defined = False
-    low_scope = scope
-    for e in identTable[:-1] :
-        if e[1] < low_scope :
-            low_scope = e[1]
-        if e[1] == low_scope :
-            if e[0] == name :
-                defined = True
-    if not defined :
-                print("Erreur : " + name + " n'est pas déclaré")
-                sys.exit(0)
+	Auteurs :
+	- Sébastien HERT
+	"""
+	defined = False
+	low_scope = scope
+	for e in identTable[:-1] :
+		if e[1] < low_scope :
+			low_scope = e[1]
+		if e[1] == low_scope :
+			if e[0] == name :
+				defined = True
+	if not defined :
+				print("Erreur : " + name + " n'est pas déclaré")
+				sys.exit(0)

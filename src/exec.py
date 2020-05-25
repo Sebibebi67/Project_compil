@@ -52,658 +52,658 @@ fin = False # Permet de gérer la fin du programme
 #---------------------Méthodes---------------------#
 
 def debutProg():
-    """
-    Description : Indique le début du programme
+	"""
+	Description : Indique le début du programme
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
 
-    print("Début de Programme\n")
-    global cptLigne
-    cptLigne += 1
+	print("Début de Programme\n")
+	global cptLigne
+	cptLigne += 1
 
 
 def finProg():
-    """
-    Description : Indique la fin du programme
+	"""
+	Description : Indique la fin du programme
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
-    print("\nFin de Programme")
-    global fin
-    fin = True
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
+	print("\nFin de Programme")
+	global fin
+	fin = True
 
 
 def reserver(n):
-    """
-    Description : Réserve n emplacements dans la pile
+	"""
+	Description : Réserve n emplacements dans la pile
 
-    Paramètres :
-    - n : le nombre d'emplacements à reserver
+	Paramètres :
+	- n : le nombre d'emplacements à reserver
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
-    global cptLigne
-    cpt = cptLigne
-    for i in range(0, n):
-        empiler(0)
-    cptLigne = cpt+1
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
+	global cptLigne
+	cpt = cptLigne
+	for i in range(0, n):
+		empiler(0)
+	cptLigne = cpt+1
 
 
 def empiler(n):
-    """
-    Description : Empile la valeur n en sommet de pile
+	"""
+	Description : Empile la valeur n en sommet de pile
 
-    Paramètres :
-    - n : la valeur à empiler
+	Paramètres :
+	- n : la valeur à empiler
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
-    pile.append(n)
-    global cptLigne
-    cptLigne += 1
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
+	pile.append(n)
+	global cptLigne
+	cptLigne += 1
 
 
 def affectation():
-    """
-    Description : Effectue l'affectation Ad(a):=n où Ad(a) est l'adresse de a et n la nouvelle valeur de a, toutes les deux en sommet de pile.
+	"""
+	Description : Effectue l'affectation Ad(a):=n où Ad(a) est l'adresse de a et n la nouvelle valeur de a, toutes les deux en sommet de pile.
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
 
-    global pile
-    n = pile.pop()
-    a = pile.pop()
-    pile[a] = n
-    global cptLigne
-    cptLigne += 1
+	global pile
+	n = pile.pop()
+	a = pile.pop()
+	pile[a] = n
+	global cptLigne
+	cptLigne += 1
 
 
 def valeurPile():
-    """
-    Description : Recherche la valeur a, située à l'adresse n, avec n donné en sommet de pile
+	"""
+	Description : Recherche la valeur a, située à l'adresse n, avec n donné en sommet de pile
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
-    
-    global cptLigne
-    cpt = cptLigne
-    n = pile.pop()
-    a = pile[n]
-    empiler(a)
-    cptLigne = cpt+1
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
+	
+	global cptLigne
+	cpt = cptLigne
+	n = pile.pop()
+	a = pile[n]
+	empiler(a)
+	cptLigne = cpt+1
 
 
 def get():
-    """
-    Description : Récupère l'élément saisi au clavier
+	"""
+	Description : Récupère l'élément saisi au clavier
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
-    
-    global cptLigne
-    cpt = cptLigne
-    ok = False
-    while not ok:
-        a = input("Entrez un nombre à empiler : ")
-        try:
-            data = int(a)
-            valeurPile()
-            empiler(data)
-            affectation()
-            ok = True
-        except ValueError:
-            print("Rentrez une valeur entière")
-    cptLigne = cpt+1
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
+	
+	global cptLigne
+	cpt = cptLigne
+	ok = False
+	while not ok:
+		a = input("Entrez un nombre à empiler : ")
+		try:
+			data = int(a)
+			valeurPile()
+			empiler(data)
+			affectation()
+			ok = True
+		except ValueError:
+			print("Rentrez une valeur entière")
+	cptLigne = cpt+1
 
 
 def put():
-    """
-    Description : Affiche le sommet de pile
+	"""
+	Description : Affiche le sommet de pile
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
-    a = pile.pop()
-    print(a)
-    global cptLigne
-    cptLigne += 1
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
+	a = pile.pop()
+	print(a)
+	global cptLigne
+	cptLigne += 1
 
 
 def moins():
-    """
-    Description : Évalue l'expression "-a" où a est la valeur du sommet de pile interprétée comme un entier, et empile le résultat sous forme d'un entier
+	"""
+	Description : Évalue l'expression "-a" où a est la valeur du sommet de pile interprétée comme un entier, et empile le résultat sous forme d'un entier
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
 
-    global cptLigne
-    cpt = cptLigne
-    a = pile.pop()
-    empiler(-a)
-    cptLigne = cpt+1
+	global cptLigne
+	cpt = cptLigne
+	a = pile.pop()
+	empiler(-a)
+	cptLigne = cpt+1
 
 
 def sous():
-    """
-    Description : Évalue l'expression "a-b" où a et b sont les deux valeurs du sommet de pile interprétées comme des entiers, et empile le résultat sous forme d'un entier
+	"""
+	Description : Évalue l'expression "a-b" où a et b sont les deux valeurs du sommet de pile interprétées comme des entiers, et empile le résultat sous forme d'un entier
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
-    
-    global cptLigne
-    cpt = cptLigne
-    b = pile.pop()
-    a = pile.pop()
-    empiler(a-b)
-    cptLigne = cpt+1
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
+	
+	global cptLigne
+	cpt = cptLigne
+	b = pile.pop()
+	a = pile.pop()
+	empiler(a-b)
+	cptLigne = cpt+1
 
 
 def add():
-    """
-    Description : Évalue l'expression "a+b" où a et b sont les deux valeurs du sommet de pile interprétées comme des entiers, et empile le résultat sous forme d'un entier
+	"""
+	Description : Évalue l'expression "a+b" où a et b sont les deux valeurs du sommet de pile interprétées comme des entiers, et empile le résultat sous forme d'un entier
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
 
-    global cptLigne
-    cpt = cptLigne
-    b = pile.pop()
-    a = pile.pop()
-    empiler(a+b)
-    cptLigne = cpt+1
+	global cptLigne
+	cpt = cptLigne
+	b = pile.pop()
+	a = pile.pop()
+	empiler(a+b)
+	cptLigne = cpt+1
 
 
 def mult():
-    """
-    Description : Évalue l'expression "a*b" où a et b sont les deux valeurs du sommet de pile interprétées comme des entiers, et empile le résultat sous forme d'un entier
+	"""
+	Description : Évalue l'expression "a*b" où a et b sont les deux valeurs du sommet de pile interprétées comme des entiers, et empile le résultat sous forme d'un entier
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
-    
-    global cptLigne
-    cpt = cptLigne
-    b = pile.pop()
-    a = pile.pop()
-    empiler(a*b)
-    cptLigne = cpt+1
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
+	
+	global cptLigne
+	cpt = cptLigne
+	b = pile.pop()
+	a = pile.pop()
+	empiler(a*b)
+	cptLigne = cpt+1
 
 
 def div():
-    """
-    Description : Évalue l'expression "a/b" où a et b sont les deux valeurs du sommet de pile interprétées comme des entiers, et empile le résultat sous forme d'un entier
+	"""
+	Description : Évalue l'expression "a/b" où a et b sont les deux valeurs du sommet de pile interprétées comme des entiers, et empile le résultat sous forme d'un entier
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
 
-    global cptLigne
-    cpt = cptLigne
-    b = pile.pop()
-    a = pile.pop()
-    empiler(a//b)
-    cptLigne = cpt+1
+	global cptLigne
+	cpt = cptLigne
+	b = pile.pop()
+	a = pile.pop()
+	empiler(a//b)
+	cptLigne = cpt+1
 
 
 def egal():
-    """
-    Description : Évalue l'expression "a=b" où a et b sont les deux valeurs du sommet de pile interprétées comme des entiers, et empile le résultat sous forme de booléen
+	"""
+	Description : Évalue l'expression "a=b" où a et b sont les deux valeurs du sommet de pile interprétées comme des entiers, et empile le résultat sous forme de booléen
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
-    
-    global cptLigne
-    cpt = cptLigne
-    b = pile.pop()
-    a = pile.pop()
-    empiler(int(a == b))
-    cptLigne = cpt+1
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
+	
+	global cptLigne
+	cpt = cptLigne
+	b = pile.pop()
+	a = pile.pop()
+	empiler(int(a == b))
+	cptLigne = cpt+1
 
 
 def diff():
-    """
-    Description : Évalue l'expression "a≠b" où a et b sont les deux valeurs du sommet de pile interprétées comme des entiers, et empile le résultat sous forme de booléen
+	"""
+	Description : Évalue l'expression "a≠b" où a et b sont les deux valeurs du sommet de pile interprétées comme des entiers, et empile le résultat sous forme de booléen
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
 
-    global cptLigne
-    cpt = cptLigne
-    b = pile.pop()
-    a = pile.pop()
-    empiler(int(a != b))
-    cptLigne = cpt+1
+	global cptLigne
+	cpt = cptLigne
+	b = pile.pop()
+	a = pile.pop()
+	empiler(int(a != b))
+	cptLigne = cpt+1
 
 
 def inf():
-    """
-    Description : Évalue l'expression "a<b" où a et b sont les deux valeurs du sommet de pile interprétées comme des entiers, et empile le résultat sous forme de booléen
+	"""
+	Description : Évalue l'expression "a<b" où a et b sont les deux valeurs du sommet de pile interprétées comme des entiers, et empile le résultat sous forme de booléen
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
 
-    global cptLigne
-    cpt = cptLigne
-    b = pile.pop()
-    a = pile.pop()
-    empiler(int(a < b))
-    cptLigne = cpt+1
+	global cptLigne
+	cpt = cptLigne
+	b = pile.pop()
+	a = pile.pop()
+	empiler(int(a < b))
+	cptLigne = cpt+1
 
 
 def infeg():
-    """
-    Description : Évalue l'expression "a≤b" où a et b sont les deux valeurs du sommet de pile interprétées comme des entiers, et empile le résultat sous forme de booléen
+	"""
+	Description : Évalue l'expression "a≤b" où a et b sont les deux valeurs du sommet de pile interprétées comme des entiers, et empile le résultat sous forme de booléen
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
 
-    global cptLigne
-    cpt = cptLigne
-    b = pile.pop()
-    a = pile.pop()
-    empiler(int(a <= b))
-    cptLigne = cpt+1
+	global cptLigne
+	cpt = cptLigne
+	b = pile.pop()
+	a = pile.pop()
+	empiler(int(a <= b))
+	cptLigne = cpt+1
 
 
 def sup():
-    """
-    Description : Évalue l'expression "a>b" où a et b sont les deux valeurs du sommet de pile interprétées comme des entiers, et empile le résultat sous forme de booléen
+	"""
+	Description : Évalue l'expression "a>b" où a et b sont les deux valeurs du sommet de pile interprétées comme des entiers, et empile le résultat sous forme de booléen
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
-    global cptLigne
-    cpt = cptLigne
-    b = pile.pop()
-    a = pile.pop()
-    empiler(int(a > b))
-    cptLigne = cpt+1
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
+	global cptLigne
+	cpt = cptLigne
+	b = pile.pop()
+	a = pile.pop()
+	empiler(int(a > b))
+	cptLigne = cpt+1
 
 
 def supeg():
-    """
-    Description : Évalue l'expression "a≥b" où a et b sont les deux valeurs du sommet de pile interprétées comme des entiers, et empile le résultat sous forme de booléen
+	"""
+	Description : Évalue l'expression "a≥b" où a et b sont les deux valeurs du sommet de pile interprétées comme des entiers, et empile le résultat sous forme de booléen
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
-    
-    global cptLigne
-    cpt = cptLigne
-    b = pile.pop()
-    a = pile.pop()
-    empiler(int(a >= b))
-    cptLigne = cpt+1
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
+	
+	global cptLigne
+	cpt = cptLigne
+	b = pile.pop()
+	a = pile.pop()
+	empiler(int(a >= b))
+	cptLigne = cpt+1
 
 
 def et():
-    """
-    Description : Évalue l'expression "bool1 et bool2" où bool1 et bool2 sont les deux valeurs du sommet de pile interprétées comme des booléens, et empile le résultat  sous forme de booléen
+	"""
+	Description : Évalue l'expression "bool1 et bool2" où bool1 et bool2 sont les deux valeurs du sommet de pile interprétées comme des booléens, et empile le résultat  sous forme de booléen
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
-    
-    global cptLigne
-    cpt = cptLigne
-    bool1 = pile.pop()
-    bool2 = pile.pop()
-    empiler(int(bool1 and bool2))
-    cptLigne = cpt+1
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
+	
+	global cptLigne
+	cpt = cptLigne
+	bool1 = pile.pop()
+	bool2 = pile.pop()
+	empiler(int(bool1 and bool2))
+	cptLigne = cpt+1
 
 
 def ou():
-    """
-    Description : Évalue l'expression "bool1 ou bool2" où bool1 et bool2 sont les deux valeurs du sommet de pile interprétées comme des booléens, et empile le résultat  sous forme de booléen
+	"""
+	Description : Évalue l'expression "bool1 ou bool2" où bool1 et bool2 sont les deux valeurs du sommet de pile interprétées comme des booléens, et empile le résultat  sous forme de booléen
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
 
-    global cptLigne
-    cpt = cptLigne
-    bool1 = pile.pop()
-    bool2 = pile.pop()
-    empiler(int(bool1 or bool2))
-    cptLigne = cpt+1
+	global cptLigne
+	cpt = cptLigne
+	bool1 = pile.pop()
+	bool2 = pile.pop()
+	empiler(int(bool1 or bool2))
+	cptLigne = cpt+1
 
 
 def non():
-    """
-    Description : Évalue l'expression "non bool1" où bool1 est la valeur du sommet de pile interprétée comme un booléen, et empile le résultat sous forme de booléen
+	"""
+	Description : Évalue l'expression "non bool1" où bool1 est la valeur du sommet de pile interprétée comme un booléen, et empile le résultat sous forme de booléen
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
-    
-    global cptLigne
-    cpt = cptLigne
-    boolean = pile.pop()
-    empiler(int(not boolean))
-    cptLigne = cpt+1
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
+	
+	global cptLigne
+	cpt = cptLigne
+	boolean = pile.pop()
+	empiler(int(not boolean))
+	cptLigne = cpt+1
 
 
 def tra(n):
-    """
-    Description : Effectue un saut vers la ligne n
+	"""
+	Description : Effectue un saut vers la ligne n
 
-    Paramètres :
-    - n : la prochaine ligne à exécuter
+	Paramètres :
+	- n : la prochaine ligne à exécuter
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
 
-    global cptLigne
-    cptLigne = n-1
+	global cptLigne
+	cptLigne = n-1
 
 
 def tze(n):
-    """
-    Description : Effectue un saut vers la ligne n si le booléen en sommet de pile est faux
+	"""
+	Description : Effectue un saut vers la ligne n si le booléen en sommet de pile est faux
 
-    Paramètres :
-    - n : la prochaine ligne à exécuter
+	Paramètres :
+	- n : la prochaine ligne à exécuter
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
 
-    boolean = pile.pop()
-    global cptLigne
-    if not bool(boolean):
-        cptLigne = n-1
-    else:
-        cptLigne += 1
+	boolean = pile.pop()
+	global cptLigne
+	if not bool(boolean):
+		cptLigne = n-1
+	else:
+		cptLigne += 1
 
 
 def erreur(exp):
-    """
-    Description : Affiche l'erreur exp et finit le programme
+	"""
+	Description : Affiche l'erreur exp et finit le programme
 
-    Paramètres :
-    - exp : l'expression à afficher
+	Paramètres :
+	- exp : l'expression à afficher
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
 
-    print(exp)
-    print("\nUne Erreur est survenue\nFin de Programme")
-    sys.exit()
+	print(exp)
+	print("\nUne Erreur est survenue\nFin de Programme")
+	sys.exit()
 
 
 def empilerAd(n):
-    """
-    Description : Empile l'adresse globale n
+	"""
+	Description : Empile l'adresse globale n
 
-    Paramètres :
-    - n : l'adresse n à empiler
+	Paramètres :
+	- n : l'adresse n à empiler
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
 
-    empiler(n+pointeurLigne[-1])
+	empiler(n+pointeurLigne[-1])
 
 
 def empilerParam(n):
-    """
-    Description : Empile l'adresse locale n
+	"""
+	Description : Empile l'adresse locale n
 
-    Paramètres :
-    - n : l'adresse n à empiler
+	Paramètres :
+	- n : l'adresse n à empiler
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
 
-    pile.append(n+pointeurLigne[-1])
-    valeurPile()
+	pile.append(n+pointeurLigne[-1])
+	valeurPile()
 
 
 def retourFonct():
-    """
-    Description : Signale la fin d'une fonction
+	"""
+	Description : Signale la fin d'une fonction
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
 
-    global pile
+	global pile
 
-    # On sauve la valeur à retourner
-    retour = pile.pop()
+	# On sauve la valeur à retourner
+	retour = pile.pop()
 
-    # On vide la pile de toutes les potentielles valeurs stockées
-    while pile[-1] != None:
-        pile.pop()
+	# On vide la pile de toutes les potentielles valeurs stockées
+	while pile[-1] != None:
+		pile.pop()
 
-    # On retire le bloc
-    for _ in range(3):
-        pile.pop()
+	# On retire le bloc
+	for _ in range(3):
+		pile.pop()
 
-    # On remet la valeur de retour en sommet de pile
-    pile.append(retour)
+	# On remet la valeur de retour en sommet de pile
+	pile.append(retour)
 
-    # On renvoie à la ligne suivante du programme
-    global cptLigne
-    pointeurLigne.pop()
-    cptLigne = pointeurLigne.pop()
+	# On renvoie à la ligne suivante du programme
+	global cptLigne
+	pointeurLigne.pop()
+	cptLigne = pointeurLigne.pop()
 
 
 def retourProc():
-    """
-    Description : Signale la fin d'une procédure
+	"""
+	Description : Signale la fin d'une procédure
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
 
-    # On vide la pile de toutes les potentielles valeurs stockées
-    while pile[-1] != None:
-        pile.pop()
+	# On vide la pile de toutes les potentielles valeurs stockées
+	while pile[-1] != None:
+		pile.pop()
 
-    # On retire le bloc
-    for _ in range(3):
-        pile.pop()
+	# On retire le bloc
+	for _ in range(3):
+		pile.pop()
 
-    # On renvoie à la ligne suivante du programme
-    global cptLigne
-    pointeurLigne.pop()
-    cptLigne = pointeurLigne.pop()
+	# On renvoie à la ligne suivante du programme
+	global cptLigne
+	pointeurLigne.pop()
+	cptLigne = pointeurLigne.pop()
 
 
 def reserverBloc():
-    """
-    Description : Réserve un bloc de 3 emplacements dans la pile
+	"""
+	Description : Réserve un bloc de 3 emplacements dans la pile
 
-    Paramètres : None
+	Paramètres : None
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
-    
-    for _ in range(3):
-        pile.append(None)
-    global cptLigne
-    cptLigne += 1
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
+	
+	for _ in range(3):
+		pile.append(None)
+	global cptLigne
+	cptLigne += 1
 
 
 def traStat(n, t):
-    """
-    Description : Appelle la ligne n avec t paramètres
+	"""
+	Description : Appelle la ligne n avec t paramètres
 
-    Paramètres :
+	Paramètres :
 	- n : la prochaine ligne à exécuter
 	- t : le nombre de paramètres
 
-    Retour : None
+	Retour : None
 
-    Auteurs :
-    - Sébastien HERT
-    - Adam RIVIERE
-    """
+	Auteurs :
+	- Sébastien HERT
+	- Adam RIVIERE
+	"""
 
-    # Sauvegarde de la prochaine ligne à exécuter après le retour de fonction
-    global pointeurLigne
-    global cptLigne
-    pointeurLigne.append(cptLigne+1)
+	# Sauvegarde de la prochaine ligne à exécuter après le retour de fonction
+	global pointeurLigne
+	global cptLigne
+	pointeurLigne.append(cptLigne+1)
 
-    # Déplacement à la ligne n
-    cptLigne = n-1
+	# Déplacement à la ligne n
+	cptLigne = n-1
 
-    # Stockage du décalage adresse-position dans la pile
-    pointeurLigne.append(len(pile)-t)
+	# Stockage du décalage adresse-position dans la pile
+	pointeurLigne.append(len(pile)-t)
 
 #--------------------------------------------------#
 

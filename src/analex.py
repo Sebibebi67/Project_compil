@@ -31,7 +31,7 @@ class AnaLexException(Exception):
 		return repr(self.value)
 		
 ########################################################################				 	
-#### LexicalUnit classes					    ####				 	
+#### LexicalUnit classes						####				 	
 ########################################################################
 
 ## Class LexicalUnit
@@ -80,10 +80,10 @@ class LexicalUnit(object):
 	def is_fel(self):
 		return False
 	
-        ## Static method used to retreive a specific LexicalUnit from 
-        # a line of text formatted by __str__
-        # @param line the line of text to process
-        # @return A lexical unit (instance of a child class)
+		## Static method used to retreive a specific LexicalUnit from 
+		# a line of text formatted by __str__
+		# @param line the line of text to process
+		# @return A lexical unit (instance of a child class)
 	@staticmethod
 	def extract_from_line(line):
 		fields = line.split('\t')
@@ -100,7 +100,7 @@ class LexicalUnit(object):
 		elif fields[0] == Integer.__class__.__name__:
 			return Integer(fields[1], fields[2], fields[3], fields[4])
 	
-        ## Returns the object as a formatted string
+		## Returns the object as a formatted string
 	def __str__(self):
 		unitValue = {'classname':self.__class__.__name__,'lIdx':self.line_index,'cIdx':self.col_index,'length':self.length,'value':self.value}
 		return '%(classname)s\t%(lIdx)d\t%(cIdx)d\t%(length)d\t%(value)s\n' % unitValue
@@ -109,7 +109,7 @@ class LexicalUnit(object):
 #
 # This class inherits from LexicalUnit.
 class Identifier(LexicalUnit):
-        ## The constructor
+		## The constructor
 	def __init__(self, l, c, ln, v):
 		super(Identifier, self).__init__(l, c, ln, v)
 
@@ -125,7 +125,7 @@ class Keyword(LexicalUnit):
 	def __init__(self, l, c, ln, v):
 		super(Keyword, self).__init__(l, c, ln, v)
 		
-        ## Return true since it is a keyword
+		## Return true since it is a keyword
 	def is_keyword(self, keyword):
 		return self.get_value() == keyword
 
@@ -133,11 +133,11 @@ class Keyword(LexicalUnit):
 #
 # This class inherits from LexicalUnit.			
 class Character(LexicalUnit):
-        ## The constructor
+		## The constructor
 	def __init__(self, l, c, ln, v):
 		super(Character, self).__init__(l, c, ln, v)
 
-        ## Return true since it is a character
+		## Return true since it is a character
 	def is_character(self, c):
 		return self.get_value() == c
 
@@ -145,11 +145,11 @@ class Character(LexicalUnit):
 #
 # This class inherits from LexicalUnit.		
 class Symbol(LexicalUnit):
-        ## The constructor
+		## The constructor
 	def __init__(self, l, c, ln, v):
 		super(Symbol, self).__init__(l, c, ln, v)
 
-        ## Return true since it is a symbol
+		## Return true since it is a symbol
 	def is_symbol(self, s):
 		return self.get_value() == s
 
@@ -157,11 +157,11 @@ class Symbol(LexicalUnit):
 #
 # This class inherits from LexicalUnit.		
 class Integer(LexicalUnit):
-        ## The constructor
+		## The constructor
 	def __init__(self, l, c, ln, v):
 		super(Integer, self).__init__(l, c, ln, v)
 	
-        ## Return true since it is an integer
+		## Return true since it is an integer
 	def is_integer(self):
 		return True
 
@@ -169,31 +169,31 @@ class Integer(LexicalUnit):
 #
 # This class inherits from LexicalUnit.			
 class Fel(LexicalUnit):
-        ## The constructor
+		## The constructor
 	def __init__(self, l, c, ln, v):
 		super(Fel, self).__init__(l, c, ln, v)
 
-        ## Return true since it is a Fel instance
+		## Return true since it is a Fel instance
 	def is_fel(self):
 		return True
 		
 ## Lexical analyser class
 #
 class LexicalAnalyser(object):	
-        ## Attribute to store the different lexical units
+		## Attribute to store the different lexical units
 	lexical_units = []
 
-        ## Index used to keep track of the lexical unit under treatment
+		## Index used to keep track of the lexical unit under treatment
 	lexical_unit_index = -1
 	
-        ## The constructor
+		## The constructor
 	def __init__(self):
 		lexical_units = []
 	
-        ## Analyse a line and extract the lexical units. 
-        # The extracted lexical units are then added to the attribute lexical_units.
-        # @param lineIndex index of the line in the original text
-        # @param line the lien of text to analyse
+		## Analyse a line and extract the lexical units. 
+		# The extracted lexical units are then added to the attribute lexical_units.
+		# @param lineIndex index of the line in the original text
+		# @param line the lien of text to analyse
 	def analyse_line(self, lineIndex, line):
 		space = re.compile("\s")
 		digit = re.compile("[0-9]")
@@ -288,8 +288,8 @@ class LexicalAnalyser(object):
 			if unitValue != None:
 				self.lexical_units.append(unitValue)
 		
-        ## Saves the lexical units to a text file.
-        # @param filename Name of the output file (if "" then output to stdout)
+		## Saves the lexical units to a text file.
+		# @param filename Name of the output file (if "" then output to stdout)
 	def save_to_file(self, filename):
 		output_file = None
 		if filename != "":
@@ -307,8 +307,8 @@ class LexicalAnalyser(object):
 		if filename != "":
 			output_file.close()
 	
-        ## Loads lexical units from a text file.
-        # @param filename Name of the file to load (if "" then stdin is used)
+		## Loads lexical units from a text file.
+		# @param filename Name of the file to load (if "" then stdin is used)
 	def load_from_file(self, filename):
 		input_file = None
 		if filename != "":
@@ -329,14 +329,14 @@ class LexicalAnalyser(object):
 			lexical_unit = LexicalUnit.extract_from_line(line)
 			self.lexical_units.append(lexical_unit)
 
-        ## Verifies that the current lexical unit index is not out of bounds
-        # return True if lexical_unit_index < len(lexical_units)
+		## Verifies that the current lexical unit index is not out of bounds
+		# return True if lexical_unit_index < len(lexical_units)
 	def verify_index(self):
 		return self.lexical_unit_index < len(self.lexical_units)
 		
-        ## Accepts a given keyword if it corresponds to the current lexical unit.
-        # @param keyword string containing the keyword
-        # @exception AnaLexException When the keyword is not found
+		## Accepts a given keyword if it corresponds to the current lexical unit.
+		# @param keyword string containing the keyword
+		# @exception AnaLexException When the keyword is not found
 	def acceptKeyword(self, keyword):
 		if not self.verify_index():
 			raise AnaLexException("Found end of entry while keyword "+keyword+" expected!")
@@ -345,9 +345,9 @@ class LexicalAnalyser(object):
 		else:
 			raise AnaLexException("Expecting keyword "+keyword+" <line "+str(self.lexical_units[self.lexical_unit_index].get_line_index())+", column "+str(self.lexical_units[self.lexical_unit_index].get_col_index())+"> !")
 
-        ## Accepts an identifier if it corresponds to the current lexical unit.
-        # @return identifier string value
-        # @exception AnaLexException When no identifier is found
+		## Accepts an identifier if it corresponds to the current lexical unit.
+		# @return identifier string value
+		# @exception AnaLexException When no identifier is found
 	def acceptIdentifier(self):
 		if not self.verify_index():
 			raise AnaLexException("Found end of entry while identifer expected!")
@@ -358,9 +358,9 @@ class LexicalAnalyser(object):
 		else:
 			raise AnaLexException("Expecting identifier <line "+str(self.lexical_units[self.lexical_unit_index].get_line_index())+", column "+str(self.lexical_units[self.lexical_unit_index].get_col_index())+"> !")
 	
-        ## Accepts an integer if it corresponds to the current lexical unit.
-        # @return integer value
-        # @exception AnaLexException When no integer is found
+		## Accepts an integer if it corresponds to the current lexical unit.
+		# @return integer value
+		# @exception AnaLexException When no integer is found
 	def acceptInteger(self):
 		if not self.verify_index():
 			raise AnaLexException("Found end of entry while integer value expected!")
@@ -372,8 +372,8 @@ class LexicalAnalyser(object):
 			raise AnaLexException("Expecting integer <line "+str(self.lexical_units[self.lexical_unit_index].get_line_index())+", column "+str(self.lexical_units[self.lexical_unit_index].get_col_index())+"> !")
 	
 
-        ## Accepts a Fel instance if it corresponds to the current lexical unit.
-        # @exception AnaLexException When no Fel is found
+		## Accepts a Fel instance if it corresponds to the current lexical unit.
+		# @exception AnaLexException When no Fel is found
 	def acceptFel(self):
 		if not self.verify_index():
 			raise AnaLexException("Found end of entry while expecting .!")
@@ -382,9 +382,9 @@ class LexicalAnalyser(object):
 		else:
 			raise AnaLexException("Expecting end of program <line "+str(self.lexical_units[self.lexical_unit_index].get_line_index())+", column "+str(self.lexical_units[self.lexical_unit_index].get_col_index())+"> !")
 
-        ## Accepts a given character if it corresponds to the current lexical unit.
-        # @param c string containing the character
-        # @exception AnaLexException When the character is not found
+		## Accepts a given character if it corresponds to the current lexical unit.
+		# @param c string containing the character
+		# @exception AnaLexException When the character is not found
 	def acceptCharacter(self, c):
 		if not self.verify_index():
 			raise AnaLexException("Found end of entry while expecting character " + c + "!")
@@ -393,9 +393,9 @@ class LexicalAnalyser(object):
 		else:
 			raise AnaLexException("Expecting character " + c + " <line "+str(self.lexical_units[self.lexical_unit_index].get_line_index())+", column "+str(self.lexical_units[self.lexical_unit_index].get_col_index())+"> !")	
 
-        ## Accepts a given symbol if it corresponds to the current lexical unit.
-        # @param s string containing the symbol
-        # @exception AnaLexException When the symbol is not found
+		## Accepts a given symbol if it corresponds to the current lexical unit.
+		# @param s string containing the symbol
+		# @exception AnaLexException When the symbol is not found
 	def acceptSymbol(self, s):
 		if not self.verify_index():
 			raise AnaLexException("Found end of entry while expecting symbol " + s + "!")
@@ -404,9 +404,9 @@ class LexicalAnalyser(object):
 		else:
 			raise AnaLexException("Expecting symbol " + s + " <line "+str(self.lexical_units[self.lexical_unit_index].get_line_index())+", column "+str(self.lexical_units[self.lexical_unit_index].get_col_index())+"> !")	
 	
-        ## Tests if a given keyword corresponds to the current lexical unit.
-        # @return True if the keyword is found
-        # @exception AnaLexException When the end of entry is found
+		## Tests if a given keyword corresponds to the current lexical unit.
+		# @return True if the keyword is found
+		# @exception AnaLexException When the end of entry is found
 	def isKeyword(self, keyword):
 		if not self.verify_index():
 			raise AnaLexException("Unexpected end of entry!")
@@ -414,9 +414,9 @@ class LexicalAnalyser(object):
 			return True
 		return False
 
-        ## Tests the current lexical unit corresponds to an identifier.
-        # @return True if an identifier is found
-        # @exception AnaLexException When the end of entry is found
+		## Tests the current lexical unit corresponds to an identifier.
+		# @return True if an identifier is found
+		# @exception AnaLexException When the end of entry is found
 	def isIdentifier(self):
 		if not self.verify_index():
 			raise AnaLexException("Unexpected end of entry!")
@@ -425,8 +425,8 @@ class LexicalAnalyser(object):
 		return False
 
 	## Tests if a given character corresponds to the current lexical unit.
-        # @return True if the character is found
-        # @exception AnaLexException When the end of entry is found
+		# @return True if the character is found
+		# @exception AnaLexException When the end of entry is found
 	def isCharacter(self, c):
 		if not self.verify_index():
 			raise AnaLexException("Found end of entry while expecting character " + c + "!")
@@ -434,9 +434,9 @@ class LexicalAnalyser(object):
 			return True
 		return False			
 
-        ## Tests the current lexical unit corresponds to an integer.
-        # @return True if an integer is found
-        # @exception AnaLexException When the end of entry is found
+		## Tests the current lexical unit corresponds to an integer.
+		# @return True if an integer is found
+		# @exception AnaLexException When the end of entry is found
 	def isInteger(self):
 		if not self.verify_index():
 			raise AnaLexException("Found end of entry while expecting integer value!")
@@ -444,9 +444,9 @@ class LexicalAnalyser(object):
 			return True
 		return False			
 
-        ## Tests if a given symbol corresponds to the current lexical unit.
-        # @return True if the symbol is found
-        # @exception AnaLexException When the end of entry is found
+		## Tests if a given symbol corresponds to the current lexical unit.
+		# @return True if the symbol is found
+		# @exception AnaLexException When the end of entry is found
 	def isSymbol(self, s):
 		if not self.verify_index():
 			raise AnaLexException("Found end of entry while expecting symbol " + s + "!")
@@ -454,12 +454,12 @@ class LexicalAnalyser(object):
 			return True
 		return False			
 
-        ## Returns the value of the current lexical unit
-        # @return value of the current unit
+		## Returns the value of the current lexical unit
+		# @return value of the current unit
 	def get_value(self):
 		return self.lexical_units[self.lexical_unit_index].get_value()
 			
-        ## Initializes the lexical analyser
+		## Initializes the lexical analyser
 	def init_analyser(self):
 		self.lexical_unit_index = 0
 	
@@ -504,6 +504,6 @@ def main():
 ########################################################################				 
 
 if __name__ == "__main__":
-    main() 
+	main() 
 
 

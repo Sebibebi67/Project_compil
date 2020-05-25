@@ -10,8 +10,8 @@ procedure e is
   val: integer;
 begin
   val:=12;
-  while val+1 loop      //mess. erreur attendu ici
-    val:=val+1
+  while val+1 loop	  //mess. erreur attendu ici
+	val:=val+1
   end
 end.
 
