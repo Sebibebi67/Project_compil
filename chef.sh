@@ -1,38 +1,76 @@
 #!/bin/bash
 
-#======================chef.sh=====================#
 
-#-----------------------Alias----------------------#
-
-# Compilateur
-# Heuristique
-# Efficace et
-# Fiable
-
-#--------------------------------------------------#
+#=================================== chef.sh ====================================#
 
 
-#--------------------Description-------------------#
-
+#--------------------------------- Description ----------------------------------#
+#
 # Ce script shell permet l'exécution complète du
 # compilateur, en prenant en paramètre un fichier
-# valide
+# valide.
+# 
+# Compilateur Heuristique Efficace et Fiable
+#
+#--------------------------------------------------------------------------------#
 
-#--------------------------------------------------#
+
+#----------------------------------- Synopsis -----------------------------------#
+#
+# ./chef.sh <arg> <fichier>
+#
+#--------------------------------------------------------------------------------#
 
 
-#----------------------Auteur----------------------#
+#----------------------------------- Options ------------------------------------#
+#
+# arg :
+#   * -h, -help :       Affiche l'aide
+#   * -c, -complete :   Compile et exécute un fichier en pseudo-code
+#   * -e, -exec :       Exécute un fichier Nilnovi
+#   * -t, -table :      Affiche la table des identifiants
+#   * -nn, -nilnovi :   Compile le fichier et le réécrit en langage NilNovi
+#
+# fichier : soit un fichier en pseudo-code, soit un fichier en NilNovi, en
+# fonction du premier argument choisi
+#
+#--------------------------------------------------------------------------------#
 
+
+#----------------------------------- Auteurs ------------------------------------#
+#
 # Sébastien HERT
+#
+#--------------------------------------------------------------------------------#
 
-#--------------------------------------------------#
+
+#------------------------------ Variables Globales ------------------------------#
+#
+lenTitle=50
+ident_list=""
+# 
+#--------------------------------------------------------------------------------#
 
 
-#---------------------Fonctions--------------------#
+#---------------------------------- Fonctions -----------------------------------#
+
+
 
 function erreur(){
-    stringError="Erreur"
+    ###
+    # Description : Affiche une erreur dans le terminal
+    #
+    # Input :
+    # - Une chaine de caractères expliquant l'erreur
+    #
+    # Output :
+    # - Affichage dans le terminal
+    #
+    # Auteur :
+    # - Sébastien HERT
+    ###
 
+    stringError="Erreur"
 
     lenParam=${#stringError}
 
@@ -52,6 +90,19 @@ function erreur(){
 }
 
 function titre(){
+    ###
+    # Description : Affiche un titre dans le terminal
+    #
+    # Input :
+    # - Le titre sous la forme d'une chaine de caractère
+    #
+    # Output :
+    # - Affichage dans le terminal
+    #
+    # Auteur :
+    # - Sébastien HERT
+    ###
+
     if [ $# -eq 0 ]; then
         param="Titre"
     else
@@ -74,15 +125,54 @@ function titre(){
 }
 
 function success(){
+    ###
+    # Description : Affiche un succès dans le terminal
+    #
+    # Input :
+    # - Une chaine de caractère décrivant le succès
+    #
+    # Output :
+    # - Affichage dans le terminal
+    #
+    # Auteur :
+    # - Sébastien HERT
+    ###
+
     echo -e "\e[32m$*\n\e[0m"
 }
 
 function help(){
+    ###
+    # Description : Affiche l'aide
+    #
+    # Input :
+    # - None
+    #
+    # Output :
+    # - Affiche l'aide
+    #
+    # Authors :
+    # - Sébastien HERT
+    ###
+
     echo TODO
+    exit
 }
 
 function verifFichier(){
-    #Vérification de la validité du fichier
+    ###
+    # Description : Vérifie la validité du fichier
+    #
+    # Input :
+    # - Le nom du fichier
+    #
+    # Output :
+    # - Une erreur si le fichier n'est pas reconnu
+    #
+    # Auteur :
+    # - Sébastien HERT
+    ###
+
     if [ ! -f $1 ]; then
         erreur "Le fichier n'est pas valide"
         exit
@@ -90,14 +180,39 @@ function verifFichier(){
 }
 
 function tmp(){
-    #Création d'un répertoire temporaire
+    ###
+    # Description : Crée un répertoire temporaire
+    #
+    # Input :
+    # - None
+    #
+    # Output :
+    # - None
+    #
+    # Auteur :
+    # - Sébastien HERT
+    ###
+
     if [ ! -d tmp ]; then
         mkdir tmp
     fi
 }
 
 function table(){
-    #Création de la table des identifiants
+    ###
+    # Description : Crée la table des identifiants
+    #
+    # Input :
+    # - -file ou -show indiquant si la sortie est dans un fichier ou afficher dans le terminal
+    # - le fichier contenant le pseudo-code
+    #
+    # Output :
+    # - Affichage dans le terminal ou dans un fichier, en fonction de l'argument choisi
+    #
+    # Auteur :
+    # - Sébastien HERT
+    ###
+
     titre "Création de la table des identifiants"
     case $1 in
         '-show')
@@ -112,14 +227,38 @@ function table(){
 }
 
 function liste(){
-    #Création de la liste des identifiants
+    ###
+    # Description : Crée la liste des identifiants
+    #
+    # Input :
+    # - Le fichier contenant le pseudo-code
+    #
+    # Output :
+    # - Modification d'une variable globale
+    #
+    # Auteur :
+    # - Sébastien HERT
+    ###
+
     titre "Création de la liste des identifiants"
     ident_list=$( ./src/anasyn_Table.py $1 --show-ident-list )
     success "Création réussie"
 }
 
 function nilnovi(){
-    #Création du fichier en langage NilNovi
+    ###
+    # Description : Crée un fichier en langage NilNovi
+    #
+    # Input :
+    # - -file ou -show indiquant si la sortie est dans un fichier ou afficher dans le terminal
+    #
+    # Output :
+    # - Affichage dans le terminal ou dans un fichier, en fonction de l'argument choisi
+    #
+    # Auteur :
+    # - Sébastien HERT
+    ###
+
     titre "Création du programme en NilNovi"
     case $1 in
         '-show')
@@ -135,7 +274,19 @@ function nilnovi(){
 }
 
 function exe(){
-    #Exécution du fichier en NilNovi
+    ###
+    # Description : Exécution du fichier en Nilnovi
+    #
+    # Input :
+    # - Le fichier en NilNovi (par défaut le fichier est .tmp/NilNovi.txt)
+    #
+    # Output :
+    # - Affichage dans le terminal
+    #
+    # Auteur :
+    # - Sébastien HERT
+    ###
+
     titre "Exécution du programme en NilNovi"
     if [ $# -eq 0 ]; then
         ./src/exec.py ./tmp/NilNovi.txt
@@ -146,16 +297,13 @@ function exe(){
     fi
 }
 
-#--------------------------------------------------#
+#--------------------------------------------------------------------------------#
 
 
-#----------------------Script----------------------#
+#------------------------------------- Main -------------------------------------#
 
 set -e
-
-lenTitle=50
-
-if [ $1 == '-help' ] || [ $1 == '--help' ] || [ $1 == '-h' ] ; then
+if [[ $1 == '-help' ]] || [[ $1 == '--help' ]] || [[ $1 == '-h' ]] ; then
     help
 fi
 
@@ -167,12 +315,12 @@ titre "Vérification des paramètres"
 #Vérification du nombre de paramètres
 if [ $# -eq 0 ]; then
     erreur "Il manque des paramètres"
-    echo -e "\e[34msyntaxe attendue :\e[0m ./chef.sh <fichier>\n"
+    echo -e "\e[34m\nUtilisez -help pour afficher l'aide :\e[0m ./chef.sh -help\n"
     exit
 fi
 if [ $# -gt 2 ]; then
     erreur "Trop d'arguments"
-    echo -e "\e[34msyntaxe attendue :\e[0m ./chef.sh <fichier>\n"
+    echo -e "\e[34m\nUtilisez -help pour afficher l'aide :\e[0m ./chef.sh -help\n"
     exit
 fi
 
@@ -190,7 +338,6 @@ case $1 in
         table -file $2
 
         #Création de la liste des identifiants
-        ident_list=""
         liste $2
 
         #Création du fichier en langage NilNovi
@@ -227,7 +374,6 @@ case $1 in
         table -file $2
 
         #Création de la liste des identifiants
-        ident_list=""
         liste $2
 
         #Création du fichier en langage NilNovi
@@ -246,7 +392,7 @@ if [ -d tmp ]; then
     rm -r tmp 
 fi
 
-#--------------------------------------------------#
+#--------------------------------------------------------------------------------#
 
 
-#==================================================#
+#================================================================================#
