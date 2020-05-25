@@ -246,7 +246,7 @@ def instr(lexical_analyser):
 			# affectation
 			ajoutIdentificateur(saveIdent,"affectation")
 			lexical_analyser.acceptSymbol(":=")
-			expression(lexical_analyser)
+			expression(lexical_analyser, [False])
 			logger.debug("parsed affectation")
 			ajoutIdentificateur(None,"finAffectation")
 		elif lexical_analyser.isCharacter("("):
@@ -266,41 +266,44 @@ def instr(lexical_analyser):
 		raise AnaSynException("Unknown Instruction <"+ lexical_analyser.get_value() +">!")
 
 def listePe(lexical_analyser):
-	expression(lexical_analyser)
+	expression(lexical_analyser, [False])
 	if lexical_analyser.isCharacter(","):
 		lexical_analyser.acceptCharacter(",")
 		listePe(lexical_analyser)
 
-def expression(lexical_analyser):
-    #TODO
+def expression(lexical_analyser, validCondition):
 	logger.debug("parsing expression: " + str(lexical_analyser.get_value()))
-	exp1(lexical_analyser)
+	exp1(lexical_analyser, validCondition)
 	if lexical_analyser.isKeyword("or"):
 		lexical_analyser.acceptKeyword("or")
-		exp1(lexical_analyser)
+		validCondition[0] = True
+		exp1(lexical_analyser, validCondition)
         
-def exp1(lexical_analyser):
+def exp1(lexical_analyser, validCondition):
 	logger.debug("parsing exp1")
 	
-	exp2(lexical_analyser)
+	exp2(lexical_analyser, validCondition)
 	if lexical_analyser.isKeyword("and"):
 		lexical_analyser.acceptKeyword("and")
-		exp2(lexical_analyser)
+		validCondition[0] = True
+		exp2(lexical_analyser, validCondition)
         
-def exp2(lexical_analyser):
+def exp2(lexical_analyser, validCondition):
 	logger.debug("parsing exp2")
         
-	exp3(lexical_analyser)
+	exp3(lexical_analyser, validCondition)
 	if	lexical_analyser.isSymbol("<") or \
 		lexical_analyser.isSymbol("<=") or \
 		lexical_analyser.isSymbol(">") or \
 		lexical_analyser.isSymbol(">="):
 		opRel(lexical_analyser)
-		exp3(lexical_analyser)
+		validCondition[0] = True
+		exp3(lexical_analyser, validCondition)
 	elif lexical_analyser.isSymbol("=") or \
 		lexical_analyser.isSymbol("/="):
 		opRel(lexical_analyser)
-		exp3(lexical_analyser)
+		validCondition[0] = True
+		exp3(lexical_analyser, validCondition)
 	
 def opRel(lexical_analyser):
 	logger.debug("parsing relationnal operator: " + lexical_analyser.get_value())
@@ -328,12 +331,12 @@ def opRel(lexical_analyser):
 		logger.error(msg)
 		raise AnaSynException(msg)
 
-def exp3(lexical_analyser):
+def exp3(lexical_analyser, validCondition):
 	logger.debug("parsing exp3")
-	exp4(lexical_analyser)	
+	exp4(lexical_analyser, validCondition)	
 	if lexical_analyser.isCharacter("+") or lexical_analyser.isCharacter("-"):
 		opAdd(lexical_analyser)
-		exp4(lexical_analyser)
+		exp4(lexical_analyser, validCondition)
 
 def opAdd(lexical_analyser):
 	logger.debug("parsing additive operator: " + lexical_analyser.get_value())
@@ -348,13 +351,13 @@ def opAdd(lexical_analyser):
 		logger.error(msg)
 		raise AnaSynException(msg)
 
-def exp4(lexical_analyser):
+def exp4(lexical_analyser, validCondition):
 	logger.debug("parsing exp4")
         
-	prim(lexical_analyser)	
+	prim(lexical_analyser, validCondition)	
 	if lexical_analyser.isCharacter("*") or lexical_analyser.isCharacter("/"):
 		opMult(lexical_analyser)
-		prim(lexical_analyser)
+		prim(lexical_analyser, validCondition)
 
 def opMult(lexical_analyser):
 	logger.debug("parsing multiplicative operator: " + lexical_analyser.get_value())
@@ -369,12 +372,12 @@ def opMult(lexical_analyser):
 		logger.error(msg)
 		raise AnaSynException(msg)
 
-def prim(lexical_analyser):
+def prim(lexical_analyser, validCondition):
 	logger.debug("parsing prim")
         
 	if lexical_analyser.isCharacter("+") or lexical_analyser.isCharacter("-") or lexical_analyser.isKeyword("not"):
 		opUnaire(lexical_analyser)
-	elemPrim(lexical_analyser)
+	elemPrim(lexical_analyser, validCondition)
 
 def opUnaire(lexical_analyser):
 	logger.debug("parsing unary operator: " + lexical_analyser.get_value())
@@ -392,17 +395,21 @@ def opUnaire(lexical_analyser):
 		logger.error(msg)
 		raise AnaSynException(msg)
 
-def elemPrim(lexical_analyser):
+def elemPrim(lexical_analyser, validCondition):
 	logger.debug("parsing elemPrim: " + str(lexical_analyser.get_value()))
 	ajoutIdentificateur(str(lexical_analyser.get_value()),"valeurAffectee")
 	if lexical_analyser.isCharacter("("):
 		lexical_analyser.acceptCharacter("(")
-		expression(lexical_analyser)
+		expression(lexical_analyser, validCondition)
 		lexical_analyser.acceptCharacter(")")
 	elif lexical_analyser.isInteger() or lexical_analyser.isKeyword("true") or lexical_analyser.isKeyword("false"):
-		valeur(lexical_analyser)
+		vtype = valeur(lexical_analyser)
+		if vtype == "boolean" :
+			validCondition[0] = True
 	elif lexical_analyser.isIdentifier():
 		ident = lexical_analyser.acceptIdentifier()
+		if checkBoolean(tableIdentificateur, ident) :
+			validCondition[0] = True
 		if lexical_analyser.isCharacter("("):			# Appel fonct
 			lexical_analyser.acceptCharacter("(")
 			if not lexical_analyser.isCharacter(")"):
@@ -423,7 +430,6 @@ def elemPrim(lexical_analyser):
 def valeur(lexical_analyser):
 	if lexical_analyser.isInteger():
 		entier = lexical_analyser.acceptInteger()
-        #TODO
 		logger.debug("integer value: " + str(entier))
 		return "integer"
 	elif lexical_analyser.isKeyword("true") or lexical_analyser.isKeyword("false"):
@@ -461,7 +467,7 @@ def es(lexical_analyser):
 		ajoutIdentificateur("put","getput")
 		ajoutIdentificateur("(")
 		lexical_analyser.acceptCharacter("(")
-		expression(lexical_analyser)
+		expression(lexical_analyser, [False])
 		lexical_analyser.acceptCharacter(")")
 		ajoutIdentificateur(")")
 		logger.debug("Call to put")
@@ -473,7 +479,11 @@ def boucle(lexical_analyser):
 	logger.debug("parsing while loop: ")
 	lexical_analyser.acceptKeyword("while")
 
-	expression(lexical_analyser)
+	validCondition = [False]
+	expression(lexical_analyser, validCondition)
+	if not validCondition[0] :
+		logger.error("Invalid condition : expression is not a boolean !")
+		raise AnaSynException("Invalid condition : expression is not a boolean !")
 
 	lexical_analyser.acceptKeyword("loop")
 	suiteInstr(lexical_analyser)
@@ -486,7 +496,11 @@ def altern(lexical_analyser):
 	logger.debug("parsing if: ")
 	lexical_analyser.acceptKeyword("if")
 
-	expression(lexical_analyser)
+	validCondition = [False]
+	expression(lexical_analyser, validCondition)
+	if not validCondition[0] :
+		logger.error("Invalid condition : expression is not a boolean !")
+		raise AnaSynException("Invalid condition : expression is not a boolean !")
        
 	lexical_analyser.acceptKeyword("then")
 	suiteInstr(lexical_analyser)
@@ -503,7 +517,7 @@ def altern(lexical_analyser):
 def retour(lexical_analyser):
 	logger.debug("parsing return instruction")
 	lexical_analyser.acceptKeyword("return")
-	expression(lexical_analyser)
+	expression(lexical_analyser, [False])
 
 ########################################################################
 
