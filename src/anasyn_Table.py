@@ -253,10 +253,12 @@ def instr(lexical_analyser):
 		elif lexical_analyser.isCharacter("("):
 			ajoutIdentificateur(saveIdent)
 			lexical_analyser.acceptCharacter("(")
+			ajoutIdentificateur("(")
 			if not lexical_analyser.isCharacter(")"):
 				listePe(lexical_analyser)
 
 			lexical_analyser.acceptCharacter(")")
+			ajoutIdentificateur(")")
 			logger.debug("parsed procedure call")
 		else:
 			logger.error("Expecting procedure call or affectation!")
