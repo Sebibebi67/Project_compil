@@ -148,9 +148,11 @@ def corpsFonct(lexical_analyser):
 
 def partieFormelle(lexical_analyser):
 	lexical_analyser.acceptCharacter("(")
+	ajoutIdentificateur("(")
 	if not lexical_analyser.isCharacter(")"):
 		listeSpecifFormelles(lexical_analyser)
 	lexical_analyser.acceptCharacter(")")
+	ajoutIdentificateur(")")
 
 def listeSpecifFormelles(lexical_analyser):
 	specif(lexical_analyser)
