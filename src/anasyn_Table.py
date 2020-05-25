@@ -218,7 +218,7 @@ def suiteInstrNonVide(lexical_analyser):
 	instr(lexical_analyser)
 	if lexical_analyser.isCharacter(";"):
 		lexical_analyser.acceptCharacter(";")
-		suiteInstrNonVide(lexical_analyser)
+		suiteInstr(lexical_analyser)
 
 def suiteInstr(lexical_analyser):
 	if not lexical_analyser.isKeyword("end"):
