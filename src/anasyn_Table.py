@@ -275,6 +275,7 @@ def listePe(lexical_analyser):
 def expression(lexical_analyser):
     #TODO
 	logger.debug("parsing expression: " + str(lexical_analyser.get_value()))
+	global conditionValide
 	conditionValide = False
 	exp1(lexical_analyser)
 	if lexical_analyser.isKeyword("or"):
@@ -288,11 +289,13 @@ def exp1(lexical_analyser):
 	exp2(lexical_analyser)
 	if lexical_analyser.isKeyword("and"):
 		lexical_analyser.acceptKeyword("and")
+		global conditionValide
 		conditionValide = True
 		exp2(lexical_analyser)
         
 def exp2(lexical_analyser):
 	logger.debug("parsing exp2")
+	global conditionValide
         
 	exp3(lexical_analyser)
 	if	lexical_analyser.isSymbol("<") or \
@@ -303,7 +306,7 @@ def exp2(lexical_analyser):
 		opRel(lexical_analyser)
 		exp3(lexical_analyser)
 	elif lexical_analyser.isSymbol("=") or \
-		lexical_analyser.isSymbol("/="): 
+		lexical_analyser.isSymbol("/="):
 		conditionValide = True
 		opRel(lexical_analyser)
 		exp3(lexical_analyser)
