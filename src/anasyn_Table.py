@@ -682,7 +682,7 @@ def main():
 			print(tableIdentificateur[i])
 
 	if args.show_ident_list:
-    		ident_list=""
+		ident_list=""
 		for i in range(len(listeIdentificateur)):
 			ident_list=ident_list+listeIdentificateur[i]+";"
 			# print(listeIdentificateur[i]+";")
