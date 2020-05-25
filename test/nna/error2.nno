@@ -1,6 +1,6 @@
 //--------------------------------------------------
 // Programme incorrect
-//	M. Guyomard
+//    M. Guyomard
 //
 // Écriture d'expressions booléennes
 //--------------------------------------------------
@@ -9,5 +9,5 @@
 procedure e is
   b: boolean;
 begin
-  put(b)	//mess. erreur attendu ici
+  put(b)    //mess. erreur attendu ici
 end.

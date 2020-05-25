@@ -1,6 +1,6 @@
 //-------------------------------------------------
 // Programme incorrect
-//	M. Guyomard
+//    M. Guyomard
 //
 // lecture d'un booléen
 //-------------------------------------------------
@@ -9,5 +9,5 @@
 procedure e is
   b: boolean;
 begin
-  get(b)	  //message attendu ici
+  get(b)      //message attendu ici
 end.

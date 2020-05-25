@@ -5,7 +5,7 @@
 procedure pp is
   procedure p(v : in integer; i : in out integer) is
   begin
-	i := i + v
+    i := i + v
   end;
   a : integer;
 begin

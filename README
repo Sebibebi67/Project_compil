@@ -12,12 +12,12 @@ Afin de permettre la compilation et l'exécution, il vous faut dans un premier
 temps télécharger l'intégralité du dossier.
 
 Vous devez ensuite donner les droits d'exécution aux fichiers suivants :
-	* chef.sh
-	* anasyn_Table.py
-	* gencode.py
-	* exec.py
+    * chef.sh
+    * anasyn_Table.py
+    * gencode.py
+    * exec.py
 Pour cela, dans une terminal Linux, vous pouvez utiliser la commande :
-	chmod +x <fichier>
+    chmod +x <fichier>
 
 il ne vous reste plus qu'à utiliser le script shell chef.sh pour utiliser le
 compilateur ou l'exécuteur. Les détails d'utilisation du script sont donnés dans
@@ -28,13 +28,13 @@ la partie suivante.
 ./chef.sh <arg> <fichier>
 
 arg :
- * -h, -help :	   Affiche l'aide
+ * -h, -help :       Affiche l'aide
  * -c, -complete :   Compile et exécute un fichier en pseudo-code
- * -e, -exec :	   Exécute un fichier Nilnovi
- * -t, -table :	  Affiche la table des identifiants à partir d'un fichier
-					écrit en pseudo-code
+ * -e, -exec :       Exécute un fichier Nilnovi
+ * -t, -table :      Affiche la table des identifiants à partir d'un fichier
+                    écrit en pseudo-code
  * -nn, -nilnovi :   Compile le fichier écrit en pseudo-code et le réécrit en
-					langage NilNovi
+                    langage NilNovi
 
 fichier :
    Le fichier en pseudo-code ou en NilNovi, en fonction de l'argument 1 choisi
@@ -42,9 +42,9 @@ fichier :
 ============================= Erreurs potentielles =============================
 
 Si vous utilisez windows et que vous rencontrez cette erreur :
-	Unknown command "\r$"
+    Unknown command "\r$"
 vous pouvez utiliser cette commande pour résoudre le problème :
-	sed -i 's/\r$//' ./chef.sh
+    sed -i 's/\r$//' ./chef.sh
 
 Le fonctionnement est alors strictement identique que celui décrit dans la
 section précédente

@@ -2,7 +2,7 @@
 // Programme correct
 //  M. Guyomard
 //
-//	expression relationnelle  avec des booléens
+//    expression relationnelle  avec des booléens
 //   doit afficher 
 //>1
 //------------------------------------------------------
@@ -11,8 +11,8 @@ procedure pp is
 begin
   b:=true;
   if b=false then   //
-	put(0)
+    put(0)
   else
-	put(1)
+    put(1)
   end
 end.

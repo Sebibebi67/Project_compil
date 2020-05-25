@@ -2,7 +2,7 @@
 // Programme correct
 //  M. Guyomard
 //
-//	Boucles imbriquées
+//    Boucles imbriquées
 //   doit afficher 4 fois : 
 //>1
 //>2
@@ -12,10 +12,10 @@
 //------------------------------------------------------
 procedure pp is
   procedure affiche(x,y : integer) is
-	i,j:integer;
+    i,j:integer;
   begin
-	put(x);
-	put(y)
+    put(x);
+    put(y)
   end;
   a,b,c : integer;
 begin
