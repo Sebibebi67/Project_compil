@@ -480,6 +480,10 @@ def boucle(lexical_analyser):
 	lexical_analyser.acceptKeyword("while")
 
 	expression(lexical_analyser)
+	if not conditionValide :
+		msg = "Invalid condition (expression is not boolean)"
+		logger.error(msg)
+		raise AnaSynException(msg)
 
 	lexical_analyser.acceptKeyword("loop")
 	suiteInstr(lexical_analyser)
@@ -493,6 +497,10 @@ def altern(lexical_analyser):
 	lexical_analyser.acceptKeyword("if")
 
 	expression(lexical_analyser)
+	if not conditionValide :
+		msg = "Invalid condition (expression is not boolean)"
+		logger.error(msg)
+		raise AnaSynException(msg)
        
 	lexical_analyser.acceptKeyword("then")
 	suiteInstr(lexical_analyser)
