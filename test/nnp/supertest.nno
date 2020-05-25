@@ -1,0 +1,46 @@
+//----------------------------------------------------
+// Programme correct
+//  Dejan Paris
+//
+//    C'est n'importe quoi...
+//     doit afficher :
+//> 24
+//> 24
+//
+//------------------------------------------------------
+procedure test is
+  procedure proc1(a : in integer) is
+    procedure proc2(b : in out integer) is
+      j : integer;
+    begin
+      j := 0;
+      while b <= a loop
+        j := j + 1;
+        b := b * i;
+      end;
+    end;
+    i : integer;
+  begin
+    i := 1;
+    proc2(i);
+    put(i);
+  end;
+  function func1(a : in integer) is
+    i, j : integer;
+  begin
+    i := 0;
+    j := 1;
+    while j <= a loop
+      i := i + 1;
+      j := j * i;
+    end;
+    return j
+  end;
+  a, b : integer;
+begin
+  a := 4;
+  b := 2;
+  proc1(a * b);
+  b = func1(a * b);
+  put(b);
+end.

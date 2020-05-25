@@ -3,7 +3,7 @@
 //  M. Guyomard
 //
 //  Affiche le nombre de valeurs paires lues
-//  arrÃªt quand on a lu un zÃ©ro
+//  arrêt quand on a lu un zéro
 //-------------------------------------------------
 
 procedure pp is
