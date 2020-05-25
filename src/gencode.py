@@ -68,7 +68,8 @@ class Generator(object):
 		- Dejan PARIS
 		"""
 		self.table = t
-		_, self.chain = self.generate(0, "debutProg()" + self.s)
+		print(t)
+		#_, self.chain = self.generate(0, "debutProg()" + self.s)
 		# self.printNoLines(self.chain)
 		# self.printWithLines(self.chain)
 
@@ -111,7 +112,8 @@ class Generator(object):
 					
 					while not self.table[i] != ")" :
 						stock.append(self.table[i])
-						i += 4 	# Saute ": [in/out] [type]" dans le pseudo-code
+						i += 3 	# Saute ": [type]" dans le pseudo-code
+					i += 1
 						
 					for k in range(len(stock)):
 						self.param[stock[k]] = k 	# Enregistre les paramètres
@@ -157,7 +159,7 @@ class Generator(object):
 				self.proc.pop()
 				self.param = {}
 				self.var = {}
-				i += 1
+				i += 2
 				if len(self.proc) == 0 :	# Fin du programme
 					chain += "finProg();"
 				break

@@ -1,0 +1,13 @@
+//----------------------------------------------------
+// Programme correct
+//  Dejan Paris
+//
+//------------------------------------------------------
+procedure test is
+begin
+  if 1 < 2 then
+    if 2 < 3 then
+      put(0)
+    end
+  end
+end.
