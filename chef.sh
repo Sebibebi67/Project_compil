@@ -9,7 +9,7 @@
 # Ce script shell permet l'exécution complète du compilateur, en prenant en
 # paramètre un fichier valide.
 # 
-# Compilateur Heuristique Efficace et Fiable
+# Compilateur Habile, Exécuteur Fiable
 #
 #--------------------------------------------------------------------------------#
 
@@ -24,11 +24,13 @@
 #----------------------------------- Options ------------------------------------#
 #
 # arg :
-#   * -h, -help :       Affiche l'aide
-#   * -c, -complete :   Compile et exécute un fichier en pseudo-code
-#   * -e, -exec :       Exécute un fichier Nilnovi
-#   * -t, -table :      Affiche la table des identifiants
-#   * -nn, -nilnovi :   Compile le fichier et le réécrit en langage NilNovi
+#  * -h, -help :       Affiche cette aide
+#  * -c, -complete :   Compile et exécute un fichier en pseudo-code
+#  * -e, -exec :       Exécute un fichier Nilnovi
+#  * -t, -table :      Affiche la table des identifiants à partir d'un fichier
+#                     écrit en pseudo-code
+#  * -nn, -nilnovi :   Compile le fichier écrit en pseudo-code et le réécrit en
+#                     langage NilNovi
 #
 # fichier : soit un fichier en pseudo-code, soit un fichier en NilNovi, en
 # fonction du premier argument choisi
@@ -154,10 +156,10 @@ function help(){
     # - Sébastien HERT
     ###
 
-    titre "Compilateur Heuristique Efficace et Fiable"
+    titre "Compilateur Habile, Exécuteur Fiable"
 
     titre "Description"
-    echo -e "Ce script shell permet l'exécution complète du compilateur, en prenant en"
+    echo -e "Cette commande permet l'exécution complète du compilateur, en prenant en"
     echo -e "paramètre un fichier valide.\n"
 
 
@@ -167,7 +169,10 @@ function help(){
     echo -e " * -h, -help :       Affiche cette aide"
     echo -e " * -c, -complete :   Compile et exécute un fichier en pseudo-code"
     echo -e " * -e, -exec :       Exécute un fichier Nilnovi"
-    echo -e " * -t, -table :      Affiche la table des identifiants"
+    echo -e " * -t, -table :      Affiche la table des identifiants à partir d'un fichier"
+    echo -e " *                     écrit en pseudo-code"
+    echo -e " * -nn, -nilnovi :   Compile le fichier écrit en pseudo-code et le réécrit en"
+    echo -e " *                     langage NilNovi"
     echo -e " * -nn, -nilnovi :   Compile le fichier et le réécrit en langage NilNovi\n"
 
     echo -e "fichier :"
