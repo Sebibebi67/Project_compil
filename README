@@ -28,7 +28,7 @@ la partie suivante.
 ./chef.sh <arg> <fichier>
 
 arg :
- * -h, -help :       Affiche cette aide
+ * -h, -help :       Affiche l'aide
  * -c, -complete :   Compile et exécute un fichier en pseudo-code
  * -e, -exec :       Exécute un fichier Nilnovi
  * -t, -table :      Affiche la table des identifiants à partir d'un fichier
