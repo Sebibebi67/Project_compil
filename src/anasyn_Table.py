@@ -15,7 +15,7 @@
 
 import sys, argparse, re
 import logging
-
+from erreur import *
 import analex
 
 logger = logging.getLogger('anasyn')
@@ -38,7 +38,6 @@ tableIdentificateur = []
 porteeActuelle = 0
 indiceValeurAffectation = None 	# UNFINISHED / UNUSED
 valeurAffectee = []				# UNFINISHED / UNUSED
-conditionValide = False
 
 class AnaSynException(Exception):
 	def __init__(self, value):
@@ -275,12 +274,9 @@ def listePe(lexical_analyser):
 def expression(lexical_analyser):
     #TODO
 	logger.debug("parsing expression: " + str(lexical_analyser.get_value()))
-	global conditionValide
-	conditionValide = False
 	exp1(lexical_analyser)
 	if lexical_analyser.isKeyword("or"):
 		lexical_analyser.acceptKeyword("or")
-		conditionValide = True
 		exp1(lexical_analyser)
         
 def exp1(lexical_analyser):
@@ -289,25 +285,20 @@ def exp1(lexical_analyser):
 	exp2(lexical_analyser)
 	if lexical_analyser.isKeyword("and"):
 		lexical_analyser.acceptKeyword("and")
-		global conditionValide
-		conditionValide = True
 		exp2(lexical_analyser)
         
 def exp2(lexical_analyser):
 	logger.debug("parsing exp2")
-	global conditionValide
         
 	exp3(lexical_analyser)
 	if	lexical_analyser.isSymbol("<") or \
 		lexical_analyser.isSymbol("<=") or \
 		lexical_analyser.isSymbol(">") or \
 		lexical_analyser.isSymbol(">="):
-		conditionValide = True
 		opRel(lexical_analyser)
 		exp3(lexical_analyser)
 	elif lexical_analyser.isSymbol("=") or \
 		lexical_analyser.isSymbol("/="):
-		conditionValide = True
 		opRel(lexical_analyser)
 		exp3(lexical_analyser)
 	
@@ -483,10 +474,6 @@ def boucle(lexical_analyser):
 	lexical_analyser.acceptKeyword("while")
 
 	expression(lexical_analyser)
-	if not conditionValide :
-		msg = "Invalid condition (expression is not boolean)"
-		logger.error(msg)
-		raise AnaSynException(msg)
 
 	lexical_analyser.acceptKeyword("loop")
 	suiteInstr(lexical_analyser)
@@ -500,10 +487,6 @@ def altern(lexical_analyser):
 	lexical_analyser.acceptKeyword("if")
 
 	expression(lexical_analyser)
-	if not conditionValide :
-		msg = "Invalid condition (expression is not boolean)"
-		logger.error(msg)
-		raise AnaSynException(msg)
        
 	lexical_analyser.acceptKeyword("then")
 	suiteInstr(lexical_analyser)
