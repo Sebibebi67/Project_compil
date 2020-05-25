@@ -5,10 +5,10 @@
 procedure pp is
   procedure p(v : in integer; i : in out integer) is
   begin
-    i := i + v
+    i := i + v;
   end;
-  a : integer
+a : integer;
 begin
-  a := 5
-  p(2,a)
+  a := 5;
+  p(2,a);
 end.
