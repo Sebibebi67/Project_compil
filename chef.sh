@@ -6,9 +6,8 @@
 
 #--------------------------------- Description ----------------------------------#
 #
-# Ce script shell permet l'exécution complète du
-# compilateur, en prenant en paramètre un fichier
-# valide.
+# Ce script shell permet l'exécution complète du compilateur, en prenant en
+# paramètre un fichier valide.
 # 
 # Compilateur Heuristique Efficace et Fiable
 #
@@ -46,7 +45,7 @@
 
 #------------------------------ Variables Globales ------------------------------#
 #
-lenTitle=50
+lenTitle=80
 ident_list=""
 # 
 #--------------------------------------------------------------------------------#
@@ -155,7 +154,33 @@ function help(){
     # - Sébastien HERT
     ###
 
-    echo TODO
+    titre "Compilateur Heuristique Efficace et Fiable"
+
+    titre "Description"
+    echo -e "Ce script shell permet l'exécution complète du compilateur, en prenant en"
+    echo -e "paramètre un fichier valide.\n"
+
+
+    titre "Synopsis"
+    success "./chef.sh <arg> <fichier>"
+    echo -e "arg :"
+    echo -e " * -h, -help :       Affiche cette aide"
+    echo -e " * -c, -complete :   Compile et exécute un fichier en pseudo-code"
+    echo -e " * -e, -exec :       Exécute un fichier Nilnovi"
+    echo -e " * -t, -table :      Affiche la table des identifiants"
+    echo -e " * -nn, -nilnovi :   Compile le fichier et le réécrit en langage NilNovi\n"
+
+    echo -e "fichier :"
+    echo -e "   Le fichier en pseudo-code ou en NilNovi, en fonction de l'argument 1 choisi\n"
+
+    titre "Auteurs"
+    success "Equipe PDB :"
+    echo -e " * Sébastien HERT"
+    echo -e " * Alex JOBARD"
+    echo -e " * Thomas LEPERCQ"
+    echo -e " * Dejan PARIS"
+    echo -e " * Adam RIVIERE\n"
+
     exit
 }
 
@@ -378,7 +403,6 @@ case $1 in
 
         #Création du fichier en langage NilNovi
         nilnovi -show;;
-
 
     *)
         erreur "Le premier paramètre n'a pas été reconnu";;
