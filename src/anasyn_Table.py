@@ -38,7 +38,6 @@ tableIdentificateur = []
 porteeActuelle = 0
 indiceValeurAffectation = None 	# UNFINISHED / UNUSED
 valeurAffectee = []				# UNFINISHED / UNUSED
-conditionValide = False
 
 class AnaSynException(Exception):
 	def __init__(self, value):
@@ -275,11 +274,9 @@ def listePe(lexical_analyser):
 def expression(lexical_analyser):
     #TODO
 	logger.debug("parsing expression: " + str(lexical_analyser.get_value()))
-	conditionValide = False
 	exp1(lexical_analyser)
 	if lexical_analyser.isKeyword("or"):
 		lexical_analyser.acceptKeyword("or")
-		conditionValide = True
 		exp1(lexical_analyser)
         
 def exp1(lexical_analyser):
@@ -288,7 +285,6 @@ def exp1(lexical_analyser):
 	exp2(lexical_analyser)
 	if lexical_analyser.isKeyword("and"):
 		lexical_analyser.acceptKeyword("and")
-		conditionValide = True
 		exp2(lexical_analyser)
         
 def exp2(lexical_analyser):
@@ -299,12 +295,10 @@ def exp2(lexical_analyser):
 		lexical_analyser.isSymbol("<=") or \
 		lexical_analyser.isSymbol(">") or \
 		lexical_analyser.isSymbol(">="):
-		conditionValide = True
 		opRel(lexical_analyser)
 		exp3(lexical_analyser)
 	elif lexical_analyser.isSymbol("=") or \
 		lexical_analyser.isSymbol("/="): 
-		conditionValide = True
 		opRel(lexical_analyser)
 		exp3(lexical_analyser)
 	
