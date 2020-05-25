@@ -59,10 +59,29 @@ def checkBooleen(identTable, name):
     """
     for e in identTable[:-1] :
         if e[0] == name :
-                if e[3] == "boolean" :
-                    print("Erreur : l'argument " + name + " de get() ou put() ne peut pas être un booléen")
-                    sys.exit(0)
+            if e[2] == "boolean" :
+                print("Erreur : l'argument " + name + " de get() ou put() ne peut pas être un booléen")
+                sys.exit(0)
     
+
+    
+def checkBoolean(identTable, name):
+    """
+    Description : Vérifie si le paramètre / la variable "name" est un booléen.
+
+    Paramètres :
+    - identTable : table des identificateurs
+    - name : nom du paramètre / de la variable à tester
+
+    Retour : None
+
+    Auteurs :
+    - Dejan PARIS
+    """
+    for e in identTable[:-1] :
+        if e[0] == name :
+            return e[2] == "boolean"
+
     
 
 def checkTypage(identTable, name, scope, type):
@@ -82,13 +101,13 @@ def checkTypage(identTable, name, scope, type):
     """
     for e in identTable[:-1] :
         if e[0] == name :
-            if e[3] != type :
+            if e[2] != type :
                 print("Erreur : " + name + " est déclaré comme " + e[3])
                 sys.exit(0)
 
 
 
-def checkIf():
+def checkIf(identTable, line):
     """
     Description : Vérifie que la condition d'un "if" est valide
 
