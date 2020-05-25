@@ -237,7 +237,6 @@ def instr(lexical_analyser):
 		retour(lexical_analyser)
 	elif lexical_analyser.isIdentifier():
 		saveIdent = str(lexical_analyser.get_value())
-		print("ICI",saveIdent)
 		ident = lexical_analyser.acceptIdentifier()
 		# if lexical_analyser.isCharacter("("):
 		#   # ERREUR AVEC LE ELIF "(" SUIVANT
