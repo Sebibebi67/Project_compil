@@ -168,7 +168,7 @@ class Generator(object):
 
 	def instructions(self, i):
 		"""
-		Description : Traduit en code NilNovi une suite d'instructions.
+		Description : Traduit en code NilNovi une suite d'instructions non vide.
 	
 		Paramètres :
 		- i : la position du début des instructions dans le pseudo-code
@@ -293,6 +293,15 @@ class Generator(object):
 			total += expr
 			total += "retourFonct()" + self.s
 			self.lines += 1
+
+
+		elif self.table[i] == "error": # Message d'erreur
+			i += 2 	# Saute "("
+			i, expr = self.expression(i)
+			total += expr
+			total += "erreur()" + self.s
+			self.lines += 1
+			i += 1 	# Saute ")"
 		
 		return i, total
 		

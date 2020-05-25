@@ -6,24 +6,19 @@
 //     doit afficher :
 //> 24
 //> 24
+//> 24
 //
 //------------------------------------------------------
 procedure test is
-  procedure proc1(a : in integer) is
-    procedure proc2(b : in out integer) is
-      j : integer;
-    begin
-      j := 0;
-      while b <= a loop
-        j := j + 1;
-        b := b * i;
-      end;
-    end;
-    i : integer;
+  procedure proc1(a : in integer, b : in out integer) is
+    i, j : integer;
   begin
-    i := 1;
-    proc2(i);
-    put(i);
+    i := 0;
+    while b <= a loop
+      i := i + 1;
+      b := b * i;
+    end;
+    put(b);
   end;
   function func1(a : in integer) is
     i, j : integer;
@@ -36,11 +31,13 @@ procedure test is
     end;
     return j
   end;
-  a, b : integer;
+  a, b, c : integer;
 begin
   a := 4;
   b := 2;
-  proc1(a * b);
+  c := 1;
+  proc1(a * b, c);
+  put(c);
   b = func1(a * b);
   put(b);
 end.
