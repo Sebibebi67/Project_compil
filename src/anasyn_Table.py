@@ -303,15 +303,12 @@ def exp2(lexical_analyser):
 	if	lexical_analyser.isSymbol("<") or \
 		lexical_analyser.isSymbol("<=") or \
 		lexical_analyser.isSymbol(">") or \
-		lexical_analyser.isSymbol(">="):
-		opRel(lexical_analyser)
-		validConditionComp = exp3(lexical_analyser)
-		return not validCondition and not validConditionComp	# comparing two integers
-	if	lexical_analyser.isSymbol("=") or \
+		lexical_analyser.isSymbol(">=") or \
+		lexical_analyser.isSymbol("=") or \
 		lexical_analyser.isSymbol("/="):
 		opRel(lexical_analyser)
 		validConditionComp = exp3(lexical_analyser)
-		return validCondition == validConditionComp		# comparing either integers or booleans
+		return not validCondition and not validConditionComp	# comparing two integers
 	return validCondition
 	
 def opRel(lexical_analyser):
@@ -433,7 +430,7 @@ def elemPrim(lexical_analyser):
 			return True		# TODO type du retour
 		else:
 			logger.debug("Use of an identifier as an expression: " + ident)
-			if not lexical_analyser.isCharacter(")"):
+			if not lexical_analyser.isCharacter(")") and not lexical_analyser.isKeyword("then"):
 				ajoutIdentificateur(str(lexical_analyser.get_value()),"valeurAffectee")
 			return getType(ident) == "boolean"
 	else:
