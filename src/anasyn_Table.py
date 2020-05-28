@@ -311,7 +311,7 @@ def exp2(lexical_analyser):
 		lexical_analyser.isSymbol("/="):
 		opRel(lexical_analyser)
 		validConditionComp = exp3(lexical_analyser)
-		return validCondition == validConditionComp	# comparing either integers or booleans
+		return validCondition == validConditionComp		# comparing either integers or booleans
 	return validCondition
 	
 def opRel(lexical_analyser):
