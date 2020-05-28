@@ -1,0 +1,12 @@
+debutProg();
+reserver(2);
+empiler(1);
+get();
+empiler(0);
+empiler(1);
+valeurPile();
+empiler(23);
+infeg();
+affectation();
+put();
+finProg();

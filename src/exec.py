@@ -186,7 +186,6 @@ def get():
         a = input("Entrez un nombre à empiler : ")
         try:
             data = int(a)
-            valeurPile()
             empiler(data)
             affectation()
             ok = True
@@ -398,6 +397,7 @@ def infeg():
     b = pile.pop()
     a = pile.pop()
     empiler(int(a <= b))
+    # print(a, b, a <= b)
     cptLigne = cpt+1
 
 
@@ -722,7 +722,7 @@ f.close()
 while not fin:
     # print(cptLigne+1)
     eval(programme[cptLigne])
-    print(pile)
+    # print(pile)
 	# time.sleep(1)
 
 #--------------------------------------------------#
