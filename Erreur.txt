@@ -1,2 +1,3 @@
-test dans les if -> manque les "<" si premier terme digit
-le not et le moins apparaissent pas
+anasyn_Table : test dans les if -> manque les "<" si premier terme est un nombre (ex : 1 < i)
+
+anasyn_Table : "then" apparaît après la condition "if" si le dernier terme est un identifiant
