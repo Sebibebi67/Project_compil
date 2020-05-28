@@ -303,12 +303,15 @@ def exp2(lexical_analyser):
 	if	lexical_analyser.isSymbol("<") or \
 		lexical_analyser.isSymbol("<=") or \
 		lexical_analyser.isSymbol(">") or \
-		lexical_analyser.isSymbol(">=") or \
-		lexical_analyser.isSymbol("=") or \
-		lexical_analyser.isSymbol("/="):
+		lexical_analyser.isSymbol(">="):
 		opRel(lexical_analyser)
 		validConditionComp = exp3(lexical_analyser)
 		return not validCondition and not validConditionComp	# comparing two integers
+	if	lexical_analyser.isSymbol("=") or \
+		lexical_analyser.isSymbol("/="):
+		opRel(lexical_analyser)
+		validConditionComp = exp3(lexical_analyser)
+		return validCondition == validConditionComp	# comparing either integers or booleans
 	return validCondition
 	
 def opRel(lexical_analyser):
