@@ -65,22 +65,22 @@ def checkBooleen(identTable, name):
     
 
     
-def checkBoolean(identTable, name):
-    """
-    Description : Vérifie si le paramètre / la variable "name" est un booléen.
+# def checkBoolean(identTable, name):
+#     """
+#     Description : Vérifie si le paramètre / la variable "name" est un booléen.
 
-    Paramètres :
-    - identTable : table des identificateurs
-    - name : nom du paramètre / de la variable à tester
+#     Paramètres :
+#     - identTable : table des identificateurs
+#     - name : nom du paramètre / de la variable à tester
 
-    Retour : None
+#     Retour : None
 
-    Auteurs :
-    - Dejan PARIS
-    """
-    for e in identTable[:-1] :
-        if e[0] == name :
-            return e[2] == "boolean"
+#     Auteurs :
+#     - Dejan PARIS
+#     """
+#     for e in identTable[:-1] :
+#         if e[0] == name :
+#             return e[2] == "boolean"
 
     
 

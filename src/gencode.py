@@ -111,7 +111,10 @@ class Generator(object):
 					
 					while not self.table[i] != ")" :
 						stock.append(self.table[i])
-						i += 3 	# Saute ": [type]" dans le pseudo-code
+						i += 1
+					
+						if self.table[i] == ":" :
+							i += 2 	# Saute ": [type]" dans le pseudo-code
 					i += 1
 						
 					for k in range(len(stock)):
