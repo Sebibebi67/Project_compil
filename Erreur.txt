@@ -1,0 +1,2 @@
+test dans les if -> manque les "<" si premier terme digit
+le not et le moins apparaissent pas
