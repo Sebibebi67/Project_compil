@@ -295,11 +295,11 @@ function nilnovi(){
             ./src/gencode.py $ident_list
             echo "";;
         '-file')
-            ./src/gencode.py $ident_list >> tmp/NilNovi.txt;;
+            ./src/gencode.py $ident_list > tmp/NilNovi.txt;;
         *)
             echo error;;
     esac
-    ./src/gencode.py $ident_list >> tmp/NilNovi.txt
+    # ./src/gencode.py $ident_list > tmp/NilNovi.txt
     success "Création réussie"
 }
 
@@ -327,12 +327,21 @@ function exe(){
     fi
 }
 
+erase(){
+    if [ -d tmp ]; then
+        rm -r tmp 
+    fi
+}
+
 #--------------------------------------------------------------------------------#
 
 
 #------------------------------------- Main -------------------------------------#
 
 set -e
+
+erase
+
 if [[ $1 == '-help' ]] || [[ $1 == '--help' ]] || [[ $1 == '-h' ]] ; then
     help
 fi
@@ -369,7 +378,7 @@ case $1 in
 
         #Création de la liste des identifiants
         liste $2
-        echo $ident_list
+        # echo $ident_list
 
         #Création du fichier en langage NilNovi
         nilnovi -file
@@ -418,9 +427,8 @@ esac
 echo ""
 titre "Terminaison"
 
-if [ -d tmp ]; then
-    rm -r tmp 
-fi
+
+erase
 
 #--------------------------------------------------------------------------------#
 
