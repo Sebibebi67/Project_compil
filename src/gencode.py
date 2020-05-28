@@ -261,7 +261,6 @@ class Generator(object):
 				i, expr = self.expression(i)
 				total += expr
 				paramCount += 1
-				i += 1
 			i += 1 	# Saute ")"
 			
 			total += "traStat(" + str(call) + "," + str(paramCount) + ")" + self.s
