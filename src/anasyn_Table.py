@@ -386,6 +386,7 @@ def prim(lexical_analyser, validCondition):
 
 def opUnaire(lexical_analyser):
 	logger.debug("parsing unary operator: " + lexical_analyser.get_value())
+	ajoutIdentificateur(str(lexical_analyser.get_value()))
 	if lexical_analyser.isCharacter("+"):
 		lexical_analyser.acceptCharacter("+")
                 
