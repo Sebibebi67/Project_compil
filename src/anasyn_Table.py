@@ -432,7 +432,7 @@ def elemPrim(lexical_analyser):
 			logger.debug("Use of an identifier as an expression: " + ident)
 			if not lexical_analyser.isCharacter(")"):
 				ajoutIdentificateur(str(lexical_analyser.get_value()),"valeurAffectee")
-			return getType(str(lexical_analyser.get_value())) == "boolean"
+			return getType(ident) == "boolean"
 	else:
 		logger.error("Unknown Value!")
 		raise AnaSynException("Unknown Value!")
