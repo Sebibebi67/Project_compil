@@ -68,8 +68,7 @@ class Generator(object):
 		- Dejan PARIS
 		"""
 		self.table = t
-		print(t)
-		#_, self.chain = self.generate(0, "debutProg()" + self.s)
+		_, self.chain = self.generate(0, "debutProg()" + self.s)
 		# self.printNoLines(self.chain)
 		# self.printWithLines(self.chain)
 
