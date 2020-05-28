@@ -98,7 +98,6 @@ class Generator(object):
 		stock = []  # Stocke temporairement les noms à allouer
 		
 		while i < len(self.table):
-			print(i, self.table[i])
 			if self.table[i] == "procedure" or self.table[i] == "function" :
 				if self.table[i] == "procedure" :
 					self.proc.append(True)
@@ -109,8 +108,8 @@ class Generator(object):
 				i += 1
 				
 				if self.table[i] == "(" : 	# Paramètres
-					i += 1
 					
+					i += 1
 					while self.table[i] != ")" :
 						stock.append(self.table[i])
 						i += 1
@@ -613,7 +612,7 @@ class Generator(object):
 				i += 1
 				
 			else : 	# Paramètre
-				expr += "empilerParam(" + str(self.var[self.table[i]]) + ")" + self.s
+				expr += "empilerParam(" + str(self.param[self.table[i]]) + ")" + self.s
 				expr += "valeurPile()" + self.s
 				self.lines += 2
 				i += 1
