@@ -162,7 +162,7 @@ class Generator(object):
 				self.proc.pop()
 				self.param = {}
 				self.var = {}
-				i += 2
+				i += 1
 				if len(self.proc) == 0 :	# Fin du programme
 					chain += "finProg();"
 				break
