@@ -1,3 +1,4 @@
 anasyn_Table : test dans les if -> manque les "<" si premier terme est un nombre (ex : 1 < i)
 
 anasyn_Table : "then" apparaît après la condition "if" si le dernier terme est un identifiant
+correct 4 "if i-(i/2)*2=0" -> if i - ( i / 2 2 0
