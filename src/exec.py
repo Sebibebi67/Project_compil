@@ -594,8 +594,10 @@ def empilerParam(n):
     - Adam RIVIERE
     """
 
+    global cptLigne
     pile.append(n+pointeurLigne[-1])
-    valeurPile()
+    # valeurPile()
+    cptLigne+=1
 
 
 def retourFonct():
@@ -718,8 +720,9 @@ for line in f:
 f.close()
 
 while not fin:
-	# print(cptLigne+1)
-	eval(programme[cptLigne])
+    # print(cptLigne+1)
+    eval(programme[cptLigne])
+    print(pile)
 	# time.sleep(1)
 
 #--------------------------------------------------#
