@@ -98,6 +98,7 @@ class Generator(object):
 		stock = []  # Stocke temporairement les noms à allouer
 		
 		while i < len(self.table):
+			print(i, self.table[i])
 			if self.table[i] == "procedure" or self.table[i] == "function" :
 				if self.table[i] == "procedure" :
 					self.proc.append(True)
@@ -108,8 +109,9 @@ class Generator(object):
 				i += 1
 				
 				if self.table[i] == "(" : 	# Paramètres
+					i += 1
 					
-					while not self.table[i] != ")" :
+					while self.table[i] != ")" :
 						stock.append(self.table[i])
 						i += 1
 					

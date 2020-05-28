@@ -378,7 +378,7 @@ case $1 in
 
         #Création de la liste des identifiants
         liste $2
-        # echo $ident_list
+        echo $ident_list
 
         #Création du fichier en langage NilNovi
         nilnovi -file
