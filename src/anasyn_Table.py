@@ -124,6 +124,7 @@ def fonction(lexical_analyser):
 	partieFormelle(lexical_analyser)
 
 	lexical_analyser.acceptKeyword("return")
+	ajoutIdentificateur("return")
 	nnpType(lexical_analyser)
         
 	lexical_analyser.acceptKeyword("is")
@@ -163,6 +164,7 @@ def listeSpecifFormelles(lexical_analyser):
 def specif(lexical_analyser):
 	listeIdent(lexical_analyser)
 	lexical_analyser.acceptCharacter(":")
+	ajoutIdentificateur(":")
 	if lexical_analyser.isKeyword("in"):
 		mode(lexical_analyser)
                 
@@ -172,20 +174,20 @@ def mode(lexical_analyser):
 	lexical_analyser.acceptKeyword("in")
 	if lexical_analyser.isKeyword("out"):
 		lexical_analyser.acceptKeyword("out")
+		ajoutIdentificateur("inout")
 		logger.debug("in out parameter")                
 	else:
+		ajoutIdentificateur("in")
 		logger.debug("in parameter")
 
 def nnpType(lexical_analyser):
 	if lexical_analyser.isKeyword("integer"):
 		lexical_analyser.acceptKeyword("integer")
-		ajoutIdentificateur(":")
 		ajoutIdentificateur("integer","type")
 		logger.debug("integer type")
 	elif lexical_analyser.isKeyword("boolean"):
 		lexical_analyser.acceptKeyword("boolean")
-		logger.debug("boolean type")  
-		ajoutIdentificateur(":")
+		logger.debug("boolean type")
 		ajoutIdentificateur("boolean","type")              
 	else:
 		logger.error("Unknown type found <"+ lexical_analyser.get_value() +">!")
@@ -587,6 +589,7 @@ def ajoutIdentificateur(identificateur,tableOperation = "None"):
 		tableIdentificateur[-1].append(None)
 
 	elif(tableOperation == "end"):		# Gestion du scope à la fin d'une procédure, fonction ou boucle
+		print("ICI END")
 		porteeActuelle -= 1
 
 	################# UNFINISHED - UNUSED ################# 
