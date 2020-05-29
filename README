@@ -49,6 +49,11 @@ vous pouvez utiliser cette commande pour résoudre le problème :
 Le fonctionnement est alors strictement identique que celui décrit dans la
 section précédente
 
+Si vous utilisez windows et que vous rencontrez une erreur du type :
+    bad interpreter: No such file or directory
+il vous faudra déplacer le fichier python.exe pour le placer dans le repertoire
+/usr/bin
+
 =================================== Auteurs ====================================
 
 Equipe PDB :
