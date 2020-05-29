@@ -282,20 +282,26 @@ def listePe(lexical_analyser):
 def expression(lexical_analyser):
 	logger.debug("parsing expression: " + str(lexical_analyser.get_value()))
 	validCondition = exp1(lexical_analyser)
+	print("expression")
 	if lexical_analyser.isKeyword("or"):
 		lexical_analyser.acceptKeyword("or")
 		validConditionOr = exp1(lexical_analyser)
+		print(validCondition, validConditionOr)
 		return validCondition and validConditionOr
+	print(validCondition)
 	return validCondition
         
 def exp1(lexical_analyser):
 	logger.debug("parsing exp1")
 	
 	validCondition = exp2(lexical_analyser)
+	print("exp1")
 	if lexical_analyser.isKeyword("and"):
 		lexical_analyser.acceptKeyword("and")
 		validConditionAnd = exp2(lexical_analyser)
+		print(validCondition, validConditionAnd)
 		return validCondition and validConditionAnd
+	print(validCondition)
 	return validCondition
 		
         
@@ -303,18 +309,22 @@ def exp2(lexical_analyser):
 	logger.debug("parsing exp2")
         
 	validCondition = exp3(lexical_analyser)
+	print("exp2")
 	if	lexical_analyser.isSymbol("<") or \
 		lexical_analyser.isSymbol("<=") or \
 		lexical_analyser.isSymbol(">") or \
 		lexical_analyser.isSymbol(">="):
 		opRel(lexical_analyser)
 		validConditionComp = exp3(lexical_analyser)
+		print(validCondition, validConditionComp)
 		return not validCondition and not validConditionComp	# comparing two integers
 	if	lexical_analyser.isSymbol("=") or \
 		lexical_analyser.isSymbol("/="):
 		opRel(lexical_analyser)
 		validConditionComp = exp3(lexical_analyser)
+		print(validCondition, validConditionComp)
 		return validCondition == validConditionComp	# comparing two integers
+	print(validCondition)
 	return validCondition
 	
 def opRel(lexical_analyser):
@@ -346,10 +356,14 @@ def opRel(lexical_analyser):
 def exp3(lexical_analyser):
 	logger.debug("parsing exp3")
 	validCondition = exp4(lexical_analyser)	
+	print("exp3")
 	if lexical_analyser.isCharacter("+") or lexical_analyser.isCharacter("-"):
 		opAdd(lexical_analyser)
 		validConditionAdd = exp4(lexical_analyser)
-		return not validCondition and not validConditionAdd		# operating on two integers
+		print(validCondition, validConditionAdd)
+		if not validCondition and not validConditionAdd :	# TODO error if else
+			return False	# operating on two integers
+	print(validCondition)
 	return validCondition
 
 def opAdd(lexical_analyser):
@@ -369,10 +383,14 @@ def exp4(lexical_analyser):
 	logger.debug("parsing exp4")
         
 	validCondition = prim(lexical_analyser)	
+	print("exp4")
 	if lexical_analyser.isCharacter("*") or lexical_analyser.isCharacter("/"):
 		opMult(lexical_analyser)
 		validConditionMult = prim(lexical_analyser)
-		return not validCondition and not validConditionMult	# operating on two integers
+		print(validCondition, validConditionMult)
+		if not validCondition and not validConditionMult :	# TODO error if else
+			return False	# operating on two integers
+	print(validCondition)
 	return validCondition
 
 def opMult(lexical_analyser):
@@ -393,7 +411,10 @@ def prim(lexical_analyser):
         
 	if lexical_analyser.isCharacter("+") or lexical_analyser.isCharacter("-") or lexical_analyser.isKeyword("not"):
 		opUnaire(lexical_analyser)
-	return elemPrim(lexical_analyser)
+	validCondition = elemPrim(lexical_analyser)
+	print("elemPrim")
+	print(validCondition)
+	return validCondition
 
 def opUnaire(lexical_analyser):
 	logger.debug("parsing unary operator: " + lexical_analyser.get_value())
