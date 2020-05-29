@@ -68,6 +68,7 @@ class Generator(object):
 		- Dejan PARIS
 		"""
 		self.table = t
+		print(t)
 		_, self.chain = self.generate(0, "debutProg()" + self.s)
 		# self.printNoLines(self.chain)
 		# self.printWithLines(self.chain)
@@ -144,7 +145,7 @@ class Generator(object):
 					self.var[stock[k]] = k + paramCount 	# Enregistre les variables
 				if len(stock) > 0 :
 					chain += "reserver(" + str(len(stock)) + ")" + self.s
-				self.lines += 1
+					self.lines += 1
 				paramCount = 0
 				stock = []
 				i += 1 	# Saute "begin"
@@ -190,7 +191,6 @@ class Generator(object):
 		- Dejan PARIS
 		"""
 		total, expr, instr = "", "", "" 	# Utilisés pour l'insertion de "tze" / "tra"
-		
 		if self.table[i] == "while":
 			i += 1
 			lines = self.lines 	# Début de la condition (retour de "tra")
