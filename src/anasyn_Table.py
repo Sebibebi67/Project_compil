@@ -81,13 +81,12 @@ def  corpsProgPrinc(lexical_analyser):
 	logger.debug("End of program")
 	
 def partieDecla(lexical_analyser):
-        if lexical_analyser.isKeyword("procedure") or lexical_analyser.isKeyword("function") :
-                listeDeclaOp(lexical_analyser)
-                if not lexical_analyser.isKeyword("begin"):
-                        listeDeclaVar(lexical_analyser)
-        
-        else:
-                listeDeclaVar(lexical_analyser)                
+	if lexical_analyser.isKeyword("procedure") or lexical_analyser.isKeyword("function") :
+		listeDeclaOp(lexical_analyser)
+		if not lexical_analyser.isKeyword("begin"):
+			listeDeclaVar(lexical_analyser)
+	else:
+		listeDeclaVar(lexical_analyser) 
 
 def listeDeclaOp(lexical_analyser):
 	declaOp(lexical_analyser)
@@ -227,7 +226,7 @@ def suiteInstr(lexical_analyser):
 	if not lexical_analyser.isKeyword("end"):
 		suiteInstrNonVide(lexical_analyser)
 
-def instr(lexical_analyser):		
+def instr(lexical_analyser):	
 	if lexical_analyser.isKeyword("while"):
 		ajoutIdentificateur("while","corps")
 		boucle(lexical_analyser)
@@ -435,7 +434,7 @@ def elemPrim(lexical_analyser):
 			return True		# TODO type du retour
 		else:
 			logger.debug("Use of an identifier as an expression: " + ident)
-			if not lexical_analyser.isCharacter(")") and not lexical_analyser.isKeyword("then"):
+			if not lexical_analyser.isCharacter(")") and not lexical_analyser.isKeyword("then") and not lexical_analyser.isKeyword("end"):
 				ajoutIdentificateur(str(lexical_analyser.get_value()),"valeurAffectee")
 			return getType(ident) == "boolean"
 	else:
@@ -589,7 +588,6 @@ def ajoutIdentificateur(identificateur,tableOperation = "None"):
 		tableIdentificateur[-1].append(None)
 
 	elif(tableOperation == "end"):		# Gestion du scope à la fin d'une procédure, fonction ou boucle
-		print("ICI END")
 		porteeActuelle -= 1
 
 	################# UNFINISHED - UNUSED ################# 
