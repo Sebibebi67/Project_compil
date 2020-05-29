@@ -21,6 +21,7 @@ import analex
 logger = logging.getLogger('anasyn')
 
 DEBUG = False
+debug = True
 LOGGING_LEVEL = logging.DEBUG
 
 """
@@ -281,27 +282,34 @@ def listePe(lexical_analyser):
 
 def expression(lexical_analyser):
 	logger.debug("parsing expression: " + str(lexical_analyser.get_value()))
+	dev("___expression S")
 	validCondition = exp1(lexical_analyser)
 	if lexical_analyser.isKeyword("or"):
 		lexical_analyser.acceptKeyword("or")
 		validConditionOr = exp1(lexical_analyser)
+		dev("___expression T")
 		return validCondition and validConditionOr
+	dev("___expression T")
 	return validCondition
         
 def exp1(lexical_analyser):
 	logger.debug("parsing exp1")
+	dev("________exp1 S")
 	
 	validCondition = exp2(lexical_analyser)
 	if lexical_analyser.isKeyword("and"):
 		lexical_analyser.acceptKeyword("and")
 		validConditionAnd = exp2(lexical_analyser)
+		dev("________exp1 T")
 		return validCondition and validConditionAnd
+	dev("________exp1 T")
 	return validCondition
 		
         
 def exp2(lexical_analyser):
 	logger.debug("parsing exp2")
         
+	dev("_______exp2 S")
 	validCondition = exp3(lexical_analyser)
 	if	lexical_analyser.isSymbol("<") or \
 		lexical_analyser.isSymbol("<=") or \
@@ -309,12 +317,15 @@ def exp2(lexical_analyser):
 		lexical_analyser.isSymbol(">="):
 		opRel(lexical_analyser)
 		validConditionComp = exp3(lexical_analyser)
+		dev("_______exp2 T")
 		return not validCondition and not validConditionComp	# comparing two integers
 	if	lexical_analyser.isSymbol("=") or \
 		lexical_analyser.isSymbol("/="):
 		opRel(lexical_analyser)
 		validConditionComp = exp3(lexical_analyser)
+		dev("_______exp2 T")
 		return validCondition == validConditionComp	# comparing two integers
+	dev("_______exp2 T")
 	return validCondition
 	
 def opRel(lexical_analyser):
@@ -345,12 +356,15 @@ def opRel(lexical_analyser):
 
 def exp3(lexical_analyser):
 	logger.debug("parsing exp3")
+	dev("______exp3 S")
 	validCondition = exp4(lexical_analyser)
 	if lexical_analyser.isCharacter("+") or lexical_analyser.isCharacter("-"):
 		opAdd(lexical_analyser)
 		validConditionAdd = exp4(lexical_analyser)
+		dev("______exp3 T")
 		if not validCondition and not validConditionAdd :	# TODO error if else
 			return False	# operating on two integers
+	dev("______exp3 T")
 	return validCondition
 
 def opAdd(lexical_analyser):
@@ -368,13 +382,16 @@ def opAdd(lexical_analyser):
 
 def exp4(lexical_analyser):
 	logger.debug("parsing exp4")
+	dev("_____exp4 S")
         
 	validCondition = prim(lexical_analyser)
 	if lexical_analyser.isCharacter("*") or lexical_analyser.isCharacter("/"):
 		opMult(lexical_analyser)
 		validConditionMult = prim(lexical_analyser)
+		dev("_____exp4 T")
 		if not validCondition and not validConditionMult :	# TODO error if else
 			return False	# operating on two integers
+	dev("_____exp4 T")
 	return validCondition
 
 def opMult(lexical_analyser):
@@ -392,10 +409,12 @@ def opMult(lexical_analyser):
 
 def prim(lexical_analyser):
 	logger.debug("parsing prim")
+	dev("elemPrim S")
         
 	if lexical_analyser.isCharacter("+") or lexical_analyser.isCharacter("-") or lexical_analyser.isKeyword("not"):
 		opUnaire(lexical_analyser)
 	validCondition = elemPrim(lexical_analyser)
+	dev("elemPrim T")
 	return validCondition
 
 def opUnaire(lexical_analyser):
@@ -636,6 +655,9 @@ def ajoutIdentificateur(identificateur,tableOperation = "None"):
 	# 	valeurAffectee = []
 
 ########################################################################
+def dev(r):
+	if debug : print(r)
+
 def main():
 	parser = argparse.ArgumentParser(description='Do the syntactical analysis of a NNP program.')
 	parser.add_argument('inputfile', type=str, nargs=1, help='name of the input source file')
