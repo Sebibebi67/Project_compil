@@ -306,12 +306,12 @@ def exp2(lexical_analyser):
 		lexical_analyser.isSymbol(">="):
 		opRel(lexical_analyser)
 		validConditionComp = exp3(lexical_analyser)
-		return not validCondition and not validConditionComp	# comparing two integers
+		return not validCondition and not validConditionComp	# on compare deux entiers
 	if	lexical_analyser.isSymbol("=") or \
 		lexical_analyser.isSymbol("/="):
 		opRel(lexical_analyser)
 		validConditionComp = exp3(lexical_analyser)
-		return validCondition == validConditionComp	# comparing two integers
+		return validCondition == validConditionComp		# on compare soit des entiers soit des booléens
 	return validCondition
 	
 def opRel(lexical_analyser):
@@ -346,7 +346,7 @@ def exp3(lexical_analyser):
 	if lexical_analyser.isCharacter("+") or lexical_analyser.isCharacter("-"):
 		opAdd(lexical_analyser)
 		validConditionAdd = exp4(lexical_analyser)
-		return not validCondition and not validConditionAdd		# operating on two integers
+		return not validCondition and not validConditionAdd		# opération sur deux entiers
 	return validCondition
 
 def opAdd(lexical_analyser):
@@ -369,7 +369,7 @@ def exp4(lexical_analyser):
 	if lexical_analyser.isCharacter("*") or lexical_analyser.isCharacter("/"):
 		opMult(lexical_analyser)
 		validConditionMult = prim(lexical_analyser)
-		return not validCondition and not validConditionMult	# operating on two integers
+		return not validCondition and not validConditionMult	# opération sur deux entiers
 	return validCondition
 
 def opMult(lexical_analyser):
