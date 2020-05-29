@@ -266,7 +266,25 @@ class Generator(object):
 			i += 2 	# Saute "("
 			
 			while self.table[i] != ")" :
-				i, expr = self.expression(i)
+
+				if self.table[i] in self.var :	# Variable
+					if self.isMain() :
+						command = "empiler("
+					else :
+						command = "empilerAd("
+					total += command + str(self.var[self.table[i]]) + ")" + self.s
+					self.lines += 1
+					i += 1
+				
+				else : 	# Paramètre
+					if self.mode[self.table[i]] == "in" :
+						command = "empilerAd("
+					else :
+						command = "empilerParam("
+					total += command + str(self.param[self.table[i]]) + ")" + self.s
+					self.lines += 1
+					i += 1
+
 				total += expr
 				paramCount += 1
 			i += 1 	# Saute ")"

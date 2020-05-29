@@ -204,6 +204,7 @@ def listeDeclaVar(lexical_analyser):
 def declaVar(lexical_analyser):
 	listeIdent(lexical_analyser)
 	lexical_analyser.acceptCharacter(":")
+	ajoutIdentificateur(":")
 	logger.debug("now parsing type...")
 	nnpType(lexical_analyser)
 	lexical_analyser.acceptCharacter(";")
