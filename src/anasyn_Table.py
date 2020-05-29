@@ -420,7 +420,7 @@ def elemPrim(lexical_analyser):
 	ajoutIdentificateur(str(lexical_analyser.get_value()),"valeurAffectee")
 	if lexical_analyser.isCharacter("("):
 		lexical_analyser.acceptCharacter("(")
-		ajoutIdentificateur("(")
+		# ajoutIdentificateur("(")		Doublon ??
 		validCondition = expression(lexical_analyser)
 		lexical_analyser.acceptCharacter(")")
 		ajoutIdentificateur(")")
