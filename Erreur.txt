@@ -1,2 +1,0 @@
-
-nna/correct4 "if i-(i/2)*2=0" -> if i - ( i / 2 2 0
