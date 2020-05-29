@@ -545,13 +545,13 @@ def elemPrim(lexical_analyser):
 			logger.debug("parsed procedure call")
 
 			logger.debug("Call to function: " + ident)
-			return getReturnType(ident)
+			return getReturnType(tableIdentificateur, ident)
 		else:
 			checkNoDeclaVar(tableIdentificateur, ident, porteeActuelle)
 			logger.debug("Use of an identifier as an expression: " + ident)
 			# if str(lexical_analyser.get_value()) in operationList:						Remplacé ??
 			#	 ajoutIdentificateur(str(lexical_analyser.get_value()),"valeurAffectee")
-			return getType(ident)
+			return getType(tableIdentificateur, ident, porteeActuelle)
 	else:
 		logger.error("Unknown Value!")
 		raise AnaSynException("Unknown Value!")
@@ -593,7 +593,7 @@ def es(lexical_analyser):
 		lexical_analyser.acceptCharacter("(")
 		ident = lexical_analyser.acceptIdentifier()
 		# checkBooleen(tableIdentificateur, ident)
-		if getType(ident) == "boolean" :				# Erreur : get(boolean) TODO
+		if getType(tableIdentificateur, ident, porteeActuelle) == "boolean" :				# Erreur : get(boolean) TODO
 			print("Erreur : l'argument " + ident + " de get() ne peut pas être un booléen")
 			sys.exit(0)
 		ajoutIdentificateur(ident)
