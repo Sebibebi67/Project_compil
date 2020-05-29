@@ -50,18 +50,24 @@ class AnaSynException(Exception): # TODO TODO TODO (todo.getTodo(tout doux))
 #### Syntactical Diagrams
 ########################################################################				 	
 
+
+
 def program(lexical_analyser):
 	specifProgPrinc(lexical_analyser)
 	lexical_analyser.acceptKeyword("is")
 	ajoutIdentificateur("is")
 	corpsProgPrinc(lexical_analyser)
 	
+
+
 def specifProgPrinc(lexical_analyser):
 	lexical_analyser.acceptKeyword("procedure")
 	ajoutIdentificateur("procedure")
 	ident = lexical_analyser.acceptIdentifier()
 	logger.debug("Name of program : "+ident)
 	ajoutIdentificateur(str(ident),"corps")
+
+
 
 def  corpsProgPrinc(lexical_analyser):
 	if not lexical_analyser.isKeyword("begin"):
@@ -81,6 +87,8 @@ def  corpsProgPrinc(lexical_analyser):
 	lexical_analyser.acceptFel()
 	logger.debug("End of program")
 	
+
+
 def partieDecla(lexical_analyser):
 	if lexical_analyser.isKeyword("procedure") or lexical_analyser.isKeyword("function") :
 		listeDeclaOp(lexical_analyser)
@@ -89,11 +97,15 @@ def partieDecla(lexical_analyser):
 	else:
 		listeDeclaVar(lexical_analyser) 
 
+
+
 def listeDeclaOp(lexical_analyser):
 	declaOp(lexical_analyser)
 	lexical_analyser.acceptCharacter(";")
 	if lexical_analyser.isKeyword("procedure") or lexical_analyser.isKeyword("function") :
 		listeDeclaOp(lexical_analyser)
+
+
 
 def declaOp(lexical_analyser):
 	if lexical_analyser.isKeyword("procedure"):
@@ -101,11 +113,14 @@ def declaOp(lexical_analyser):
 	if lexical_analyser.isKeyword("function"):
 		fonction(lexical_analyser)
 
+
+
 def procedure(lexical_analyser):
 	lexical_analyser.acceptKeyword("procedure")
 	ajoutIdentificateur("procedure")
 	ident = lexical_analyser.acceptIdentifier()
 	logger.debug("Name of procedure : "+ident)
+	checkDoubleDeclaOp(tableIdentificateur, str(ident))		# Erreur : double déclaration de procédure TODO
 	ajoutIdentificateur(str(ident),"corps")
        
 	partieFormelle(lexical_analyser)
@@ -115,10 +130,13 @@ def procedure(lexical_analyser):
 	corpsProc(lexical_analyser)
        
 
+
+
 def fonction(lexical_analyser):
 	lexical_analyser.acceptKeyword("function")
 	ident = lexical_analyser.acceptIdentifier()
 	logger.debug("Name of function : "+ident)
+	checkDoubleDeclaOp(tableIdentificateur, str(ident))		# Erreur : double déclaration de fonction TODO
 	ajoutIdentificateur(str(ident),"corps")
 	
 	partieFormelle(lexical_analyser)
@@ -131,6 +149,8 @@ def fonction(lexical_analyser):
 	ajoutIdentificateur("is")
 	corpsFonct(lexical_analyser)
 
+
+
 def corpsProc(lexical_analyser):
 	if not lexical_analyser.isKeyword("begin"):
 		partieDeclaProc(lexical_analyser)
@@ -140,12 +160,16 @@ def corpsProc(lexical_analyser):
 	lexical_analyser.acceptKeyword("end")
 	ajoutIdentificateur("end","end")
 
+
+
 def corpsFonct(lexical_analyser):
 	if not lexical_analyser.isKeyword("begin"):
 		partieDeclaProc(lexical_analyser)
 	lexical_analyser.acceptKeyword("begin")
 	suiteInstrNonVide(lexical_analyser)
 	lexical_analyser.acceptKeyword("end")
+
+
 
 def partieFormelle(lexical_analyser):
 	lexical_analyser.acceptCharacter("(")
@@ -155,11 +179,15 @@ def partieFormelle(lexical_analyser):
 	lexical_analyser.acceptCharacter(")")
 	ajoutIdentificateur(")")
 
+
+
 def listeSpecifFormelles(lexical_analyser):
 	specif(lexical_analyser)
 	if not lexical_analyser.isCharacter(")"):
 		lexical_analyser.acceptCharacter(";")
 		listeSpecifFormelles(lexical_analyser)
+
+
 
 def specif(lexical_analyser):
 	listeIdent(lexical_analyser)
@@ -170,6 +198,8 @@ def specif(lexical_analyser):
                 
 	nnpType(lexical_analyser)
 
+
+
 def mode(lexical_analyser):
 	lexical_analyser.acceptKeyword("in")
 	if lexical_analyser.isKeyword("out"):
@@ -179,6 +209,8 @@ def mode(lexical_analyser):
 	else:
 		ajoutIdentificateur("in")
 		logger.debug("in parameter")
+
+
 
 def nnpType(lexical_analyser):
 	if lexical_analyser.isKeyword("integer"):
@@ -193,13 +225,19 @@ def nnpType(lexical_analyser):
 		logger.error("Unknown type found <"+ lexical_analyser.get_value() +">!")
 		raise AnaSynException("Unknown type found <"+ lexical_analyser.get_value() +">!")
 
+
+
 def partieDeclaProc(lexical_analyser):
 	listeDeclaVar(lexical_analyser)
+
+
 
 def listeDeclaVar(lexical_analyser):
 	declaVar(lexical_analyser)
 	if lexical_analyser.isIdentifier():
 		listeDeclaVar(lexical_analyser)
+
+
 
 def declaVar(lexical_analyser):
 	listeIdent(lexical_analyser)
@@ -209,8 +247,11 @@ def declaVar(lexical_analyser):
 	nnpType(lexical_analyser)
 	lexical_analyser.acceptCharacter(";")
 
+
+
 def listeIdent(lexical_analyser):
 	ident = lexical_analyser.acceptIdentifier()
+	checkDoubleDeclaVar(tableIdentificateur, str(ident), porteeActuelle)	# Erreur : double déclaration TODO
 	ajoutIdentificateur(str(ident),"variable")
 	logger.debug("identifier found: "+str(ident))
 
@@ -218,15 +259,21 @@ def listeIdent(lexical_analyser):
 		lexical_analyser.acceptCharacter(",")
 		listeIdent(lexical_analyser)
 
+
+
 def suiteInstrNonVide(lexical_analyser):
 	instr(lexical_analyser)
 	if lexical_analyser.isCharacter(";"):
 		lexical_analyser.acceptCharacter(";")
 		suiteInstr(lexical_analyser)
 
+
+
 def suiteInstr(lexical_analyser):
 	if not lexical_analyser.isKeyword("end"):
 		suiteInstrNonVide(lexical_analyser)
+
+
 
 def instr(lexical_analyser):	
 	if lexical_analyser.isKeyword("while"):
@@ -253,6 +300,7 @@ def instr(lexical_analyser):
 			ajoutIdentificateur(saveIdent,"affectation")
 			lexical_analyser.acceptSymbol(":=")
 			type = expression(lexical_analyser)
+			# checkTypage(tableIdentificateur, saveIdent, TODO, type)
 			if getType(saveIdent) != type :		# Erreur de typage TODO
 				if type == "integer" :
 					print("Erreur de typage : tentative d'assigner un entier à une variable booléenne")
@@ -279,11 +327,15 @@ def instr(lexical_analyser):
 		logger.error("Unknown Instruction <"+ lexical_analyser.get_value() +">!")
 		raise AnaSynException("Unknown Instruction <"+ lexical_analyser.get_value() +">!")
 
+
+
 def listePe(lexical_analyser):
 	expression(lexical_analyser)
 	if lexical_analyser.isCharacter(","):
 		lexical_analyser.acceptCharacter(",")
 		listePe(lexical_analyser)
+
+
 
 def expression(lexical_analyser):
 	logger.debug("parsing expression: " + str(lexical_analyser.get_value()))
@@ -292,12 +344,14 @@ def expression(lexical_analyser):
 		ajoutIdentificateur("or")
 		lexical_analyser.acceptKeyword("or")
 		type2 = exp1(lexical_analyser)
-		if not type1 or not type2 :	# Erreur : opération or avec un entier TODO
+		if type1 == "integer" or type2 == "integer" :	# Erreur : opération or avec un entier TODO
 			print("Un entier ne peut pas faire l'objet d'une comparaison or")
 			sys.exit(0)
 		return "boolean"			# Opération sur deux booléens ; résultat booléen
 	return type1
         
+
+
 def exp1(lexical_analyser):
 	logger.debug("parsing exp1")
 	
@@ -306,13 +360,15 @@ def exp1(lexical_analyser):
 		ajoutIdentificateur("and")
 		lexical_analyser.acceptKeyword("and")
 		type2 = exp2(lexical_analyser)
-		if not type1 or not type2 :	# Erreur : opération and avec un entier TODO
+		if type1 == "integer" or type2 == "integer" :	# Erreur : opération and avec un entier TODO
 			print("Un entier ne peut pas faire l'objet d'une comparaison and")
 			sys.exit(0)
 		return "boolean"
 	return type1
 		
         
+
+
 def exp2(lexical_analyser):
 	logger.debug("parsing exp2")
         
@@ -323,7 +379,7 @@ def exp2(lexical_analyser):
 		lexical_analyser.isSymbol(">="):
 		opRel(lexical_analyser)
 		type2 = exp3(lexical_analyser)
-		if type1 or type2 :	# Erreur : comparaison > / < impliquant un booléen TODO
+		if type1 == "boolean" or type2 == "boolean" :	# Erreur : comparaison > / < impliquant un booléen TODO
 			print("Un booléen ne peut pas faire l'objet d'une comparaison <, >, <= ou >=")
 			sys.exit(0)
 		return "boolean"	# Comparaison de deux entiers ; résultat booléen
@@ -337,6 +393,8 @@ def exp2(lexical_analyser):
 		return "boolean"	# Comparaisons d'entiers ou de booléens ; résultat booléen
 	return type1
 	
+
+
 def opRel(lexical_analyser):
 	logger.debug("parsing relationnal operator: " + lexical_analyser.get_value())
 	ajoutIdentificateur(str(lexical_analyser.get_value()))
@@ -364,17 +422,21 @@ def opRel(lexical_analyser):
 		logger.error(msg)
 		raise AnaSynException(msg)
 
+
+
 def exp3(lexical_analyser):
 	logger.debug("parsing exp3")
 	type1 = exp4(lexical_analyser)
 	if lexical_analyser.isCharacter("+") or lexical_analyser.isCharacter("-"):
 		opAdd(lexical_analyser)
 		type2 = exp4(lexical_analyser)
-		if type1 or type2 :	# Erreur : addition de booléens TODO
+		if type1 == "boolean" or type2 == "boolean" :	# Erreur : addition de booléens TODO
 			print("Un booléen ne peut pas être additionné ou soustrait")
 			sys.exit(0)
 		return "integer"	# Opération sur deux entiers ; résultat entier
 	return type1
+
+
 
 def opAdd(lexical_analyser):
 	logger.debug("parsing additive operator: " + lexical_analyser.get_value())
@@ -390,6 +452,8 @@ def opAdd(lexical_analyser):
 		logger.error(msg)
 		raise AnaSynException(msg)
 
+
+
 def exp4(lexical_analyser):
 	logger.debug("parsing exp4")
         
@@ -397,11 +461,13 @@ def exp4(lexical_analyser):
 	if lexical_analyser.isCharacter("*") or lexical_analyser.isCharacter("/"):
 		opMult(lexical_analyser)
 		type2 = prim(lexical_analyser)
-		if type1 or type2 :	# Erreur : multiplication de booléens TODO
+		if type1 == "boolean" or type2 == "boolean" :	# Erreur : multiplication de booléens TODO
 			print("Un booléen ne peut pas être multiplié ou divisé")
 			sys.exit(0)
 		return "integer"	# Opération sur deux entiers ; résultat entier
 	return type1
+
+
 
 def opMult(lexical_analyser):
 	logger.debug("parsing multiplicative operator: " + lexical_analyser.get_value())
@@ -417,12 +483,16 @@ def opMult(lexical_analyser):
 		logger.error(msg)
 		raise AnaSynException(msg)
 
+
+
 def prim(lexical_analyser):
 	logger.debug("parsing prim")
         
 	if lexical_analyser.isCharacter("+") or lexical_analyser.isCharacter("-") or lexical_analyser.isKeyword("not"):
 		opUnaire(lexical_analyser)
 	return elemPrim(lexical_analyser)
+
+
 
 def opUnaire(lexical_analyser):
 	logger.debug("parsing unary operator: " + lexical_analyser.get_value())
@@ -441,6 +511,8 @@ def opUnaire(lexical_analyser):
 		logger.error(msg)
 		raise AnaSynException(msg)
 
+
+
 def elemPrim(lexical_analyser):
 	logger.debug("parsing elemPrim: " + str(lexical_analyser.get_value()))
 	ajoutIdentificateur(str(lexical_analyser.get_value()),"valeurAffectee")
@@ -456,6 +528,7 @@ def elemPrim(lexical_analyser):
 	elif lexical_analyser.isIdentifier():
 		ident = lexical_analyser.acceptIdentifier()
 		if lexical_analyser.isCharacter("("):			# Appel fonct
+			checkNoDeclaOp(tableIdentificateur, str(ident))		# Erreur : identifiant non déclaré TODO
 			lexical_analyser.acceptCharacter("(")
 			ajoutIdentificateur("(")
 			if not lexical_analyser.isCharacter(")"):
@@ -468,6 +541,7 @@ def elemPrim(lexical_analyser):
 			logger.debug("Call to function: " + ident)
 			return "integer"		# TODO type du retour
 		else:
+			checkNoDeclaVar(tableIdentificateur, str(ident), porteeActuelle)
 			logger.debug("Use of an identifier as an expression: " + ident)
 			# if str(lexical_analyser.get_value()) in operationList:						Remplacé ??
 			#	 ajoutIdentificateur(str(lexical_analyser.get_value()),"valeurAffectee")
@@ -475,6 +549,8 @@ def elemPrim(lexical_analyser):
 	else:
 		logger.error("Unknown Value!")
 		raise AnaSynException("Unknown Value!")
+
+
 
 def valeur(lexical_analyser):
 	if lexical_analyser.isInteger():
@@ -487,6 +563,8 @@ def valeur(lexical_analyser):
 		logger.error("Unknown Value! Expecting an integer or a boolean value!")
 		raise AnaSynException("Unknown Value ! Expecting an integer or a boolean value!")
 
+
+
 def valBool(lexical_analyser):
 	if lexical_analyser.isKeyword("true"):
 		lexical_analyser.acceptKeyword("true")	
@@ -498,10 +576,14 @@ def valBool(lexical_analyser):
         
 	return "boolean"
 
+
+
 def getType(ident):
-    for e in tableIdentificateur[:-1] :
-        if e[0] == ident :
-            return e[2]
+	for e in tableIdentificateur[::-1] :
+		if e[0] == ident :
+			return e[2]
+
+
 
 def es(lexical_analyser):
 	logger.debug("parsing E/S instruction: " + lexical_analyser.get_value())
@@ -524,7 +606,7 @@ def es(lexical_analyser):
 		ajoutIdentificateur("put","getput")
 		ajoutIdentificateur("(")
 		lexical_analyser.acceptCharacter("(")
-		if expression(lexical_analyser)	:				# Erreur TODO
+		if expression(lexical_analyser) == "boolean"	:				# Erreur TODO
 			print("Erreur : l'argument de put() ne peut pas être un booléen")
 			sys.exit(0)
 		lexical_analyser.acceptCharacter(")")
@@ -534,11 +616,13 @@ def es(lexical_analyser):
 		logger.error("Unknown E/S instruction!")
 		raise AnaSynException("Unknown E/S instruction!")
 
+
+
 def boucle(lexical_analyser):
 	logger.debug("parsing while loop: ")
 	lexical_analyser.acceptKeyword("while")
 
-	if not expression(lexical_analyser) :
+	if expression(lexical_analyser) == "integer" :
 		logger.error("Invalid condition : expression is not a boolean !")
 		raise AnaSynException("Invalid condition : expression is not a boolean !")
 
@@ -549,11 +633,13 @@ def boucle(lexical_analyser):
 	ajoutIdentificateur("end","end")
 	logger.debug("end of while loop ")
 
+
+
 def altern(lexical_analyser):
 	logger.debug("parsing if: ")
 	lexical_analyser.acceptKeyword("if")
 
-	if not expression(lexical_analyser) :
+	if expression(lexical_analyser) == "integer" :
 		logger.error("Invalid condition : expression is not a boolean !")
 		raise AnaSynException("Invalid condition : expression is not a boolean !")
        
@@ -568,6 +654,8 @@ def altern(lexical_analyser):
 	lexical_analyser.acceptKeyword("end")
 	ajoutIdentificateur("end","end")
 	logger.debug("end of if")
+
+
 
 def retour(lexical_analyser):
 	logger.debug("parsing return instruction")
@@ -586,6 +674,8 @@ Retour : None
 Auteurs :
 - Alex JOBARD, Thomas LEPERCQ
 """	
+
+
 def ajoutIdentificateur(identificateur,tableOperation = "None"):
 	global listeIdentificateur		# Liste pour gencode.py
 	global tableIdentificateur		# Table d'identificateurs
@@ -615,12 +705,10 @@ def ajoutIdentificateur(identificateur,tableOperation = "None"):
 	elif(tableOperation == "type"):		# Type d'une variable déjà déclarée
 		portee = tableIdentificateur[-1][1]
 		i = 0
-		while(tableIdentificateur[-1-i][1] == portee and tableIdentificateur[-1-i][2] == "null"):
+		l = len(tableIdentificateur)
+		while tableIdentificateur[-1-i][1] == portee and tableIdentificateur[-1-i][2] == "null" and i < l :
 			tableIdentificateur[-1-i][2] = identificateur
-			l = len(tableIdentificateur)
 			i += 1
-			if(i > l-1):
-				break
 
 	elif(tableOperation == "getput"):	# Identificateur d'un appel à put ou get
 		tableIdentificateur.append([identificateur])
@@ -668,6 +756,8 @@ def ajoutIdentificateur(identificateur,tableOperation = "None"):
 	# 	valeurAffectee = []
 
 ########################################################################
+
+
 def main():
 	parser = argparse.ArgumentParser(description='Do the syntactical analysis of a NNP program.')
 	parser.add_argument('inputfile', type=str, nargs=1, help='name of the input source file')
