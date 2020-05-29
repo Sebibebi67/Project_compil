@@ -596,7 +596,7 @@ def empilerParam(n):
 
     global cptLigne
     pile.append(n+pointeurLigne[-1])
-    # valeurPile()
+    valeurPile()
     cptLigne+=1
 
 
