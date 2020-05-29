@@ -19,7 +19,7 @@ Vous devez ensuite donner les droits d'exécution aux fichiers suivants :
 Pour cela, dans une terminal Linux, vous pouvez utiliser la commande :
     chmod +x <fichier>
 
-il ne vous reste plus qu'à utiliser le script shell chef.sh pour utiliser le
+il ne vous reste plus qu'à lancer le script shell chef.sh pour utiliser le
 compilateur ou l'exécuteur. Les détails d'utilisation du script sont donnés dans
 la partie suivante.
 
@@ -46,12 +46,12 @@ Si vous utilisez windows et que vous rencontrez cette erreur :
 vous pouvez utiliser cette commande pour résoudre le problème :
     sed -i 's/\r$//' ./chef.sh
 
-Le fonctionnement est alors strictement identique que celui décrit dans la
+Le fonctionnement est alors strictement identique à celui décrit dans la
 section précédente
 
 Si vous utilisez windows et que vous rencontrez une erreur du type :
     bad interpreter: No such file or directory
-il vous faudra déplacer le fichier python.exe pour le placer dans le repertoire
+il vous faudra copier l'exécutable python.exe pour le placer dans le répertoire
 /usr/bin
 
 **=================================== Auteurs ====================================**

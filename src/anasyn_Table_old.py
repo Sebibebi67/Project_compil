@@ -283,7 +283,6 @@ def expression(lexical_analyser):
 	logger.debug("parsing expression: " + str(lexical_analyser.get_value()))
 	validCondition = exp1(lexical_analyser)
 	if lexical_analyser.isKeyword("or"):
-		ajoutIdentificateur("or")
 		lexical_analyser.acceptKeyword("or")
 		validConditionOr = exp1(lexical_analyser)
 		return validCondition and validConditionOr
@@ -294,7 +293,6 @@ def exp1(lexical_analyser):
 	
 	validCondition = exp2(lexical_analyser)
 	if lexical_analyser.isKeyword("and"):
-		ajoutIdentificateur("and")
 		lexical_analyser.acceptKeyword("and")
 		validConditionAnd = exp2(lexical_analyser)
 		return validCondition and validConditionAnd
@@ -321,7 +319,6 @@ def exp2(lexical_analyser):
 	
 def opRel(lexical_analyser):
 	logger.debug("parsing relationnal operator: " + lexical_analyser.get_value())
-	ajoutIdentificateur(str(lexical_analyser.get_value()))
         
 	if	lexical_analyser.isSymbol("<"):
 		lexical_analyser.acceptSymbol("<")
@@ -358,7 +355,6 @@ def exp3(lexical_analyser):
 
 def opAdd(lexical_analyser):
 	logger.debug("parsing additive operator: " + lexical_analyser.get_value())
-	ajoutIdentificateur(str(lexical_analyser.get_value()))
 	if lexical_analyser.isCharacter("+"):
 		lexical_analyser.acceptCharacter("+")
                 
@@ -383,7 +379,6 @@ def exp4(lexical_analyser):
 
 def opMult(lexical_analyser):
 	logger.debug("parsing multiplicative operator: " + lexical_analyser.get_value())
-	ajoutIdentificateur(str(lexical_analyser.get_value()))
 	if lexical_analyser.isCharacter("*"):
 		lexical_analyser.acceptCharacter("*")
                 
@@ -448,8 +443,8 @@ def elemPrim(lexical_analyser):
 			return True		# TODO type du retour
 		else:
 			logger.debug("Use of an identifier as an expression: " + ident)
-			#if str(lexical_analyser.get_value()) in operationList:
-			#	ajoutIdentificateur(str(lexical_analyser.get_value()),"valeurAffectee")
+			if str(lexical_analyser.get_value()) in operationList:
+				ajoutIdentificateur(str(lexical_analyser.get_value()),"valeurAffectee")
 			return getType(ident) == "boolean"
 	else:
 		logger.error("Unknown Value!")
