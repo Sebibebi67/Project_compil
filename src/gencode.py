@@ -142,7 +142,7 @@ class Generator(object):
 					
 				for k in range(len(stock)):
 					self.var[stock[k]] = k + paramCount 	# Enregistre les variables
-				if len(stock) > 0 : 
+				if len(stock) > 0 :
 					chain += "reserver(" + str(len(stock)) + ")" + self.s
 				self.lines += 1
 				paramCount = 0
