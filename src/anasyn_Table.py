@@ -593,7 +593,7 @@ def es(lexical_analyser):
 		lexical_analyser.acceptCharacter("(")
 		ident = lexical_analyser.acceptIdentifier()
 		# checkBooleen(tableIdentificateur, ident)
-		if getType(tableIdentificateur, ident, porteeActuelle) == "boolean" :				# Erreur : get(boolean) TODO
+		if getType(tableIdentificateur, ident, porteeActuelle) == "boolean" :	# Erreur : get(boolean) TODO
 			print("Erreur : l'argument " + ident + " de get() ne peut pas être un booléen")
 			sys.exit(0)
 		ajoutIdentificateur(ident)
@@ -605,7 +605,7 @@ def es(lexical_analyser):
 		ajoutIdentificateur("put","getput")
 		ajoutIdentificateur("(")
 		lexical_analyser.acceptCharacter("(")
-		if expression(lexical_analyser) == "boolean" :	# Erreur : put(boolean) TODO
+		if expression(lexical_analyser) == "boolean" :							# Erreur : put(boolean) TODO
 			print("Erreur : l'argument de put() ne peut pas être un booléen")
 			sys.exit(0)
 		lexical_analyser.acceptCharacter(")")
