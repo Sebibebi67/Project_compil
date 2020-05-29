@@ -95,6 +95,7 @@ function titre(){
     # Description : Affiche un titre dans le terminal
     #
     # Input :
+    # - l'indentifieur pour compléter la ligne
     # - Le titre sous la forme d'une chaine de caractère
     #
     # Output :
@@ -106,8 +107,15 @@ function titre(){
 
     if [ $# -eq 0 ]; then
         param="Titre"
+        id="="
+    elif [ $# -eq 1 ]; then
+        param=$1
+        id="="
+    elif [ $# -eq 2 ]; then
+        param=$2
+        id=$1
     else
-        param=$*
+        echo error
     fi
 
     lenParam=${#param}
@@ -115,11 +123,11 @@ function titre(){
     lenEq2=$(( $lenTitle-$lenParam-$lenEq1-2 ))
     title=""
     for (( i = 0; i < $lenEq1; i++ )); do
-        title="${title}="
+        title="${title}$1"
     done
     title="${title} $param "
     for (( i = 0; i < $lenEq2; i++ )); do
-        title="${title}="
+        title="${title}$1"
     done
 
     echo -e "\e[35m\e[1m${title}\n\e[0m"
@@ -156,14 +164,12 @@ function help(){
     # - Sébastien HERT
     ###
 
-    titre "Compilateur Habile, Exécuteur Fiable"
-
-    titre "Description"
+    titre - "Description"
     echo -e "Cette commande permet l'exécution complète du compilateur, en prenant en"
     echo -e "paramètre un fichier valide.\n"
 
 
-    titre "Synopsis"
+    titre - "Synopsis"
     success "./chef.sh <arg> <fichier>"
     echo -e "arg :"
     echo -e " * -h, -help :       Affiche cette aide"
@@ -178,7 +184,7 @@ function help(){
     echo -e "fichier :"
     echo -e "   Le fichier en pseudo-code ou en NilNovi, en fonction de l'argument 1 choisi\n"
 
-    titre "Auteurs"
+    titre - "Auteurs"
     success "Equipe PDB :"
     echo -e " * Sébastien HERT"
     echo -e " * Alex JOBARD"
@@ -243,7 +249,7 @@ function table(){
     # - Sébastien HERT
     ###
 
-    titre "Création de la table des identifiants"
+    titre - "Création de la table des identifiants"
     case $1 in
         '-show')
             ./src/anasyn_Table.py $2 --show-ident-table
@@ -270,7 +276,7 @@ function liste(){
     # - Sébastien HERT
     ###
 
-    titre "Création de la liste des identifiants"
+    titre - "Création de la liste des identifiants"
     ident_list=$( ./src/anasyn_Table.py $1 --show-ident-list )
     success "Création réussie"
 }
@@ -289,7 +295,7 @@ function nilnovi(){
     # - Sébastien HERT
     ###
 
-    titre "Création du programme en NilNovi"
+    titre - "Création du programme en NilNovi"
     case $1 in
         '-show')
             ./src/gencode.py $ident_list
@@ -317,7 +323,7 @@ function exe(){
     # - Sébastien HERT
     ###
 
-    titre "Exécution du programme en NilNovi"
+    titre - "Exécution du programme en NilNovi"
     if [ $# -eq 0 ]; then
         ./src/exec.py ./tmp/NilNovi.txt
     elif [ $# -eq 1 ]; then
@@ -342,13 +348,16 @@ set -e
 
 erase
 
+titre = "Compilateur Habile, Exécuteur Fiable"
+
 if [[ $1 == '-help' ]] || [[ $1 == '--help' ]] || [[ $1 == '-h' ]] ; then
     help
 fi
 
-titre "Initialisation"
 
-titre "Vérification des paramètres"
+titre - "Initialisation"
+
+titre - "Vérification des paramètres"
 
 
 #Vérification du nombre de paramètres
@@ -425,7 +434,7 @@ esac
 
 
 echo ""
-titre "Terminaison"
+titre - "Terminaison"
 
 
 # erase
