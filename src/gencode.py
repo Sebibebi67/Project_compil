@@ -45,6 +45,7 @@ class Generator(object):
 	id = {}		# Associe les noms de procédures / fonctions à leur numéro de ligne NilNovi
 	var = {}  	# Associe les variables à leurs adresses (locales ou globales)
 	param = {} 	# Associe les paramètres à leurs adresses locales
+	mode = {}	# Associe les paramètres à leurs mode (entrée ou entrée-sortie)
 	table = []  # Pseudo-code formaté
 	proc = [] 	# proc[-1] est "True" si le programme compile une procédure, "False" si c'est une fonction
 
@@ -68,7 +69,6 @@ class Generator(object):
 		- Dejan PARIS
 		"""
 		self.table = t
-		print(t)
 		_, self.chain = self.generate(0, "debutProg()" + self.s)
 		# self.printNoLines(self.chain)
 		# self.printWithLines(self.chain)
@@ -96,7 +96,8 @@ class Generator(object):
 		- Dejan PARIS
 		"""
 		paramCount = 0 	# Utilisé pour attribuer des adresses locales aux paramètres et variables
-		stock = []  # Stocke temporairement les noms à allouer
+		stock = []  	# Stocke temporairement les noms à allouer
+		stock2 = []		# Stocke temporairement les paramètres de même type / mode
 		
 		while i < len(self.table):
 			if self.table[i] == "procedure" or self.table[i] == "function" :
@@ -111,12 +112,19 @@ class Generator(object):
 				if self.table[i] == "(" : 	# Paramètres
 					
 					i += 1
+
 					while self.table[i] != ")" :
 						stock.append(self.table[i])
+						stock2.append(self.table[i])
 						i += 1
 					
 						if self.table[i] == ":" :
-							i += 2 	# Saute ": [type]" dans le pseudo-code
+							i += 1 	# Saute ":" dans le pseudo-code
+							for param in stock2 :
+								self.mode[param] = self.table[i]	# Enregistre le mode (in / inout)
+							stock2 = []
+							i += 2 	# Saute "[mode] [type]"
+
 					i += 1
 						
 					for k in range(len(stock)):
@@ -282,7 +290,11 @@ class Generator(object):
 		
 		
 		elif self.table[i] in self.param : # Affectation d'un paramètre
-			total += "empilerParam(" + str(self.param[self.table[i]]) + ")" + self.s
+			if self.mode[self.table[i]] == "in" :
+				command = "empilerAd("
+			else :
+				command = "empilerParam("
+			total += command + str(self.param[self.table[i]]) + ")" + self.s
 			self.lines += 1
 			i += 1
 			i, expr = self.expression(i)
@@ -611,7 +623,11 @@ class Generator(object):
 				i += 1
 				
 			else : 	# Paramètre
-				expr += "empilerParam(" + str(self.param[self.table[i]]) + ")" + self.s
+				if self.mode[self.table[i]] == "in" :
+					command = "empilerAd("
+				else :
+					command = "empilerParam("
+				expr += command + str(self.param[self.table[i]]) + ")" + self.s
 				expr += "valeurPile()" + self.s
 				self.lines += 2
 				i += 1
