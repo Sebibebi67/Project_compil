@@ -1,0 +1,1 @@
+(Les procédures et fonctions n'acceptent que des variables/paramètres en arguments)
