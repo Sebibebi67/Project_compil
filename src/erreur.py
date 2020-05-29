@@ -45,7 +45,7 @@ import sys
 
 def checkBooleen(identTable, name):
     """
-    Description : Vérifie que le paramètre / la variable "name" n'est pas un booléen (pour get() et put()).
+    Description : Vérifie que le paramètre / la variable "name" n'est pas un booléen (pour get()).
 
     Paramètres :
     - identTable : table des identificateurs
@@ -60,7 +60,7 @@ def checkBooleen(identTable, name):
     for e in identTable[:-1] :
         if e[0] == name :
             if e[2] == "boolean" :
-                print("Erreur : l'argument " + name + " de get() ou put() ne peut pas être un booléen")
+                print("Erreur : l'argument " + name + " de get() ne peut pas être un booléen")
                 sys.exit(0)
 
 

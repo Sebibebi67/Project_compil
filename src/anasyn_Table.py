@@ -8,8 +8,8 @@
 
 ########################################################################				 	
 #### TO DO
-# Completer la list (listeIdentificateur) avec les indentificateurs necessaires
-# Une fois completee, la parse a nouveau pour creer la table (plus simple)
+# Compléter la list (listeIdentificateur) avec les indentificateurs nécessaires
+# Une fois complétée, la parse a nouveau pour créer la table (plus simple)
 ####
 ########################################################################
 
@@ -40,7 +40,7 @@ operationList = ["+","-","*","/","and","or","<","<=",">",">=","=","/="]
 indiceValeurAffectation = None 	# UNFINISHED / UNUSED
 valeurAffectee = []				# UNFINISHED / UNUSED
 
-class AnaSynException(Exception):
+class AnaSynException(Exception): # TODO TODO TODO (todo.getTodo(tout doux))
 	def __init__(self, value):
 		self.value = value
 	def __str__(self):
@@ -252,7 +252,13 @@ def instr(lexical_analyser):
 			# affectation
 			ajoutIdentificateur(saveIdent,"affectation")
 			lexical_analyser.acceptSymbol(":=")
-			expression(lexical_analyser)
+			type = expression(lexical_analyser)
+			if getType(saveIdent) != type :		# Erreur de typage TODO
+				if type == "integer" :
+					print("Erreur de typage : tentative d'assigner un entier à une variable booléenne")
+				else :
+					print("Erreur de typage : tentative d'assigner un booléen à une variable entière")
+				sys.exit(0)
 			logger.debug("parsed affectation")
 			# ajoutIdentificateur(None,"finAffectation")
 		elif lexical_analyser.isCharacter("("):
@@ -281,43 +287,55 @@ def listePe(lexical_analyser):
 
 def expression(lexical_analyser):
 	logger.debug("parsing expression: " + str(lexical_analyser.get_value()))
-	validCondition = exp1(lexical_analyser)
+	type1 = exp1(lexical_analyser)
 	if lexical_analyser.isKeyword("or"):
 		ajoutIdentificateur("or")
 		lexical_analyser.acceptKeyword("or")
-		validConditionOr = exp1(lexical_analyser)
-		return validCondition and validConditionOr
-	return validCondition
+		type2 = exp1(lexical_analyser)
+		if not type1 or not type2 :	# Erreur : opération or avec un entier TODO
+			print("Un entier ne peut pas faire l'objet d'une comparaison or")
+			sys.exit(0)
+		return "boolean"			# Opération sur deux booléens ; résultat booléen
+	return type1
         
 def exp1(lexical_analyser):
 	logger.debug("parsing exp1")
 	
-	validCondition = exp2(lexical_analyser)
+	type1 = exp2(lexical_analyser)
 	if lexical_analyser.isKeyword("and"):
 		ajoutIdentificateur("and")
 		lexical_analyser.acceptKeyword("and")
-		validConditionAnd = exp2(lexical_analyser)
-		return validCondition and validConditionAnd
-	return validCondition
+		type2 = exp2(lexical_analyser)
+		if not type1 or not type2 :	# Erreur : opération and avec un entier TODO
+			print("Un entier ne peut pas faire l'objet d'une comparaison and")
+			sys.exit(0)
+		return "boolean"
+	return type1
 		
         
 def exp2(lexical_analyser):
 	logger.debug("parsing exp2")
         
-	validCondition = exp3(lexical_analyser)
+	type1 = exp3(lexical_analyser)
 	if	lexical_analyser.isSymbol("<") or \
 		lexical_analyser.isSymbol("<=") or \
 		lexical_analyser.isSymbol(">") or \
 		lexical_analyser.isSymbol(">="):
 		opRel(lexical_analyser)
-		validConditionComp = exp3(lexical_analyser)
-		return not validCondition and not validConditionComp	# comparing two integers
+		type2 = exp3(lexical_analyser)
+		if type1 or type2 :	# Erreur : comparaison > / < impliquant un booléen TODO
+			print("Un booléen ne peut pas faire l'objet d'une comparaison <, >, <= ou >=")
+			sys.exit(0)
+		return "boolean"	# Comparaison de deux entiers ; résultat booléen
 	if	lexical_analyser.isSymbol("=") or \
 		lexical_analyser.isSymbol("/="):
 		opRel(lexical_analyser)
-		validConditionComp = exp3(lexical_analyser)
-		return validCondition == validConditionComp	# comparing two integers
-	return validCondition
+		type2 = exp3(lexical_analyser)
+		if type1 != type2 :	# Erreur : comparaison entre entier et booléen TODO
+			print("Impossible de comparer un entier et un booléen avec = ou /=")
+			sys.exit(0)
+		return "boolean"	# Comparaisons d'entiers ou de booléens ; résultat booléen
+	return type1
 	
 def opRel(lexical_analyser):
 	logger.debug("parsing relationnal operator: " + lexical_analyser.get_value())
@@ -348,13 +366,15 @@ def opRel(lexical_analyser):
 
 def exp3(lexical_analyser):
 	logger.debug("parsing exp3")
-	validCondition = exp4(lexical_analyser)
+	type1 = exp4(lexical_analyser)
 	if lexical_analyser.isCharacter("+") or lexical_analyser.isCharacter("-"):
 		opAdd(lexical_analyser)
-		validConditionAdd = exp4(lexical_analyser)
-		if not validCondition and not validConditionAdd :	# TODO error if else
-			return False	# operating on two integers
-	return validCondition
+		type2 = exp4(lexical_analyser)
+		if type1 or type2 :	# Erreur : addition de booléens TODO
+			print("Un booléen ne peut pas être additionné ou soustrait")
+			sys.exit(0)
+		return "integer"	# Opération sur deux entiers ; résultat entier
+	return type1
 
 def opAdd(lexical_analyser):
 	logger.debug("parsing additive operator: " + lexical_analyser.get_value())
@@ -373,13 +393,15 @@ def opAdd(lexical_analyser):
 def exp4(lexical_analyser):
 	logger.debug("parsing exp4")
         
-	validCondition = prim(lexical_analyser)
+	type1 = prim(lexical_analyser)
 	if lexical_analyser.isCharacter("*") or lexical_analyser.isCharacter("/"):
 		opMult(lexical_analyser)
-		validConditionMult = prim(lexical_analyser)
-		if not validCondition and not validConditionMult :	# TODO error if else
-			return False	# operating on two integers
-	return validCondition
+		type2 = prim(lexical_analyser)
+		if type1 or type2 :	# Erreur : multiplication de booléens TODO
+			print("Un booléen ne peut pas être multiplié ou divisé")
+			sys.exit(0)
+		return "integer"	# Opération sur deux entiers ; résultat entier
+	return type1
 
 def opMult(lexical_analyser):
 	logger.debug("parsing multiplicative operator: " + lexical_analyser.get_value())
@@ -400,8 +422,7 @@ def prim(lexical_analyser):
         
 	if lexical_analyser.isCharacter("+") or lexical_analyser.isCharacter("-") or lexical_analyser.isKeyword("not"):
 		opUnaire(lexical_analyser)
-	validCondition = elemPrim(lexical_analyser)
-	return validCondition
+	return elemPrim(lexical_analyser)
 
 def opUnaire(lexical_analyser):
 	logger.debug("parsing unary operator: " + lexical_analyser.get_value())
@@ -426,12 +447,12 @@ def elemPrim(lexical_analyser):
 	if lexical_analyser.isCharacter("("):
 		lexical_analyser.acceptCharacter("(")
 		# ajoutIdentificateur("(")		Doublon ??
-		validCondition = expression(lexical_analyser)
+		type1 = expression(lexical_analyser)
 		lexical_analyser.acceptCharacter(")")
 		ajoutIdentificateur(")")
-		return validCondition
+		return type1
 	elif lexical_analyser.isInteger() or lexical_analyser.isKeyword("true") or lexical_analyser.isKeyword("false"):
-		return valeur(lexical_analyser) == "boolean"
+		return valeur(lexical_analyser)
 	elif lexical_analyser.isIdentifier():
 		ident = lexical_analyser.acceptIdentifier()
 		if lexical_analyser.isCharacter("("):			# Appel fonct
@@ -445,12 +466,12 @@ def elemPrim(lexical_analyser):
 			logger.debug("parsed procedure call")
 
 			logger.debug("Call to function: " + ident)
-			return True		# TODO type du retour
+			return "integer"		# TODO type du retour
 		else:
 			logger.debug("Use of an identifier as an expression: " + ident)
-			#if str(lexical_analyser.get_value()) in operationList:
-			#	ajoutIdentificateur(str(lexical_analyser.get_value()),"valeurAffectee")
-			return getType(ident) == "boolean"
+			# if str(lexical_analyser.get_value()) in operationList:						Remplacé ??
+			#	 ajoutIdentificateur(str(lexical_analyser.get_value()),"valeurAffectee")
+			return getType(ident)
 	else:
 		logger.error("Unknown Value!")
 		raise AnaSynException("Unknown Value!")
@@ -490,6 +511,10 @@ def es(lexical_analyser):
 		ajoutIdentificateur("(")
 		lexical_analyser.acceptCharacter("(")
 		ident = lexical_analyser.acceptIdentifier()
+		# checkBooleen(tableIdentificateur, str(ident))
+		if getType(str(ident)) == "boolean" :			# Erreur TODO
+			print("Erreur : l'argument " + str(ident) + " de get() ne peut pas être un booléen")
+			sys.exit(0)
 		ajoutIdentificateur(str(ident))
 		ajoutIdentificateur(")")
 		lexical_analyser.acceptCharacter(")")
@@ -499,7 +524,9 @@ def es(lexical_analyser):
 		ajoutIdentificateur("put","getput")
 		ajoutIdentificateur("(")
 		lexical_analyser.acceptCharacter("(")
-		expression(lexical_analyser)
+		if expression(lexical_analyser)	:				# Erreur TODO
+			print("Erreur : l'argument de put() ne peut pas être un booléen")
+			sys.exit(0)
 		lexical_analyser.acceptCharacter(")")
 		ajoutIdentificateur(")")
 		logger.debug("Call to put")
