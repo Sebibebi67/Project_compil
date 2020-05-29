@@ -595,7 +595,7 @@ def es(lexical_analyser):
 		# checkBooleen(tableIdentificateur, ident)
 		if getType(tableIdentificateur, ident, porteeActuelle) == "boolean" :	# Erreur : get(boolean) TODO
 			print("Erreur : l'argument " + ident + " de get() ne peut pas être un booléen")
-			sys.exit(0)
+			sys.exit(1)
 		ajoutIdentificateur(ident)
 		ajoutIdentificateur(")")
 		lexical_analyser.acceptCharacter(")")
