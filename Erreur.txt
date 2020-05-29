@@ -1,6 +1,2 @@
-anasyn_Table : test dans les if -> manque les "<" si premier terme est un nombre (ex : 1 < i)
 
-anasyn_Table : "then" apparaît après la condition "if" si le dernier terme est un identifiant
 nna/correct4 "if i-(i/2)*2=0" -> if i - ( i / 2 2 0
-
-nnp/correct4 : function double(v : in integer) return integer is -> ;double;(;v;:;integer;);:;integer;is
