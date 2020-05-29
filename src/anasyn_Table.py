@@ -416,8 +416,10 @@ def elemPrim(lexical_analyser):
 	ajoutIdentificateur(str(lexical_analyser.get_value()),"valeurAffectee")
 	if lexical_analyser.isCharacter("("):
 		lexical_analyser.acceptCharacter("(")
+		ajoutIdentificateur("(")
 		validCondition = expression(lexical_analyser)
 		lexical_analyser.acceptCharacter(")")
+		ajoutIdentificateur(")")
 		return validCondition
 	elif lexical_analyser.isInteger() or lexical_analyser.isKeyword("true") or lexical_analyser.isKeyword("false"):
 		return valeur(lexical_analyser) == "boolean"
@@ -425,10 +427,12 @@ def elemPrim(lexical_analyser):
 		ident = lexical_analyser.acceptIdentifier()
 		if lexical_analyser.isCharacter("("):			# Appel fonct
 			lexical_analyser.acceptCharacter("(")
+			ajoutIdentificateur("(")
 			if not lexical_analyser.isCharacter(")"):
 				listePe(lexical_analyser)
 
 			lexical_analyser.acceptCharacter(")")
+			ajoutIdentificateur(")")
 			logger.debug("parsed procedure call")
 
 			logger.debug("Call to function: " + ident)
