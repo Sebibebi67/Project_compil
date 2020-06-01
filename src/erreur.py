@@ -29,6 +29,7 @@ import sys
 #----------------------Auteurs---------------------#
 
 # Sébastien HERT
+# Dejan PARIS
 
 #--------------------------------------------------#
 
@@ -76,6 +77,9 @@ def checkType(identTable, name, scope, type):
 
     Retour : None
 
+    Appelle :
+    - getType
+
     Auteurs :
     - Sébastien HERT
     - Dejan PARIS
@@ -88,6 +92,19 @@ def checkType(identTable, name, scope, type):
 
 
 def checkReturnType(identTable, scope, type):
+    """
+	Description : Vérifie que "return" est utilisé dans une fonction, et que le type du retour est correct.
+	
+	Paramètres :
+    - identTable : table des identificateurs
+    - scope : niveau d'indentation de la fonction
+    - type : type supposé du retour
+	
+	Retour : None
+	
+	Auteur :
+	- Dejan PARIS
+	"""
     low_scope = scope
     for e in identTable[::-1] :
         if e[1] < low_scope :
@@ -106,7 +123,9 @@ def checkDoubleDeclaOp(identTable, name):
     """
     Description : Vérifie que la déclaration d'un paramètre / d'une variable ne fait pas doublon
 
-    Paramètres : None
+    Paramètres :
+    - identTable : table des identificateurs
+    - name : nom du paramètre / de la variable à tester
 
     Retour : None
 
@@ -124,7 +143,10 @@ def checkDoubleDeclaVar(identTable, name, scope):
     """
     Description : Vérifie que la déclaration d'un paramètre / d'une variable ne fait pas doublon
 
-    Paramètres : None
+    Paramètres :
+    - identTable : table des identificateurs
+    - name : nom du paramètre / de la variable à tester
+    - scope : portée de la variable / du paramètre
 
     Retour : None
 
@@ -144,9 +166,11 @@ def checkDoubleDeclaVar(identTable, name, scope):
 
 def checkNoDeclaOp(identTable, name):
     """
-    Description : Vérifie qu'un paramètre / une variable a été déclaré(e)
+    Description : Vérifie qu'une procédure / fonction a été déclarée
 
-    Paramètres : None
+    Paramètres :
+    - identTable : table des identificateurs
+    - name : nom de la procédure / fonction à tester
 
     Retour : None
 
@@ -167,7 +191,10 @@ def checkNoDeclaVar(identTable, name, scope):
     """
     Description : Vérifie qu'un paramètre / une variable a été déclaré(e)
 
-    Paramètres : None
+    Paramètres :
+    - identTable : table des identificateurs
+    - name : nom du paramètre / de la variable à tester
+    - scope : portée de la variable / du paramètre
 
     Retour : None
 
@@ -189,6 +216,23 @@ def checkNoDeclaVar(identTable, name, scope):
 
 
 def getType(identTable, name, scope):
+    """
+    Description : Renvoie le type d'une variable / d'un paramètre s'il existe
+
+    Paramètres :
+    - identTable : table des identificateurs
+    - name : nom du paramètre / de la variable à tester
+    - scope : portée de la variable / du paramètre
+
+    Retour : 
+    - e[2] : type de la variable / du paramètre enregistré dans identTable
+
+    Appelle :
+    - checkNoDeclaVar
+
+    Auteurs :
+    - Dejan PARIS
+    """
     low_scope = scope
     for e in identTable[::-1] :
         if e[1] < low_scope :
@@ -197,11 +241,3 @@ def getType(identTable, name, scope):
             if e[0] == name :
                 return e[2]
     checkNoDeclaVar(identTable, name, scope)
-
-
-
-def getReturnType(identTable, name):
-    for e in identTable[::-1] :
-        if e[0] == name :
-            return e[3]
-    checkNoDeclaOp(identTable, name)

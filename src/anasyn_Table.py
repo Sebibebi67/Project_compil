@@ -150,13 +150,6 @@ def fonction(lexical_analyser):
 
 
 
-def setReturnType(name, type):
-	for e in tableIdentificateur[::-1] :
-		if e[0] == name :
-			e[3] = type
-
-
-
 def corpsProc(lexical_analyser):
 	if not lexical_analyser.isKeyword("begin"):
 		partieDeclaProc(lexical_analyser)
@@ -545,7 +538,7 @@ def elemPrim(lexical_analyser):
 			logger.debug("parsed procedure call")
 
 			logger.debug("Call to function: " + ident)
-			return getReturnType(tableIdentificateur, ident)
+			return getReturnType(ident)
 		else:
 			checkNoDeclaVar(tableIdentificateur, ident, porteeActuelle)
 			logger.debug("Use of an identifier as an expression: " + ident)
@@ -664,19 +657,61 @@ def retour(lexical_analyser):
 
 ########################################################################
 
-"""
-Description : méthode appelée pour construire la table d'identificateurs
 
-Paramètres : identificateur, tableOperation
 
-Retour : None
+def setReturnType(name, type):
+	"""
+	Description : Enregistre le type du retour d'une fonction.
 
-Auteurs :
-- Alex JOBARD, Thomas LEPERCQ
-"""	
+	Paramètres :
+	- name : nom de la fonction
+	- type : type de retour attendu
+
+	Retour : None
+
+	Auteurs :
+	- Dejan PARIS
+	"""
+	for e in tableIdentificateur[::-1] :
+		if e[0] == name :
+			e[3] = type
+
+
+
+def getReturnType(name):
+	"""
+	Description : Renvoie le type de retour attendu d'une fonction
+
+	Paramètres :
+	- name : nom de la fonction
+
+	Retour :
+	- e[3] : type de retour attendu
+
+	Appelle :
+	- checkNoDeclaOp
+
+	Auteurs :
+	- Dejan PARIS
+	"""
+	for e in tableIdentificateur[::-1] :
+		if e[0] == name :
+			return e[3]
+	checkNoDeclaOp(tableIdentificateur, name)
+
 
 
 def ajoutIdentificateur(identificateur,tableOperation = "None"):
+	"""
+	Description : méthode appelée pour construire la table d'identificateurs
+
+	Paramètres : identificateur, tableOperation
+
+	Retour : None
+
+	Auteurs :
+	- Alex JOBARD, Thomas LEPERCQ
+	"""	
 	global listeIdentificateur		# Liste pour gencode.py
 	global tableIdentificateur		# Table d'identificateurs
 	global porteeActuelle 			# Scope

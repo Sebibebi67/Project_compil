@@ -53,7 +53,7 @@ class Generator(object):
 
 	def __init__(self, t):
 		"""
-		Description : Constructeur ; compile le pseudo-code formaté en paramètre et l'affiche.
+		Description : Constructeur ; compile le pseudo-code formaté passé en paramètre.
 	
 		Paramètres :
 		- t : pseudo-code formaté à compiler.
@@ -77,7 +77,7 @@ class Generator(object):
 
 	def generate(self, i, chain):
 		"""
-		Description : Traduit en code NilNovi une procédure ou une fonction (un programme est géré comme une procédure).
+		Description : Traduit en code NilNovi une procédure ou une fonction (le programme principal est géré comme une procédure).
 	
 		Paramètres :
 		- i : la position du début de la procédure / fonction dans le pseudo-code
@@ -91,6 +91,7 @@ class Generator(object):
 		- expression
 		- instructions
 		- generate
+		- isMain
 
 		Auteur :
 		- Dejan PARIS
@@ -194,6 +195,7 @@ class Generator(object):
 		Appelle :
 		- expression
 		- instructions
+		- isMain
 	
 		Auteur :
 		- Dejan PARIS
@@ -674,7 +676,7 @@ class Generator(object):
 		
 	def printWithLines(self, chain):
 		"""
-		Description : Affiche le résultat de la compilation, tel qu'exploité par l'exécuteur, avec les numéros de lignes commençant à 1.
+		Description : Affiche le résultat de la compilation, avec les numéros de lignes commençant à 1.
 	
 		Paramètres :
 		- chain : le code NilNovi à afficher
@@ -716,7 +718,6 @@ class Generator(object):
 #-----------------------Main-----------------------#
 
 table = sys.argv[1].split(";")
-# print(table)
 g = Generator(table)
 print(g.chain)
 
