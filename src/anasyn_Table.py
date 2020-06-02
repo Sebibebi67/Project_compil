@@ -343,9 +343,8 @@ def expression(lexical_analyser):
 		ajoutIdentificateur("or")
 		lexical_analyser.acceptKeyword("or")
 		type2 = exp1(lexical_analyser)
-		if type1 == "integer" or type2 == "integer" :	# Erreur : opération or avec un entier TODO
-			print("Un entier ne peut pas faire l'objet d'une comparaison or")
-			sys.exit(1)
+		if type1 == "integer" or type2 == "integer" :	# Erreur : opération or avec un entier
+			sys.exit("Un entier ne peut pas faire l'objet d'une comparaison or")
 		return "boolean"			# Opération sur deux booléens ; résultat booléen
 	return type1
         
@@ -359,9 +358,8 @@ def exp1(lexical_analyser):
 		ajoutIdentificateur("and")
 		lexical_analyser.acceptKeyword("and")
 		type2 = exp2(lexical_analyser)
-		if type1 == "integer" or type2 == "integer" :	# Erreur : opération and avec un entier TODO
-			print("Un entier ne peut pas faire l'objet d'une comparaison and")
-			sys.exit(1)
+		if type1 == "integer" or type2 == "integer" :	# Erreur : opération and avec un entier
+			sys.exit("Un entier ne peut pas faire l'objet d'une comparaison and")
 		return "boolean"
 	return type1
 		
@@ -378,17 +376,15 @@ def exp2(lexical_analyser):
 		lexical_analyser.isSymbol(">="):
 		opRel(lexical_analyser)
 		type2 = exp3(lexical_analyser)
-		if type1 == "boolean" or type2 == "boolean" :	# Erreur : comparaison > / < impliquant un booléen TODO
-			print("Un booléen ne peut pas faire l'objet d'une comparaison <, >, <= ou >=")
-			sys.exit(1)
+		if type1 == "boolean" or type2 == "boolean" :	# Erreur : comparaison > / < impliquant un booléen
+			sys.exit("Un booléen ne peut pas faire l'objet d'une comparaison <, >, <= ou >=")
 		return "boolean"	# Comparaison de deux entiers ; résultat booléen
 	if	lexical_analyser.isSymbol("=") or \
 		lexical_analyser.isSymbol("/="):
 		opRel(lexical_analyser)
 		type2 = exp3(lexical_analyser)
-		if type1 != type2 :	# Erreur : comparaison entre entier et booléen TODO
-			print("Impossible de comparer un entier et un booléen avec = ou /=")
-			sys.exit(1)
+		if type1 != type2 :	# Erreur : comparaison entre entier et booléen
+			sys.exit("Impossible de comparer un entier et un booléen avec = ou /=")
 		return "boolean"	# Comparaisons d'entiers ou de booléens ; résultat booléen
 	return type1
 	
@@ -429,9 +425,8 @@ def exp3(lexical_analyser):
 	if lexical_analyser.isCharacter("+") or lexical_analyser.isCharacter("-"):
 		opAdd(lexical_analyser)
 		type2 = exp4(lexical_analyser)
-		if type1 == "boolean" or type2 == "boolean" :	# Erreur : addition de booléens TODO
-			print("Un booléen ne peut pas être additionné ou soustrait")
-			sys.exit(1)
+		if type1 == "boolean" or type2 == "boolean" :	# Erreur : addition de booléens
+			sys.exit("Un booléen ne peut pas être additionné ou soustrait")
 		return "integer"	# Opération sur deux entiers ; résultat entier
 	return type1
 
@@ -460,9 +455,8 @@ def exp4(lexical_analyser):
 	if lexical_analyser.isCharacter("*") or lexical_analyser.isCharacter("/"):
 		opMult(lexical_analyser)
 		type2 = prim(lexical_analyser)
-		if type1 == "boolean" or type2 == "boolean" :	# Erreur : multiplication de booléens TODO
-			print("Un booléen ne peut pas être multiplié ou divisé")
-			sys.exit(1)
+		if type1 == "boolean" or type2 == "boolean" :	# Erreur : multiplication de booléens
+			sys.exit("Un booléen ne peut pas être multiplié ou divisé")
 		return "integer"	# Opération sur deux entiers ; résultat entier
 	return type1
 
@@ -517,7 +511,6 @@ def elemPrim(lexical_analyser):
 	ajoutIdentificateur(str(lexical_analyser.get_value()),"valeurAffectee")
 	if lexical_analyser.isCharacter("("):
 		lexical_analyser.acceptCharacter("(")
-		# ajoutIdentificateur("(")		Doublon ??
 		type1 = expression(lexical_analyser)
 		lexical_analyser.acceptCharacter(")")
 		ajoutIdentificateur(")")
@@ -542,8 +535,6 @@ def elemPrim(lexical_analyser):
 		else:
 			checkNoDeclaVar(tableIdentificateur, ident, porteeActuelle)
 			logger.debug("Use of an identifier as an expression: " + ident)
-			# if str(lexical_analyser.get_value()) in operationList:						Remplacé ??
-			#	 ajoutIdentificateur(str(lexical_analyser.get_value()),"valeurAffectee")
 			return getType(tableIdentificateur, ident, porteeActuelle)
 	else:
 		logger.error("Unknown Value!")
@@ -586,9 +577,8 @@ def es(lexical_analyser):
 		lexical_analyser.acceptCharacter("(")
 		ident = lexical_analyser.acceptIdentifier()
 		# checkBooleen(tableIdentificateur, ident)
-		if getType(tableIdentificateur, ident, porteeActuelle) == "boolean" :	# Erreur : get(boolean) TODO
-			print("Erreur : l'argument " + ident + " de get() ne peut pas être un booléen")
-			sys.exit(1)
+		if getType(tableIdentificateur, ident, porteeActuelle) == "boolean" :	# Erreur : get(boolean)
+			sys.exit("Erreur : l'argument " + ident + " de get() ne peut pas être un booléen")
 		ajoutIdentificateur(ident)
 		ajoutIdentificateur(")")
 		lexical_analyser.acceptCharacter(")")
@@ -598,9 +588,8 @@ def es(lexical_analyser):
 		ajoutIdentificateur("put","getput")
 		ajoutIdentificateur("(")
 		lexical_analyser.acceptCharacter("(")
-		if expression(lexical_analyser) == "boolean" :							# Erreur : put(boolean) TODO
-			print("Erreur : l'argument de put() ne peut pas être un booléen")
-			sys.exit(1)
+		if expression(lexical_analyser) == "boolean" :	# Erreur : put(boolean)
+			sys.exit("Erreur : l'argument de put() ne peut pas être un booléen")
 		lexical_analyser.acceptCharacter(")")
 		ajoutIdentificateur(")")
 		logger.debug("Call to put")
@@ -615,8 +604,7 @@ def boucle(lexical_analyser):
 	lexical_analyser.acceptKeyword("while")
 
 	if expression(lexical_analyser) == "integer" :	# Erreur : condition invalide TODO
-		logger.error("Invalid condition : expression is not a boolean !")
-		raise AnaSynException("Invalid condition : expression is not a boolean !")
+		sys.exit("Erreur : condition invalide (l'expression n'est pas un booléen)")
 
 	lexical_analyser.acceptKeyword("loop")
 	suiteInstr(lexical_analyser)
@@ -632,8 +620,7 @@ def altern(lexical_analyser):
 	lexical_analyser.acceptKeyword("if")
 
 	if expression(lexical_analyser) == "integer" :	# Erreur : condition invalide TODO
-		logger.error("Invalid condition : expression is not a boolean !")
-		raise AnaSynException("Invalid condition : expression is not a boolean !")
+		sys.exit("Erreur : condition invalide (l'expression n'est pas un booléen)")
        
 	lexical_analyser.acceptKeyword("then")
 	suiteInstr(lexical_analyser)
