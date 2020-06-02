@@ -222,7 +222,7 @@ def nnpType(lexical_analyser):
 		lexical_analyser.acceptKeyword("boolean")
 		logger.debug("boolean type")
 		# ajoutIdentificateur("boolean","type")
-		return "boolean"            
+		return "boolean"
 	else:
 		logger.error("Unknown type found <"+ lexical_analyser.get_value() +">!")
 		raise AnaSynException("Unknown type found <"+ lexical_analyser.get_value() +">!")
@@ -345,7 +345,7 @@ def expression(lexical_analyser):
 		type2 = exp1(lexical_analyser)
 		if type1 == "integer" or type2 == "integer" :	# Erreur : opération or avec un entier TODO
 			print("Un entier ne peut pas faire l'objet d'une comparaison or")
-			sys.exit(0)
+			sys.exit(1)
 		return "boolean"			# Opération sur deux booléens ; résultat booléen
 	return type1
         
@@ -361,7 +361,7 @@ def exp1(lexical_analyser):
 		type2 = exp2(lexical_analyser)
 		if type1 == "integer" or type2 == "integer" :	# Erreur : opération and avec un entier TODO
 			print("Un entier ne peut pas faire l'objet d'une comparaison and")
-			sys.exit(0)
+			sys.exit(1)
 		return "boolean"
 	return type1
 		
@@ -380,7 +380,7 @@ def exp2(lexical_analyser):
 		type2 = exp3(lexical_analyser)
 		if type1 == "boolean" or type2 == "boolean" :	# Erreur : comparaison > / < impliquant un booléen TODO
 			print("Un booléen ne peut pas faire l'objet d'une comparaison <, >, <= ou >=")
-			sys.exit(0)
+			sys.exit(1)
 		return "boolean"	# Comparaison de deux entiers ; résultat booléen
 	if	lexical_analyser.isSymbol("=") or \
 		lexical_analyser.isSymbol("/="):
@@ -388,7 +388,7 @@ def exp2(lexical_analyser):
 		type2 = exp3(lexical_analyser)
 		if type1 != type2 :	# Erreur : comparaison entre entier et booléen TODO
 			print("Impossible de comparer un entier et un booléen avec = ou /=")
-			sys.exit(0)
+			sys.exit(1)
 		return "boolean"	# Comparaisons d'entiers ou de booléens ; résultat booléen
 	return type1
 	
@@ -431,7 +431,7 @@ def exp3(lexical_analyser):
 		type2 = exp4(lexical_analyser)
 		if type1 == "boolean" or type2 == "boolean" :	# Erreur : addition de booléens TODO
 			print("Un booléen ne peut pas être additionné ou soustrait")
-			sys.exit(0)
+			sys.exit(1)
 		return "integer"	# Opération sur deux entiers ; résultat entier
 	return type1
 
@@ -462,7 +462,7 @@ def exp4(lexical_analyser):
 		type2 = prim(lexical_analyser)
 		if type1 == "boolean" or type2 == "boolean" :	# Erreur : multiplication de booléens TODO
 			print("Un booléen ne peut pas être multiplié ou divisé")
-			sys.exit(0)
+			sys.exit(1)
 		return "integer"	# Opération sur deux entiers ; résultat entier
 	return type1
 
@@ -600,7 +600,7 @@ def es(lexical_analyser):
 		lexical_analyser.acceptCharacter("(")
 		if expression(lexical_analyser) == "boolean" :							# Erreur : put(boolean) TODO
 			print("Erreur : l'argument de put() ne peut pas être un booléen")
-			sys.exit(0)
+			sys.exit(1)
 		lexical_analyser.acceptCharacter(")")
 		ajoutIdentificateur(")")
 		logger.debug("Call to put")
