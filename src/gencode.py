@@ -668,7 +668,7 @@ class Generator(object):
 		Auteur :
 		- Dejan PARIS
 		"""
-		table = chain.split("\n")
+		table = chain.split(self.s)
 		for l in range(self.lines):
 			print(table[l])
 		
@@ -686,7 +686,7 @@ class Generator(object):
 		Auteur :
 		- Dejan PARIS
 		"""
-		table = chain.split("\n")
+		table = chain.split(self.s)
 		space = "  "
 		for l in range(self.lines):
 			if l >= 9 : space = " "
