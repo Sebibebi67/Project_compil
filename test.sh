@@ -89,10 +89,16 @@ paths="./test/nna ./test/nnp"
 
 for path in $paths; do
 	for file in $(ls $path) ; do
-		titre '*' "Testing ${path}/${file}"
-		./chef.sh -c $path/$file
+        # echo $file
+        if [[ "$file" == "correct"*".nno" ]]; then
+            titre '*' "Testing ${path}/${file}"
+            ./chef.sh -c $path/$file
+        fi
 	done
 done
+
+# ./chef.sh -c test/nna/error1.nno
+# ./chef.sh -c test/nna/error2.nno
 
 #--------------------------------------------------------------------------------#
 
