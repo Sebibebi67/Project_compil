@@ -498,7 +498,7 @@ class Generator(object):
 		elif self.table[i] == "-" :
 			i += 1
 			i, e = self.exp4(i)
-			e += "sub()" + self.s
+			e += "sous()" + self.s
 			self.lines += 1
 			
 		return i, expr+e
