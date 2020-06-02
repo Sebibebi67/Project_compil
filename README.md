@@ -1,14 +1,13 @@
-**Projet de Théorie des Langages et Compilation**
-=
+# **Projet de Théorie des Langages et Compilation**
 
-**Description**
--
+## **Description**
+
 Implémentation d'un compilateur et d'un exécuteur en python, permettant la
 compilation d'un programme écrit en pseudo-code en programme NilNovi, avant de
 l'exécuter.
 
-**Installation**
--
+## **Installation**
+
 Afin de permettre la compilation et l'exécution, il vous faut dans un premier
 temps télécharger l'intégralité du dossier.
 
@@ -23,8 +22,7 @@ Pour cela, dans une terminal Linux, vous pouvez utiliser la commande :
 
 il ne vous reste plus qu'à utiliser le script shell [chef.sh](chef.sh) pour utiliser le compilateur ou l'exécuteur. Les détails d'utilisation du script sont donnés dans la partie suivante.
 
-**Synopsis**
--
+## **Synopsis**
 
 ./chef.sh \<arg> \<fichier>
 
@@ -39,8 +37,8 @@ fichier :
 
 * *Le fichier en pseudo-code ou en NilNovi, en fonction de l'argument 1 choisi*
 
-**Erreurs potentielles**
--
+## **Erreurs potentielles**
+
 Si vous utilisez windows et que vous rencontrez cette erreur : *Unknown command "\r$"*, vous pouvez utiliser cette commande pour résoudre le problème : *sed -i 's/\r$//' ./chef.sh*.
 
 Le fonctionnement est alors strictement identique que celui décrit dans la section précédente.
@@ -49,8 +47,8 @@ Le fonctionnement est alors strictement identique que celui décrit dans la sect
 Si vous utilisez windows et que vous rencontrez une erreur du type : *bad interpreter: No such file or directory*, il vous faudra déplacer le fichier python.exe pour le placer dans le repertoire
 */usr/bin*
 
-**Auteurs**
--
+## **Auteurs**
+
 **Equipe PDB :**
 
  * Sébastien HERT
