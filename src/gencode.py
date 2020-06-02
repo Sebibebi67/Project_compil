@@ -12,6 +12,8 @@
 #---------------------Imports----------------------#
 
 import sys # Pour récupérer le résultat
+from collections import OrderedDict # Pour gérer les
+# paramètres et leurs modes
 
 #--------------------------------------------------#
 
@@ -43,9 +45,9 @@ class Generator(object):
 	chain = [] 	# Résultat de la compilation
 	lines = 2 	# Compteur de lignes du code NilNovi
 	id = {}		# Associe les noms de procédures / fonctions à leur numéro de ligne NilNovi
-	var = {}  	# Associe les variables à leurs adresses (locales ou globales)
-	param = {} 	# Associe les paramètres à leurs adresses locales
-	mode = {}	# Associe les paramètres à leurs mode (entrée ou entrée-sortie)
+	var = {}  	# Associe les variables à leurs adresses
+	ops = OrderedDict()	# Associe les procédures / fonctions à la liste de leurs paramètres et modes
+	param = {}	# Associe les paramètres à leurs adresses locales
 	table = []  # Pseudo-code formaté
 	proc = [] 	# proc[-1] est "True" si le programme compile une procédure, "False" si c'est une fonction
 
@@ -107,13 +109,14 @@ class Generator(object):
 				else :
 					self.proc.append(False)
 				i += 1
-				self.id[self.table[i]] = self.lines 	# Enregistre la procédure / fonction
+				op = self.table[i]
+				self.id[op] = self.lines 	# Enregistre la procédure / fonction
+				self.ops[op] = OrderedDict()	# Eventuels paramètres
 				i += 1
 				
 				if self.table[i] == "(" : 	# Paramètres
 					
 					i += 1
-
 					while self.table[i] != ")" :
 						stock.append(self.table[i])
 						stock2.append(self.table[i])
@@ -122,14 +125,13 @@ class Generator(object):
 						if self.table[i] == ":" :
 							i += 1 	# Saute ":" dans le pseudo-code
 							for param in stock2 :
-								self.mode[param] = self.table[i]	# Enregistre le mode (in / inout)
+								self.ops[op][param] = self.table[i]	# Enregistre le mode (in / inout)
 							stock2 = []
 							i += 2 	# Saute "[mode] [type]"
-
 					i += 1
 						
 					for k in range(len(stock)):
-						self.param[stock[k]] = k 	# Enregistre les paramètres
+						self.param[stock[k]] = k 	# Enregistre les adresses des paramètres
 					paramCount = len(stock)
 					stock = []
 				
@@ -261,37 +263,40 @@ class Generator(object):
 		
 		
 		elif self.table[i] in self.id :	# Procédure / Fonction
-			call = self.id[self.table[i]]
+			call = self.table[i]
 			paramCount = 0
 			total += "reserverBloc()" + self.s
 			self.lines += 1
 			i += 2 	# Saute "("
 			
-			while self.table[i] != ")" :
+			for mode in self.ops[call].values() :
+				if mode == "in" :	# Paramètre d'entrée : on compile une valeur
+					i, expr = self.expression(i)
 
-				if self.table[i] in self.var :	# Variable
-					if self.isMain() :
-						command = "empiler("
-					else :
-						command = "empilerAd("
-					total += command + str(self.var[self.table[i]]) + ")" + self.s
-					self.lines += 1
-					i += 1
-				
-				else : 	# Paramètre
-					if self.mode[self.table[i]] == "in" :
-						command = "empilerAd("
-					else :
-						command = "empilerParam("
-					total += command + str(self.param[self.table[i]]) + ")" + self.s
-					self.lines += 1
-					i += 1
+				else :	# Paramètre entrée / sortie : on compile une adresse
+					if self.table[i] in self.var :	# Variable
+						if self.isMain() :
+							command = "empiler("
+						else :
+							command = "empilerAd("
+						total += command + str(self.var[self.table[i]]) + ")" + self.s
+						self.lines += 1
+						i += 1
+					
+					else : 	# Paramètre
+						if next(reversed(self.ops.values()))[self.table[i]] == "in" :
+							command = "empilerAd("
+						else :
+							command = "empilerParam("
+						total += command + str(self.param[self.table[i]]) + ")" + self.s
+						self.lines += 1
+						i += 1
 
 				total += expr
 				paramCount += 1
 			i += 1 	# Saute ")"
 			
-			total += "traStat(" + str(call) + "," + str(paramCount) + ")" + self.s
+			total += "traStat(" + str(self.id[call]) + "," + str(paramCount) + ")" + self.s
 			self.lines += 1
 		
 		
@@ -310,7 +315,7 @@ class Generator(object):
 		
 		
 		elif self.table[i] in self.param : # Affectation d'un paramètre
-			if self.mode[self.table[i]] == "in" :
+			if next(reversed(self.ops.values()))[self.table[i]] == "in" :
 				command = "empilerAd("
 			else :
 				command = "empilerParam("
@@ -628,7 +633,6 @@ class Generator(object):
 			
 			
 		else :	# Procédure / Fonction / Paramètre / Variable
-		
 			if self.table[i] in self.id :	# Procédure / Fonction
 				i, expr = self.instructions(i) 	# Les appels sont gérés par "instructions"
 				
@@ -643,7 +647,7 @@ class Generator(object):
 				i += 1
 				
 			else : 	# Paramètre
-				if self.mode[self.table[i]] == "in" :
+				if next(reversed(self.ops.values()))[self.table[i]] == "in" :
 					command = "empilerAd("
 				else :
 					command = "empilerParam("

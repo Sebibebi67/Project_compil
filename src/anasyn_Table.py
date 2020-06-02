@@ -132,6 +132,7 @@ def procedure(lexical_analyser):
 
 
 def fonction(lexical_analyser):
+	ajoutIdentificateur("function")
 	lexical_analyser.acceptKeyword("function")
 	ident = lexical_analyser.acceptIdentifier()
 	logger.debug("Name of function : "+ident)
@@ -165,8 +166,10 @@ def corpsFonct(lexical_analyser):
 	if not lexical_analyser.isKeyword("begin"):
 		partieDeclaProc(lexical_analyser)
 	lexical_analyser.acceptKeyword("begin")
+	ajoutIdentificateur("begin")
 	suiteInstrNonVide(lexical_analyser)
 	lexical_analyser.acceptKeyword("end")
+	ajoutIdentificateur("end")
 
 
 
