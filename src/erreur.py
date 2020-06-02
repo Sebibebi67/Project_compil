@@ -62,7 +62,7 @@ def checkBooleen(identTable, name):
         if e[0] == name :
             if e[2] == "boolean" :
                 print("Erreur : l'argument " + name + " de get() ne peut pas être un booléen")
-                sys.exit(0)
+                sys.exit(1)
 
 
 
@@ -87,7 +87,7 @@ def checkType(identTable, name, scope, type):
     expectedType = getType(identTable, name, scope)
     if expectedType != type :
         print("Erreur : " + name + " est déclaré comme " + expectedType + ", mais utilisé comme " + type + " !")
-        sys.exit(0)
+        sys.exit(1)
 
 
 
@@ -112,10 +112,10 @@ def checkReturnType(identTable, scope, type):
         if e[1] == low_scope and e[3] != "null":
             if e[3] != type :
                 print("Erreur : la fonction " + e[0] + " doit retourner un " + e[3] + " mais retourne un " + type + " !")
-                sys.exit(0)
+                sys.exit(1)
             return
     print("Erreur : la commande 'return' est utilisée en dehors d'une fonction !")
-    sys.exit(0)
+    sys.exit(1)
 
 
 
@@ -135,7 +135,7 @@ def checkDoubleDeclaOp(identTable, name):
     for e in identTable[::-1] :
         if e[0] == name :
             print("Erreur : " + name + " est déclaré plusieurs fois")
-            sys.exit(0)
+            sys.exit(1)
 
 
 
@@ -160,7 +160,7 @@ def checkDoubleDeclaVar(identTable, name, scope):
         if e[1] == low_scope :
             if e[0] == name :
                 print("Erreur : " + name + " est déclaré plusieurs fois")
-                sys.exit(0)
+                sys.exit(1)
                 
 
 
@@ -183,7 +183,7 @@ def checkNoDeclaOp(identTable, name):
             defined = True
     if not defined :
         print("Erreur : " + name + " n'est pas déclaré")
-        sys.exit(0)
+        sys.exit(1)
 
 
 
@@ -211,7 +211,7 @@ def checkNoDeclaVar(identTable, name, scope):
                 defined = True
     if not defined :
         print("Erreur : " + name + " n'est pas déclaré")
-        sys.exit(0)
+        sys.exit(1)
 
 
 
