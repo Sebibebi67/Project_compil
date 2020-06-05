@@ -16,7 +16,7 @@ Vous devez ensuite donner les droits d'exécution aux fichiers suivants :
 
 Pour cela, dans une terminal Linux, vous pouvez utiliser la commande : 
 ```bash
-chmod +x \<fichier>
+chmod +x <fichier>
 ```
 il ne vous reste plus qu'à utiliser le script shell [chef.sh](chef.sh) pour utiliser le compilateur ou l'exécuteur. Les détails d'utilisation du script sont donnés dans la partie suivante.
 
