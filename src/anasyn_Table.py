@@ -158,7 +158,7 @@ def corpsProc(lexical_analyser):
 	ajoutIdentificateur("begin")
 	suiteInstr(lexical_analyser)
 	lexical_analyser.acceptKeyword("end")
-	ajoutIdentificateur("end","end")
+	ajoutIdentificateur("end", "end")
 
 
 
@@ -169,7 +169,7 @@ def corpsFonct(lexical_analyser):
 	ajoutIdentificateur("begin")
 	suiteInstrNonVide(lexical_analyser)
 	lexical_analyser.acceptKeyword("end")
-	ajoutIdentificateur("end")
+	ajoutIdentificateur("end", "end")
 
 
 
@@ -207,10 +207,10 @@ def mode(lexical_analyser):
 	lexical_analyser.acceptKeyword("in")
 	if lexical_analyser.isKeyword("out"):
 		lexical_analyser.acceptKeyword("out")
-		ajoutIdentificateur("inout")
+		ajoutIdentificateur("inout", "mode")
 		logger.debug("in out parameter")                
 	else:
-		ajoutIdentificateur("in")
+		ajoutIdentificateur("in", "mode")
 		logger.debug("in parameter")
 
 
@@ -281,7 +281,7 @@ def suiteInstr(lexical_analyser):
 
 
 
-def instr(lexical_analyser):	
+def instr(lexical_analyser):
 	if lexical_analyser.isKeyword("while"):
 		ajoutIdentificateur("while","corps")
 		boucle(lexical_analyser)
@@ -294,13 +294,7 @@ def instr(lexical_analyser):
 		ajoutIdentificateur("return")
 		retour(lexical_analyser)
 	elif lexical_analyser.isIdentifier():
-		# saveIdent = str(lexical_analyser.get_value())
 		ident = lexical_analyser.acceptIdentifier()
-		# if lexical_analyser.isCharacter("("):
-		#   # ERREUR AVEC LE ELIF "(" SUIVANT
-		# 	ajoutIdentificateur(saveIdent)
-		# 	ajoutIdentificateur("(")
-		# 	ajoutIdentificateur(")")
 		if lexical_analyser.isSymbol(":="):
 			# affectation
 			checkNoDeclaVar(tableIdentificateur, ident, porteeActuelle)		# Erreur non déclarée
@@ -316,7 +310,7 @@ def instr(lexical_analyser):
 			lexical_analyser.acceptCharacter("(")
 			ajoutIdentificateur("(")
 			if not lexical_analyser.isCharacter(")"):
-				listePe(lexical_analyser)
+				listePe(lexical_analyser, getParameterList(ident))
 
 			lexical_analyser.acceptCharacter(")")
 			ajoutIdentificateur(")")
@@ -331,18 +325,24 @@ def instr(lexical_analyser):
 
 
 
-def listePe(lexical_analyser):
-	expression(lexical_analyser)
+def listePe(lexical_analyser, params):
+	isAddress = [True]		# Reste vrai si l'on passe une variable en paramètre
+	type = expression(lexical_analyser, isAddress)
+	if type != params[0][2] :								# Erreur de typage
+		sys.exit("Erreur : le paramètre " + params[0][0] + " est défini comme " + params[0][2] + " mais passé comme " + type + " !")
+	if params[0][4] == "inout" and not isAddress[0] :		# Erreur de mode
+		sys.exit("Erreur : " + params[0][0] + " est un paramètre entrée-sortie ; seule une variable peut être passée de la sorte !")
 	if lexical_analyser.isCharacter(","):
 		lexical_analyser.acceptCharacter(",")
-		listePe(lexical_analyser)
+		listePe(lexical_analyser, params[1:])
 
 
 
-def expression(lexical_analyser):
+def expression(lexical_analyser, isAddress = [True]):
 	logger.debug("parsing expression: " + str(lexical_analyser.get_value()))
-	type1 = exp1(lexical_analyser)
+	type1 = exp1(lexical_analyser, isAddress)
 	if lexical_analyser.isKeyword("or"):
+		isAddress[0] = False
 		ajoutIdentificateur("or")
 		lexical_analyser.acceptKeyword("or")
 		type2 = exp1(lexical_analyser)
@@ -353,11 +353,12 @@ def expression(lexical_analyser):
         
 
 
-def exp1(lexical_analyser):
+def exp1(lexical_analyser, isAddress = [True]):
 	logger.debug("parsing exp1")
 	
-	type1 = exp2(lexical_analyser)
+	type1 = exp2(lexical_analyser, isAddress)
 	if lexical_analyser.isKeyword("and"):
+		isAddress[0] = False
 		ajoutIdentificateur("and")
 		lexical_analyser.acceptKeyword("and")
 		type2 = exp2(lexical_analyser)
@@ -369,14 +370,15 @@ def exp1(lexical_analyser):
         
 
 
-def exp2(lexical_analyser):
+def exp2(lexical_analyser, isAddress = [True]):
 	logger.debug("parsing exp2")
         
-	type1 = exp3(lexical_analyser)
+	type1 = exp3(lexical_analyser, isAddress)
 	if	lexical_analyser.isSymbol("<") or \
 		lexical_analyser.isSymbol("<=") or \
 		lexical_analyser.isSymbol(">") or \
 		lexical_analyser.isSymbol(">="):
+		isAddress[0] = False
 		opRel(lexical_analyser)
 		type2 = exp3(lexical_analyser)
 		if type1 == "boolean" or type2 == "boolean" :	# Erreur : comparaison > / < impliquant un booléen
@@ -384,6 +386,7 @@ def exp2(lexical_analyser):
 		return "boolean"	# Comparaison de deux entiers ; résultat booléen
 	if	lexical_analyser.isSymbol("=") or \
 		lexical_analyser.isSymbol("/="):
+		isAddress[0] = False
 		opRel(lexical_analyser)
 		type2 = exp3(lexical_analyser)
 		if type1 != type2 :	# Erreur : comparaison entre entier et booléen
@@ -422,10 +425,11 @@ def opRel(lexical_analyser):
 
 
 
-def exp3(lexical_analyser):
+def exp3(lexical_analyser, isAddress = [True]):
 	logger.debug("parsing exp3")
-	type1 = exp4(lexical_analyser)
+	type1 = exp4(lexical_analyser, isAddress)
 	if lexical_analyser.isCharacter("+") or lexical_analyser.isCharacter("-"):
+		isAddress[0] = False
 		opAdd(lexical_analyser)
 		type2 = exp4(lexical_analyser)
 		if type1 == "boolean" or type2 == "boolean" :	# Erreur : addition de booléens
@@ -451,11 +455,12 @@ def opAdd(lexical_analyser):
 
 
 
-def exp4(lexical_analyser):
+def exp4(lexical_analyser, isAddress = [True]):
 	logger.debug("parsing exp4")
         
-	type1 = prim(lexical_analyser)
+	type1 = prim(lexical_analyser, isAddress)
 	if lexical_analyser.isCharacter("*") or lexical_analyser.isCharacter("/"):
+		isAddress[0] = False
 		opMult(lexical_analyser)
 		type2 = prim(lexical_analyser)
 		if type1 == "boolean" or type2 == "boolean" :	# Erreur : multiplication de booléens
@@ -481,12 +486,13 @@ def opMult(lexical_analyser):
 
 
 
-def prim(lexical_analyser):
+def prim(lexical_analyser, isAddress = [True]):
 	logger.debug("parsing prim")
         
 	if lexical_analyser.isCharacter("+") or lexical_analyser.isCharacter("-") or lexical_analyser.isKeyword("not"):
+		isAddress[0] = False
 		opUnaire(lexical_analyser)
-	return elemPrim(lexical_analyser)
+	return elemPrim(lexical_analyser, isAddress)
 
 
 
@@ -509,25 +515,28 @@ def opUnaire(lexical_analyser):
 
 
 
-def elemPrim(lexical_analyser):
+def elemPrim(lexical_analyser, isAddress = [True]):
 	logger.debug("parsing elemPrim: " + str(lexical_analyser.get_value()))
 	ajoutIdentificateur(str(lexical_analyser.get_value()),"valeurAffectee")
 	if lexical_analyser.isCharacter("("):
+		isAddress[0] = False
 		lexical_analyser.acceptCharacter("(")
 		type1 = expression(lexical_analyser)
 		lexical_analyser.acceptCharacter(")")
 		ajoutIdentificateur(")")
 		return type1
 	elif lexical_analyser.isInteger() or lexical_analyser.isKeyword("true") or lexical_analyser.isKeyword("false"):
+		isAddress[0] = False
 		return valeur(lexical_analyser)
 	elif lexical_analyser.isIdentifier():
 		ident = lexical_analyser.acceptIdentifier()
 		if lexical_analyser.isCharacter("("):			# Appel fonct
 			checkNoDeclaOp(tableIdentificateur, ident)		# Erreur : identifiant non déclaré
+			isAddress[0] = False
 			lexical_analyser.acceptCharacter("(")
 			ajoutIdentificateur("(")
 			if not lexical_analyser.isCharacter(")"):
-				listePe(lexical_analyser)
+				listePe(lexical_analyser, getParameterList(ident))
 
 			lexical_analyser.acceptCharacter(")")
 			ajoutIdentificateur(")")
@@ -613,7 +622,7 @@ def boucle(lexical_analyser):
 	suiteInstr(lexical_analyser)
 
 	lexical_analyser.acceptKeyword("end")
-	ajoutIdentificateur("end","end")
+	ajoutIdentificateur("end", "end")
 	logger.debug("end of while loop ")
 
 
@@ -630,11 +639,11 @@ def altern(lexical_analyser):
 
 	if lexical_analyser.isKeyword("else"):
 		lexical_analyser.acceptKeyword("else")
-		ajoutIdentificateur("else","corps")
+		ajoutIdentificateur("else", "corps")
 		suiteInstr(lexical_analyser)
        
 	lexical_analyser.acceptKeyword("end")
-	ajoutIdentificateur("end","end")
+	ajoutIdentificateur("end", "end")
 	logger.debug("end of if")
 
 
@@ -646,6 +655,31 @@ def retour(lexical_analyser):
 	checkReturnType(tableIdentificateur, porteeActuelle, type)
 
 ########################################################################
+
+
+
+def getParameterList(name):
+	"""
+	Description : Renvoie la liste des paramètres d'une procédure / fonction, avec leur type et leur mode.
+
+	Paramètres :
+	- name : nom de la procédure / fonction
+
+	Retour :
+	- list : liste de paramètres
+
+	Auteurs :
+	- Dejan PARIS
+	"""
+	list = []
+	for i in range(len(tableIdentificateur)-1, 0, -1):
+		if tableIdentificateur[i][0] == name :
+			itr = i+1
+			break
+	while tableIdentificateur[itr][4] != "null" :	# Détection d'un paramètre
+		list.append(tableIdentificateur[itr])
+		itr += 1
+	return list
 
 
 
@@ -702,6 +736,20 @@ def ajoutIdentificateur(identificateur,tableOperation = "None"):
 	Auteurs :
 	- Alex JOBARD, Thomas LEPERCQ
 	"""	
+	#
+	# Entrées de la table des identificateurs :
+	#  Procédure :
+	#   [nom, portée, 'corps', 'null', 'null']
+	#  Fonction :
+	#   [nom, portée, 'corps', type du retour, 'null']
+	#  Paramètre :
+	#   [nom, portée, type, 'null', mode]
+	#  Variable :
+	#   [nom, portée, type, 'null', 'null']
+	#  Méthodes get et put :
+	#   ['get'/'put', portée, 'getput', 'null', 'null']
+	#
+
 	global listeIdentificateur		# Liste pour gencode.py
 	global tableIdentificateur		# Table d'identificateurs
 	global porteeActuelle 			# Scope
@@ -720,10 +768,12 @@ def ajoutIdentificateur(identificateur,tableOperation = "None"):
 		tableIdentificateur[-1].append(porteeActuelle)
 		tableIdentificateur[-1].append("corps")
 		tableIdentificateur[-1].append("null")
+		tableIdentificateur[-1].append("null")
 
 	elif(tableOperation == "variable"): # Identificateur d'une variable
 		tableIdentificateur.append([identificateur])
 		tableIdentificateur[-1].append(porteeActuelle)
+		tableIdentificateur[-1].append("null")
 		tableIdentificateur[-1].append("null")
 		tableIdentificateur[-1].append("null")
 	
@@ -735,10 +785,19 @@ def ajoutIdentificateur(identificateur,tableOperation = "None"):
 			tableIdentificateur[-1-i][2] = identificateur
 			i += 1
 
+	elif(tableOperation == "mode"):		# Mode d'un paramètre
+		portee = tableIdentificateur[-1][1]
+		i = 0
+		l = len(tableIdentificateur)
+		while tableIdentificateur[-1-i][1] == portee and tableIdentificateur[-1-i][2] == "null" and i < l :
+			tableIdentificateur[-1-i][4] = identificateur
+			i += 1
+
 	elif(tableOperation == "getput"):	# Identificateur d'un appel à put ou get
 		tableIdentificateur.append([identificateur])
 		tableIdentificateur[-1].append(porteeActuelle)
 		tableIdentificateur[-1].append("getput")
+		tableIdentificateur[-1].append("null")
 		tableIdentificateur[-1].append("null")
 
 	elif(tableOperation == "end"):		# Gestion du scope à la fin d'une procédure, fonction ou boucle
