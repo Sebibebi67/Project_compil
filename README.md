@@ -2,14 +2,11 @@
 
 ## **Description**
 
-Implémentation d'un compilateur et d'un exécuteur en python, permettant la
-compilation d'un programme écrit en pseudo-code en programme NilNovi, avant de
-l'exécuter.
+Implémentation d'un compilateur et d'un exécuteur en python, permettant la compilation d'un programme écrit en pseudo-code en programme NilNovi, avant de l'exécuter.
 
 ## **Installation**
 
-Afin de permettre la compilation et l'exécution, il vous faut dans un premier
-temps télécharger l'intégralité du dossier.
+Afin de permettre la compilation et l'exécution, il vous faut dans un premier temps télécharger l'intégralité du dossier.
 
 Vous devez ensuite donner les droits d'exécution aux fichiers suivants :
 * [chef.sh](chef.sh)
@@ -26,7 +23,7 @@ il ne vous reste plus qu'à utiliser le script shell [chef.sh](chef.sh) pour uti
 ## **Synopsis**
 
 ```bash
-./chef.sh \<arg> \<fichier>
+./chef.sh <arg> <fichier>
 ```
 
 arg :
@@ -63,10 +60,14 @@ Il vous faudra déplacer le fichier python.exe pour le placer dans le repertoire
 
 ## **Auteurs**
 
-**Equipe PDB :**
+**Équipe PDB :**
 
  * Sébastien HERT
  * Alex JOBARD
  * Thomas LEPERCQ
  * Dejan PARIS
  * Adam RIVIERE
+
+ ## **Rapport**
+
+ Vous pouvez consulter le rapport en cliquant [ici](./RAPPORT.md).
