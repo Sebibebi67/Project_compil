@@ -2,10 +2,9 @@
 //  programme incorrect
 //  
 //  M. Guyomard
-//  double déclaration variable
+//  variable non déclarée
 //-----------------------------------------------  
 procedure pp is
-  e,e:integer;				//mess. erreur attendu
 begin
-  put(15)
+  put(a)			//mess. erreur attendu
 end.

@@ -1,11 +1,13 @@
-//----------------------------------------------------
-// Programme correct
-//
+//-----------------------------------------------
+//  Programme incorrect
+//  
+//  Dejan Paris
+//  Mauvais type de retour
 //------------------------------------------------------
 procedure pp is
   function double(v : in integer) return integer is
   begin
-    return true
+    return true				// mess. erreur attendu
   end;
 begin
   put(double(7))

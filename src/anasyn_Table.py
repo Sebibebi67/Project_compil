@@ -40,7 +40,7 @@ operationList = ["+","-","*","/","and","or","<","<=",">",">=","=","/="]
 indiceValeurAffectation = None 	# UNFINISHED / UNUSED
 valeurAffectee = []				# UNFINISHED / UNUSED
 
-class AnaSynException(Exception): # TODO TODO TODO (todo.getTodo(tout doux))
+class AnaSynException(Exception):
 	def __init__(self, value):
 		self.value = value
 	def __str__(self):
@@ -228,7 +228,7 @@ def nnpType(lexical_analyser):
 		return "boolean"
 	else:
 		logger.error("Unknown type found <"+ lexical_analyser.get_value() +">!")
-		raise AnaSynException("Unknown type found <"+ lexical_analyser.get_value() +">!")
+		sys.exit("Unknown type found <"+ lexical_analyser.get_value() +">!")
 
 
 
@@ -317,19 +317,21 @@ def instr(lexical_analyser):
 			logger.debug("parsed procedure call")
 		else:
 			logger.error("Expecting procedure call or affectation!")
-			raise AnaSynException("Expecting procedure call or affectation!")
+			sys.exit("Expecting procedure call or affectation!")
 		
 	else:
 		logger.error("Unknown Instruction <"+ lexical_analyser.get_value() +">!")
-		raise AnaSynException("Unknown Instruction <"+ lexical_analyser.get_value() +">!")
+		sys.exit("Unknown Instruction <"+ lexical_analyser.get_value() +">!")
 
 
 
 def listePe(lexical_analyser, params):
 	isAddress = [True]		# Reste vrai si l'on passe une variable en paramètre
 	type = expression(lexical_analyser, isAddress)
+	if params == [] :										# Erreur : trop d'arguments
+		sys.exit("Erreur : trop d'arguments !")
 	if type != params[0][2] :								# Erreur de typage
-		sys.exit("Erreur : le paramètre " + params[0][0] + " est défini comme " + params[0][2] + " mais passé comme " + type + " !")
+		sys.exit("Erreur : le paramètre " + params[0][0] + " est défini comme " + translate(params[0][2]) + " mais passé comme " + translate(type) + " !")
 	if params[0][4] == "inout" and not isAddress[0] :		# Erreur de mode
 		sys.exit("Erreur : " + params[0][0] + " est un paramètre entrée-sortie ; seule une variable peut être passée de la sorte !")
 	if lexical_analyser.isCharacter(","):
@@ -421,7 +423,7 @@ def opRel(lexical_analyser):
 	else:
 		msg = "Unknown relationnal operator <"+ lexical_analyser.get_value() +">!"
 		logger.error(msg)
-		raise AnaSynException(msg)
+		sys.exit(msg)
 
 
 
@@ -451,7 +453,7 @@ def opAdd(lexical_analyser):
 	else:
 		msg = "Unknown additive operator <"+ lexical_analyser.get_value() +">!"
 		logger.error(msg)
-		raise AnaSynException(msg)
+		sys.exit(msg)
 
 
 
@@ -482,7 +484,7 @@ def opMult(lexical_analyser):
 	else:
 		msg = "Unknown multiplicative operator <"+ lexical_analyser.get_value() +">!"
 		logger.error(msg)
-		raise AnaSynException(msg)
+		sys.exit(msg)
 
 
 
@@ -511,7 +513,7 @@ def opUnaire(lexical_analyser):
 	else:
 		msg = "Unknown additive operator <"+ lexical_analyser.get_value() +">!"
 		logger.error(msg)
-		raise AnaSynException(msg)
+		sys.exit(msg)
 
 
 
@@ -550,7 +552,7 @@ def elemPrim(lexical_analyser, isAddress = [True]):
 			return getType(tableIdentificateur, ident, porteeActuelle)
 	else:
 		logger.error("Unknown Value!")
-		raise AnaSynException("Unknown Value!")
+		sys.exit("Unknown Value!")
 
 
 
@@ -563,7 +565,7 @@ def valeur(lexical_analyser):
 		return valBool(lexical_analyser)
 	else:
 		logger.error("Unknown Value! Expecting an integer or a boolean value!")
-		raise AnaSynException("Unknown Value ! Expecting an integer or a boolean value!")
+		sys.exit("Unknown Value ! Expecting an integer or a boolean value!")
 
 
 
@@ -607,7 +609,7 @@ def es(lexical_analyser):
 		logger.debug("Call to put")
 	else:
 		logger.error("Unknown E/S instruction!")
-		raise AnaSynException("Unknown E/S instruction!")
+		sys.exit("Unknown E/S instruction!")
 
 
 
@@ -615,7 +617,7 @@ def boucle(lexical_analyser):
 	logger.debug("parsing while loop: ")
 	lexical_analyser.acceptKeyword("while")
 
-	if expression(lexical_analyser) == "integer" :	# Erreur : condition invalide TODO
+	if expression(lexical_analyser) == "integer" :	# Erreur : condition invalide
 		sys.exit("Erreur : condition invalide (l'expression n'est pas un booléen)")
 
 	lexical_analyser.acceptKeyword("loop")
@@ -631,7 +633,7 @@ def altern(lexical_analyser):
 	logger.debug("parsing if: ")
 	lexical_analyser.acceptKeyword("if")
 
-	if expression(lexical_analyser) == "integer" :	# Erreur : condition invalide TODO
+	if expression(lexical_analyser) == "integer" :	# Erreur : condition invalide
 		sys.exit("Erreur : condition invalide (l'expression n'est pas un booléen)")
        
 	lexical_analyser.acceptKeyword("then")
