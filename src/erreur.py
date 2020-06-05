@@ -61,7 +61,7 @@ def checkBooleen(identTable, name):
     for e in identTable[::-1] :
         if e[0] == name :
             if e[2] == "boolean" :
-                sys.exit("Erreur : l'argument " + name + " de get() ne peut pas être un booléen")
+                sys.exit("Erreur : l'argument " + name + " de get() ne peut pas être un booléen\n")
 
 
 
@@ -85,7 +85,7 @@ def checkType(identTable, name, scope, type):
     """
     expectedType = getType(identTable, name, scope)
     if expectedType != type :
-        sys.exit("Erreur : " + name + " est déclaré comme " + translate(expectedType) + ", mais utilisé comme " + translate(type) + " !")
+        sys.exit("Erreur : " + name + " est déclaré comme " + translate(expectedType) + ", mais utilisé comme " + translate(type) + " !\n")
 
 
 
@@ -109,9 +109,9 @@ def checkReturnType(identTable, scope, type):
             low_scope = e[1]
         if e[1] == low_scope and e[3] != "null":
             if e[3] != type :
-                sys.exit("Erreur : la fonction " + e[0] + " doit retourner un " + translate(e[3]) + " mais retourne un " + translate(type) + " !")
+                sys.exit("Erreur : la fonction " + e[0] + " doit retourner un " + translate(e[3]) + " mais retourne un " + translate(type) + " !\n")
             return
-    sys.exit("Erreur : la commande 'return' est utilisée en dehors d'une fonction !")
+    sys.exit("Erreur : la commande 'return' est utilisée en dehors d'une fonction !\n")
 
 
 
@@ -130,7 +130,7 @@ def checkDoubleDeclaOp(identTable, name):
     """
     for e in identTable[::-1] :
         if e[0] == name :
-            sys.exit("Erreur : " + name + " est déclaré plusieurs fois")
+            sys.exit("Erreur : " + name + " est déclaré plusieurs fois\n")
 
 
 
@@ -154,7 +154,7 @@ def checkDoubleDeclaVar(identTable, name, scope):
             low_scope = e[1]
         if e[1] == low_scope :
             if e[0] == name :
-                sys.exit("Erreur : " + name + " est déclaré plusieurs fois")
+                sys.exit("Erreur : " + name + " est déclaré plusieurs fois\n")
                 
 
 
@@ -176,7 +176,7 @@ def checkNoDeclaOp(identTable, name):
         if e[0] == name :
             defined = True
     if not defined :
-        sys.exit("Erreur : " + name + " n'est pas déclaré")
+        sys.exit("Erreur : " + name + " n'est pas déclaré\n")
 
 
 
@@ -203,7 +203,7 @@ def checkNoDeclaVar(identTable, name, scope):
             if e[0] == name :
                 defined = True
     if not defined :
-        sys.exit("Erreur : " + name + " n'est pas déclaré")
+        sys.exit("Erreur : " + name + " n'est pas déclaré\n")
 
 
 

@@ -41,3 +41,5 @@ Sous **Windows**, c'est un peu plus problématique : en plus de devoir copier le
 ### **Compilation**
 
 Le problème le plus important au niveau du programme de traduction en *Nilnovi* a été le traitement des modes des paramètres. Au final, les paramètres d'entrée - spécifiés *in* dans le pseudo-code -  acceptent toute expression, mais ceux d'entrée-sortie - *in out* - ne peuvent être qu'une adresse (d'une variable ou d'un paramètre).
+
+Nous voulions au départ indiquer la ligne concernée lors de la détection d'une erreur dans le pseudo-code, mais cela s'est avéré trop complexe. Le dossier [test](test/) contient un exemple pour chaque erreur de pseudo-code détectée par le compilateur.

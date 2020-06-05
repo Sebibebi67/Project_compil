@@ -228,7 +228,7 @@ def nnpType(lexical_analyser):
 		return "boolean"
 	else:
 		logger.error("Unknown type found <"+ lexical_analyser.get_value() +">!")
-		sys.exit("Unknown type found <"+ lexical_analyser.get_value() +">!")
+		sys.exit("Unknown type found <"+ lexical_analyser.get_value() +">!\n")
 
 
 
@@ -317,11 +317,11 @@ def instr(lexical_analyser):
 			logger.debug("parsed procedure call")
 		else:
 			logger.error("Expecting procedure call or affectation!")
-			sys.exit("Expecting procedure call or affectation!")
+			sys.exit("Expecting procedure call or affectation!\n")
 		
 	else:
 		logger.error("Unknown Instruction <"+ lexical_analyser.get_value() +">!")
-		sys.exit("Unknown Instruction <"+ lexical_analyser.get_value() +">!")
+		sys.exit("Unknown Instruction <"+ lexical_analyser.get_value() +">!\n")
 
 
 
@@ -329,14 +329,17 @@ def listePe(lexical_analyser, params):
 	isAddress = [True]		# Reste vrai si l'on passe une variable en paramètre
 	type = expression(lexical_analyser, isAddress)
 	if params == [] :										# Erreur : trop d'arguments
-		sys.exit("Erreur : trop d'arguments !")
+		sys.exit("Erreur : trop d'arguments !\n")
 	if type != params[0][2] :								# Erreur de typage
-		sys.exit("Erreur : le paramètre " + params[0][0] + " est défini comme " + translate(params[0][2]) + " mais passé comme " + translate(type) + " !")
+		sys.exit("Erreur : le paramètre " + params[0][0] + " est défini comme " + translate(params[0][2]) + " mais passé comme " + translate(type) + " !\n")
 	if params[0][4] == "inout" and not isAddress[0] :		# Erreur de mode
-		sys.exit("Erreur : " + params[0][0] + " est un paramètre entrée-sortie ; seule une variable peut être passée de la sorte !")
+		sys.exit("Erreur : " + params[0][0] + " est un paramètre entrée-sortie ; seule une variable peut être passée de la sorte !\n")
+	params = params[1:]
 	if lexical_analyser.isCharacter(","):
 		lexical_analyser.acceptCharacter(",")
-		listePe(lexical_analyser, params[1:])
+		listePe(lexical_analyser, params)
+	if params != [] :
+		sys.exit("Erreur : pas assez d'arguments !\n")
 
 
 
@@ -349,7 +352,7 @@ def expression(lexical_analyser, isAddress = [True]):
 		lexical_analyser.acceptKeyword("or")
 		type2 = exp1(lexical_analyser)
 		if type1 == "integer" or type2 == "integer" :	# Erreur : opération or avec un entier
-			sys.exit("Un entier ne peut pas faire l'objet d'une comparaison or")
+			sys.exit("Un entier ne peut pas faire l'objet d'une comparaison or\n")
 		return "boolean"			# Opération sur deux booléens ; résultat booléen
 	return type1
         
@@ -365,7 +368,7 @@ def exp1(lexical_analyser, isAddress = [True]):
 		lexical_analyser.acceptKeyword("and")
 		type2 = exp2(lexical_analyser)
 		if type1 == "integer" or type2 == "integer" :	# Erreur : opération and avec un entier
-			sys.exit("Un entier ne peut pas faire l'objet d'une comparaison and")
+			sys.exit("Un entier ne peut pas faire l'objet d'une comparaison and\n")
 		return "boolean"
 	return type1
 		
@@ -384,7 +387,7 @@ def exp2(lexical_analyser, isAddress = [True]):
 		opRel(lexical_analyser)
 		type2 = exp3(lexical_analyser)
 		if type1 == "boolean" or type2 == "boolean" :	# Erreur : comparaison > / < impliquant un booléen
-			sys.exit("Un booléen ne peut pas faire l'objet d'une comparaison <, >, <= ou >=")
+			sys.exit("Un booléen ne peut pas faire l'objet d'une comparaison <, >, <= ou >=\n")
 		return "boolean"	# Comparaison de deux entiers ; résultat booléen
 	if	lexical_analyser.isSymbol("=") or \
 		lexical_analyser.isSymbol("/="):
@@ -392,7 +395,7 @@ def exp2(lexical_analyser, isAddress = [True]):
 		opRel(lexical_analyser)
 		type2 = exp3(lexical_analyser)
 		if type1 != type2 :	# Erreur : comparaison entre entier et booléen
-			sys.exit("Impossible de comparer un entier et un booléen avec = ou /=")
+			sys.exit("Impossible de comparer un entier et un booléen avec = ou /=\n")
 		return "boolean"	# Comparaisons d'entiers ou de booléens ; résultat booléen
 	return type1
 	
@@ -423,7 +426,7 @@ def opRel(lexical_analyser):
 	else:
 		msg = "Unknown relationnal operator <"+ lexical_analyser.get_value() +">!"
 		logger.error(msg)
-		sys.exit(msg)
+		sys.exit(msg + "\n")
 
 
 
@@ -435,7 +438,7 @@ def exp3(lexical_analyser, isAddress = [True]):
 		opAdd(lexical_analyser)
 		type2 = exp4(lexical_analyser)
 		if type1 == "boolean" or type2 == "boolean" :	# Erreur : addition de booléens
-			sys.exit("Un booléen ne peut pas être additionné ou soustrait")
+			sys.exit("Un booléen ne peut pas être additionné ou soustrait\n")
 		return "integer"	# Opération sur deux entiers ; résultat entier
 	return type1
 
@@ -453,7 +456,7 @@ def opAdd(lexical_analyser):
 	else:
 		msg = "Unknown additive operator <"+ lexical_analyser.get_value() +">!"
 		logger.error(msg)
-		sys.exit(msg)
+		sys.exit(msg + "\n")
 
 
 
@@ -466,7 +469,7 @@ def exp4(lexical_analyser, isAddress = [True]):
 		opMult(lexical_analyser)
 		type2 = prim(lexical_analyser)
 		if type1 == "boolean" or type2 == "boolean" :	# Erreur : multiplication de booléens
-			sys.exit("Un booléen ne peut pas être multiplié ou divisé")
+			sys.exit("Un booléen ne peut pas être multiplié ou divisé\n")
 		return "integer"	# Opération sur deux entiers ; résultat entier
 	return type1
 
@@ -484,7 +487,7 @@ def opMult(lexical_analyser):
 	else:
 		msg = "Unknown multiplicative operator <"+ lexical_analyser.get_value() +">!"
 		logger.error(msg)
-		sys.exit(msg)
+		sys.exit(msg + "\n")
 
 
 
@@ -513,7 +516,7 @@ def opUnaire(lexical_analyser):
 	else:
 		msg = "Unknown additive operator <"+ lexical_analyser.get_value() +">!"
 		logger.error(msg)
-		sys.exit(msg)
+		sys.exit(msg + "\n")
 
 
 
@@ -552,7 +555,7 @@ def elemPrim(lexical_analyser, isAddress = [True]):
 			return getType(tableIdentificateur, ident, porteeActuelle)
 	else:
 		logger.error("Unknown Value!")
-		sys.exit("Unknown Value!")
+		sys.exit("Unknown Value!\n")
 
 
 
@@ -565,7 +568,7 @@ def valeur(lexical_analyser):
 		return valBool(lexical_analyser)
 	else:
 		logger.error("Unknown Value! Expecting an integer or a boolean value!")
-		sys.exit("Unknown Value ! Expecting an integer or a boolean value!")
+		sys.exit("Unknown Value ! Expecting an integer or a boolean value!\n")
 
 
 
@@ -592,7 +595,7 @@ def es(lexical_analyser):
 		ident = lexical_analyser.acceptIdentifier()
 		# checkBooleen(tableIdentificateur, ident)
 		if getType(tableIdentificateur, ident, porteeActuelle) == "boolean" :	# Erreur : get(boolean)
-			sys.exit("Erreur : l'argument " + ident + " de get() ne peut pas être un booléen")
+			sys.exit("Erreur : l'argument " + ident + " de get() ne peut pas être un booléen\n")
 		ajoutIdentificateur(ident)
 		ajoutIdentificateur(")")
 		lexical_analyser.acceptCharacter(")")
@@ -603,13 +606,13 @@ def es(lexical_analyser):
 		ajoutIdentificateur("(")
 		lexical_analyser.acceptCharacter("(")
 		if expression(lexical_analyser) == "boolean" :	# Erreur : put(boolean)
-			sys.exit("Erreur : l'argument de put() ne peut pas être un booléen")
+			sys.exit("Erreur : l'argument de put() ne peut pas être un booléen\n")
 		lexical_analyser.acceptCharacter(")")
 		ajoutIdentificateur(")")
 		logger.debug("Call to put")
 	else:
 		logger.error("Unknown E/S instruction!")
-		sys.exit("Unknown E/S instruction!")
+		sys.exit("Unknown E/S instruction!\n")
 
 
 
@@ -618,7 +621,7 @@ def boucle(lexical_analyser):
 	lexical_analyser.acceptKeyword("while")
 
 	if expression(lexical_analyser) == "integer" :	# Erreur : condition invalide
-		sys.exit("Erreur : condition invalide (l'expression n'est pas un booléen)")
+		sys.exit("Erreur : condition invalide (l'expression n'est pas un booléen)\n")
 
 	lexical_analyser.acceptKeyword("loop")
 	suiteInstr(lexical_analyser)
@@ -634,7 +637,7 @@ def altern(lexical_analyser):
 	lexical_analyser.acceptKeyword("if")
 
 	if expression(lexical_analyser) == "integer" :	# Erreur : condition invalide
-		sys.exit("Erreur : condition invalide (l'expression n'est pas un booléen)")
+		sys.exit("Erreur : condition invalide (l'expression n'est pas un booléen)\n")
        
 	lexical_analyser.acceptKeyword("then")
 	suiteInstr(lexical_analyser)
