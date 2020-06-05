@@ -258,7 +258,7 @@ function table(){
             ;;
         '-file')
             echo -en "${red}"
-            ./src/anasyn_Table.py $2 --show-ident-table >> tmp/IdentTable.txt || ( echo "" && exit )
+            ./src/anasyn_Table.py $2 --show-ident-table >> tmp/IdentTable.txt
             ;;
         *)
             echo error;;
