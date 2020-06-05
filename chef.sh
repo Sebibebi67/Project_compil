@@ -45,6 +45,22 @@
 #--------------------------------------------------------------------------------#
 
 
+#----------------------------------- Imports ------------------------------------#
+
+default="\e[0m"
+bolt="\e[1m"
+
+red="\e[31m"
+green="\e[32m"
+yellow="\e[33m"
+blue="\e[34m"
+magenta="\e[35m"
+cyan="\e[36m"
+orange="\e[38;5;208m"
+
+#--------------------------------------------------------------------------------#
+
+
 #------------------------------ Variables Globales ------------------------------#
 #
 lenTitle=80
@@ -71,23 +87,7 @@ function erreur(){
     # - Sébastien HERT
     ###
 
-    stringError="Erreur"
-
-    lenParam=${#stringError}
-
-    lenEq1=$(( ($lenTitle-$lenParam)/2 -1 ))
-    lenEq2=$(( $lenTitle-$lenParam-$lenEq1-2 ))
-    error=""
-    for (( i = 0; i < $lenEq1; i++ )); do
-        error="${error}-"
-    done
-    error="${error} \e[31m\e[1m$stringError\e[0m\e[31m "
-    for (( i = 0; i < $lenEq2; i++ )); do
-        error="${error}-"
-    done
-
-    echo -e "\e[31m${error}"
-    echo -e "\e[31m$*"
+    echo -e "${red}Erreur : $1\n${default}"
 }
 
 function titre(){
@@ -130,7 +130,7 @@ function titre(){
         title="${title}$1"
     done
 
-    echo -e "\e[35m\e[1m${title}\n\e[0m"
+    echo -e "${orange}${bold}${title}\n${default}"
 }
 
 function success(){
@@ -147,7 +147,7 @@ function success(){
     # - Sébastien HERT
     ###
 
-    echo -e "\e[32m$*\n\e[0m"
+    echo -e "${green}$*\n${default}"
 }
 
 function help(){
@@ -252,10 +252,14 @@ function table(){
     titre - "Création de la table des identifiants"
     case $1 in
         '-show')
-            ./src/anasyn_Table.py $2 --show-ident-table
-            echo "";;
+            echo -en "${red}"
+            output=$(eval ./src/anasyn_Table.py $2 --show-ident-table)
+            echo -e "${default}$output\n"
+            ;;
         '-file')
-            ./src/anasyn_Table.py $2 --show-ident-table >> tmp/IdentTable.txt;;
+            echo -en "${red}"
+            ./src/anasyn_Table.py $2 --show-ident-table >> tmp/IdentTable.txt || ( echo "" && exit )
+            ;;
         *)
             echo error;;
     esac
@@ -331,6 +335,7 @@ function exe(){
     else
         echo error
     fi
+    echo ""
 }
 
 erase(){
@@ -344,9 +349,13 @@ erase(){
 
 #------------------------------------- Main -------------------------------------#
 
+# Arrête le script en cas d'erreur
 set -e
 
+# Vide le fichier tmp
 erase
+
+echo ""
 
 titre = "Compilateur Habile, Exécuteur Fiable"
 
@@ -362,13 +371,13 @@ titre - "Vérification des paramètres"
 
 #Vérification du nombre de paramètres
 if [ $# -eq 0 ]; then
-    erreur "Il manque des paramètres"
-    echo -e "\e[34m\nUtilisez -help pour afficher l'aide :\e[0m ./chef.sh -help\n"
+    erreur "Il manque des paramètres" -h
+    echo -e "${blue}\nUtilisez -help pour afficher l'aide :${default} ./chef.sh -help\n"
     exit
 fi
 if [ $# -gt 2 ]; then
-    erreur "Trop d'arguments"
-    echo -e "\e[34m\nUtilisez -help pour afficher l'aide :\e[0m ./chef.sh -help\n"
+    erreur "Trop d'arguments" -h 
+    echo -e "${blue}\nUtilisez -help pour afficher l'aide :${default} ./chef.sh -help\n"
     exit
 fi
 
@@ -387,7 +396,6 @@ case $1 in
 
         #Création de la liste des identifiants
         liste $2
-        echo $ident_list
 
         #Création du fichier en langage NilNovi
         nilnovi -file
@@ -433,11 +441,10 @@ case $1 in
 esac
 
 
-echo ""
 titre - "Terminaison"
 
 
-# erase
+erase
 
 #--------------------------------------------------------------------------------#
 

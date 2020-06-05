@@ -74,7 +74,7 @@ function titre(){
         title="${title}$1"
     done
 
-    echo -e "\e[93m\e[1m${title}\n\e[0m"
+    echo -e "\e[36m\e[1m${title}\e[0m"
 }
 
 #--------------------------------------------------------------------------------#
@@ -85,11 +85,11 @@ function titre(){
 set -e
 
 paths="./test/nna ./test/nnp"
-
-
+echo ""
+titre '=' "Début des tests" 
+echo ""
 for path in $paths; do
 	for file in $(ls $path) ; do
-        # echo $file
         if [[ "$file" == "correct"*".nno" ]]; then
             titre '*' "Testing ${path}/${file}"
             ./chef.sh -c $path/$file
@@ -97,8 +97,8 @@ for path in $paths; do
 	done
 done
 
-# ./chef.sh -c test/nna/error1.nno
-# ./chef.sh -c test/nna/error2.nno
+titre '=' "Fin des tests -- Succès" 
+echo ""
 
 #--------------------------------------------------------------------------------#
 

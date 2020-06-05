@@ -11,7 +11,7 @@
 //
 //------------------------------------------------------
 procedure pp is
-  procedure affiche(x,y : integer) is
+  procedure affiche(x,y : in integer) is
     i,j:integer;
   begin
     put(x);
