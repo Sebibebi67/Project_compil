@@ -22,7 +22,7 @@ Dès le début du projet, nous avons voulu répartir le travail entre tous les m
 
 Thomas LEPERCQ, Alex JOBARD et Dejan PARIS se sont alors penchés sur le compilateur, partie que nous avons jugé plus compliquée, tandis que Sébastien HERT et Adam RIVIERE se sont occupés de l'exécuteur.
 
-Deux parties ont ensuite été distinguées dans le compilateur lui-même. Thomas et Alex ont travaillé sur le fichier [anasyn.py](src/anasyn.py) et en ont produit une copie [anasyn_Table.py](src/anasyn_Table.py) afin d'ajouter les fonctionnalités manquantes. Dejan a utilisé la sortie de [anasyn_Table.py](src/anasyn_Table.py) pour produire le code en *NilNovi*. Une fois l'exécuteur terminé, nous nous sommes tous penchés sur le compilateur et la gestion des erreurs.
+Deux parties ont ensuite été distinguées dans le compilateur lui-même. Thomas et Alex ont travaillé sur le fichier [anasyn.py](src/anasyn.py) et en ont produit une copie [anasyn_Table.py](src/anasyn_Table.py) afin d'ajouter les fonctionnalités manquantes. Dejan a utilisé la sortie de [anasyn_Table.py](src/anasyn_Table.py) pour produire le code en *NilNovi* avec [gencode.py](src/gencode.py). Une fois l'exécuteur terminé, nous nous sommes tous penchés sur le compilateur et la gestion des erreurs.
 
 ## **Problèmes rencontrés**
 
