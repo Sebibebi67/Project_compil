@@ -1,11 +1,11 @@
 //-----------------------------------------------
-//  programme incorrect
+//  Programme incorrect
 //  
-//  M. Guyomard
-//  double déclaration variable
+//  Dejan Paris
+//  Fonction non déclarée
 //-----------------------------------------------  
 procedure pp is
-  e,e:integer;				//mess. erreur attendu
+  a:integer;
 begin
-  put(15)
+  f(a)			//mess. erreur attendu
 end.

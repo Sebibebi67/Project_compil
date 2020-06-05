@@ -2,13 +2,13 @@
 //  Programme incorrect
 //  
 //  Dejan Paris
-//  Mauvais type de retour
+//  Passage d'une valeur en entrée-sortie
 //------------------------------------------------------
 procedure pp is
-  function double(v : in integer) return integer is
+  function double(v : in out integer) return integer is
   begin
-    return true				// mess. erreur attendu
+    return 2*v			
   end;
 begin
-  put(double(7))
+  put(double(7))			// mess. erreur attendu
 end.

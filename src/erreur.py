@@ -85,7 +85,7 @@ def checkType(identTable, name, scope, type):
     """
     expectedType = getType(identTable, name, scope)
     if expectedType != type :
-        sys.exit("Erreur : " + name + " est déclaré comme " + expectedType + ", mais utilisé comme " + type + " !")
+        sys.exit("Erreur : " + name + " est déclaré comme " + translate(expectedType) + ", mais utilisé comme " + translate(type) + " !")
 
 
 
@@ -109,7 +109,7 @@ def checkReturnType(identTable, scope, type):
             low_scope = e[1]
         if e[1] == low_scope and e[3] != "null":
             if e[3] != type :
-                sys.exit("Erreur : la fonction " + e[0] + " doit retourner un " + e[3] + " mais retourne un " + type + " !")
+                sys.exit("Erreur : la fonction " + e[0] + " doit retourner un " + translate(e[3]) + " mais retourne un " + translate(type) + " !")
             return
     sys.exit("Erreur : la commande 'return' est utilisée en dehors d'une fonction !")
 
@@ -233,3 +233,23 @@ def getType(identTable, name, scope):
             if e[0] == name :
                 return e[2]
     checkNoDeclaVar(identTable, name, scope)
+
+
+
+def translate(type):
+	"""
+	Description : Traduit les types pour les messages d'erreur en français.
+
+	Paramètres :
+	- type : type à traduire
+
+	Retour :
+	- traduction
+
+	Auteurs :
+	- Dejan PARIS
+	"""
+	if type == "integer" :
+		return "entier"
+	if type == "boolean" :
+		return "booléen"
